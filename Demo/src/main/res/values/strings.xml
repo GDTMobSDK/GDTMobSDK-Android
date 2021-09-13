@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">优量汇联盟SDKDemo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">slogan</string>
+    <string name="action_muid">设备标识</string>
+    <string name="title_activity_maindemo">优量汇：结盟而赢</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="gdtslogan">GDTslogan</string>
+    <string name="click_to_skip">点击跳过</string>
+    <string name="title_activity_device_info">设备标识</string>
+    <string name="title_activity_banner">优量汇：横幅广告</string>
+    <string name="title_activity_interstitial_ad">优量汇：插屏广告</string>
+    <string name="title_nativead">优量汇：原生广告</string>
+    <string name="title_activity_gdtnative_video_ad">原生视频广告-ListView示例</string>
+    <string name="title_activity_native_video_demo">原生视频广告-基本示例</string>
+    <string name="title_activity_native_video_ad">原生视频广告接入示例</string>
+    <string name="title_activity_native_video_recycler_view">原生视频广告-RecyclerView示例</string>
+    <string name="title_activity_native_video_scroll_view">原生视频广告-ScrollView示例</string>
+    <string name="title_activity_native_video_pre_movie">原生视频广告-前贴片示例</string>
+    <string name="title_activity_native_express_ad">原生广告-模板渲染示例</string>
+    <string name="title_activity_native_express_improve_ad">原生广告-模板2.0示例</string>
+    <string name="title_activity_native_express_demo">原生广告-模板渲染基本示例</string>
+    <string name="title_activity_native_unified_demo">自渲染 2.0接入示例</string>
+    <string name="title_activity_native_express_recycler_view">原生广告-模板渲染列表示例</string>
+    <string name="title_contentad">优量汇：内容+广告</string>
+    <string name="title_stream">优量汇：直播流广告</string>
+    <string name="title_reward_video">优量汇：激励视频</string>
+    <string name="title_hybrid">优量汇：hybrid广告</string>
+    <string name="title_activity_unified_banner">优量汇：横幅广告2.0</string>
+    <string name="title_activity_unified_interstitial_ad">优量汇：插屏广告2.0</string>
+    <string name="title_activity_tangram_ad">七巧板通用版</string>
+    <string name="title_activity_test_mediation">流量分配测试工具</string>
+    <string name="title_activity_reward_video_improve_ad">模板激励视频</string>
+    <string name="title_activity_interstitial_full_screen_improve_ad">模板插屏全屏</string>
+    <string name="title_activity_interstitial_half_screen_improve_ad">模板插屏半屏</string>
+    <string name="title_activity_qqgame">QQ小游戏测试</string>
+
+
+    <string name="title_mute_video">静音</string>
+    <string name="title_play_video">播放</string>
+    <string name="title_pause_video">暂停</string>
+    <string name="title_resume_video">恢复</string>
+    <string name="title_stop_video">停止</string>
+    <string name="pause_app_download">暂停下载</string>
+    <string name="resume_app_download">继续下载</string>
+
+    <string name="xad_text_highlight_ad_bring_you">为您带来</string>
+    <string name="xad_text_highlight_ad_wonderful_time">精彩集锦</string>
+    <string name="xad_text_highlight_ad_immediate_view">立即查看</string>
+    <string name="xad_text_highlight_ad_ad">广告</string>
+    <string name="xad_text_idle_ad_ad">广告</string>
+    <string name="xad_xad_text_ad">广告</string>
+
+    // Demo list entry button
+    <string name="banner" />
+    <string name="interstitial" />
+    <string name="nativeSelf" />
+    <string name="nativeSelfMp" />
+    <string name="nativeVideo" />
+    <string name="nativeExpress" />
+    <string name="nativeExpressImprove" />
+    <string name="nativeContainer" />
+    <string name="rewardVideo" />
+    <string name="iegrewardVideo" />
+    <string name="stream" />
+    <string name="splash" />
+    <string name="content" />
+    <string name="hybrid" />
+    <string name="unified_banner" />
+    <string name="unified_interstitial" />
+    <string name="unified_interstitial_fullscreen_video" />
+    <string name="tangram" />
+    <string name="mediation" />
+    <string name="nativeExpressRewardVideo" />
+    <string name="express_interstitial_full_screen" />
+    <string name="express_interstitial_half_screen" />
+    <string name="dataDetect" />
+
+
+    <string name="N_A">N/A</string>
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
+    <string name="sample">Sample</string>
+    <string name="recent">Recent</string>
+    <string name="settings">Settings</string>
+    <string name="tracks">Tracks</string>
+    <string name="toggle_player">Player</string>
+    <string name="toggle_render">Render</string>
+    <string name="toggle_ratio">Scale</string>
+    <string name="show_info">Info</string>
+    <string name="vdec">vdec</string>
+    <string name="fps">fps</string>
+    <string name="v_cache">v-cache</string>
+    <string name="a_cache">a-cache</string>
+    <string name="load_cost">load-cost</string>
+    <string name="seek_cost">seek_cost</string>
+    <string name="seek_load_cost">seek_load_cost</string>
+    <string name="tcp_speed">tcp_speed</string>
+    <string name="bit_rate">bit_rate</string>
+
+    <string name="media_information">Media Information</string>
+    <string name="mi_player">Player</string>
+    <string name="mi_media">Media</string>
+    <string name="mi_profile_level">Profile level</string>
+    <string name="mi_pixel_format">Pixel format</string>
+    <string name="mi_resolution">Resolution</string>
+    <string name="mi_length">Length</string>
+    <string name="mi_stream_fmt1">Stream #%d</string>
+    <string name="mi_type">Type</string>
+    <string name="mi_language">Language</string>
+    <string name="mi_codec">Codec</string>
+    <string name="mi_frame_rate">Frame rate</string>
+    <string name="mi_bit_rate">Bit rate</string>
+    <string name="mi_sample_rate">Sample rate</string>
+    <string name="mi_channels">Channels</string>
+    <string name="mi__selected_video_track">*</string>
+    <string name="mi__selected_audio_track">*</string>
+    <string name="mi__selected_subtitle_track">*</string>
+
+    <string name="TrackType_video">Video</string>
+    <string name="TrackType_audio">Audio</string>
+    <string name="TrackType_subtitle">Subtitle</string>
+    <string name="TrackType_timedtext">Timed text</string>
+    <string name="TrackType_metadata">Meta data</string>
+    <string name="TrackType_unknown">Unknown</string>
+
+    <string name="VideoView_error_text_invalid_progressive_playback">Invalid progressive playback</string>
+    <string name="VideoView_error_text_unknown">Unknown</string>
+    <string name="VideoView_error_button">OK</string>
+
+    <string name="VideoView_ar_aspect_fit_parent">Aspect / Fit parent</string>
+    <string name="VideoView_ar_aspect_fill_parent">Aspect / Fill parent</string>
+    <string name="VideoView_ar_aspect_wrap_content">Aspect / Wrap content</string>
+    <string name="VideoView_ar_match_parent">Free / Fill parent</string>
+    <string name="VideoView_ar_16_9_fit_parent">16:9 / Fit parent</string>
+    <string name="VideoView_ar_4_3_fit_parent">4:3 / Fit parent</string>
+
+    <string name="VideoView_render_none">Render: None</string>
+    <string name="VideoView_render_surface_view">Render: SurfaceView</string>
+    <string name="VideoView_render_texture_view">Render: TextureView</string>
+
+    <string name="VideoView_player_none">Player: None</string>
+    <string name="VideoView_player_AndroidMediaPlayer">Player: AndroidMediaPlayer</string>
+    <string name="VideoView_player_IjkMediaPlayer">Player: IjkMediaPlayer</string>
+    <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
+
+    <!-- Facebook Native Adapter -->
+    <string name="sponsored">Sponsored</string>
+    <string name="icon_desc">Ad icon</string>
+    <string name="image_desc">Ad image</string>
+    
+    <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=]]></string>
+
+    <string name="splash_loading">广告加载中...</string>
+
+    <string name="leak_canary_test_class_name">assertk.Assert</string>
+
+</resources>

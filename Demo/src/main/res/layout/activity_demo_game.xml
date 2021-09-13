@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/change_orientation_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="横竖屏切换" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:text="试玩广告地址:"
+            android:textColor="#151515"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/demo_game_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:hint="请输入正确的试玩广告地址"
+            android:inputType="textUri"
+            android:lines="5"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/volume_on_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="有声播放" />
+
+    <Button
+        android:id="@+id/show_ad_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="展示广告" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:padding="10dp"
+        android:text="试玩广告开发者使用\n输入正确的试玩广告地址并通过验证后，展示的激励视频广告会在视频播放完成后展示输入的试玩广告。" />
+
+
+</LinearLayout>

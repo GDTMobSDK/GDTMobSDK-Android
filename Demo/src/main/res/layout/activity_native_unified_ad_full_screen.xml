@@ -1,0 +1,163 @@
+<com.qq.e.ads.nativ.widget.NativeAdContainer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/native_ad_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.qq.e.union.demo.NativeADUnifiedFullScreenActivity">
+
+    <RelativeLayout
+        android:id="@+id/custom_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <!-- 原生广告的视频组件 -->
+        <com.qq.e.ads.nativ.MediaView
+            android:id="@+id/gdt_media_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="#000"/>
+
+        <!-- 原生广告的大图 -->
+        <ImageView
+            android:id="@+id/img_poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:padding="8dp"
+            android:text="倒计时："
+            android:visibility="gone"/>
+
+        <!-- 原生三小图 -->
+        <LinearLayout
+            android:id="@+id/native_3img_ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/native_3img_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ellipsize="end"
+                android:textColor="@android:color/black" />
+
+            <LinearLayout
+                android:id="@+id/native_3img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <ImageView
+                    android:id="@+id/img_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dp"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/img_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dp"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/img_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3dp"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/native_3img_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <!-- 广告的信息描述 -->
+        <RelativeLayout
+            android:id="@+id/ad_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="#999"
+            android:visibility="gone">
+
+            <!-- 原生广告的小图 -->
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"/>
+
+            <!-- 原生广告的标题 -->
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/img_logo"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/img_logo"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#c00" />
+
+            <!-- 原生广告的描述 -->
+            <TextView
+                android:id="@+id/text_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/img_logo"
+                android:layout_marginTop="4dp"
+                android:layout_alignLeft="@id/text_title"
+                android:layout_below="@id/text_title"
+                android:layout_toRightOf="@id/img_logo"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="#fff"/>
+
+            <!-- 原生广告的点击按钮 -->
+            <Button
+                android:id="@+id/btn_download"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_alignParentBottom="true"
+                android:background="#0a0"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</com.qq.e.ads.nativ.widget.NativeAdContainer>

@@ -1,0 +1,102 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.qq.e.union.demo.SplashActivity" >
+
+    <TextView
+        android:text="假装是 APP 主页"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:id="@+id/splash_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <!-- 优量汇开屏广告支持“半屏/全屏”展示，开发者可以把Logo区域放在屏幕底部，然后在Logo上方提供一个容器来放置半开屏广告，请注意此容器高度不得小于400dp -->
+
+        <!-- 1.Logo区域：展示半开屏广告时使用，如果想展示全开屏广告，可以不需要这个Logo区域 -->
+        <!-- 注意：如需要这个Logo区域，建议开发者使用自己的Logo资源，而不是联盟的Logo资源@drawable/gdt_splash_logo，资源规格可参照@drawable/gdt_splash_logo -->
+        <ImageView
+            android:id="@+id/app_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/gdtslogan"
+            android:src="@drawable/gdt_splash_logo" />
+
+        <!-- 2.预设开屏图片区域： -->
+        <!-- 开发者可以把自家App设计开屏图片摆放在这里，本示例中放置了一张静态图片。!-->
+        <!-- 注意1：直接将此图放在广告容器的下面即可，始终不要将广告容器splash_container的设为invisible，否则将不会展示广告无法计费，返回错误码600。-->
+        <!-- 注意2：建议开发者使用自己的开屏图片资源，而不是联盟的@drawable/splash_holder，资源规格可参照@drawable/splash_holder -->
+        <ImageView
+            android:id="@+id/splash_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/app_logo"
+            android:scaleType="fitXY"
+            android:src="@drawable/splash_holder" />
+
+        <!-- 3.开屏广告容器区域：-->
+        <!-- 注意：该区域高度不得小于400dp。在本示例中没有写死splash_container的高度值，是因为第1部分的app_logo区域是一个高度很小的图片。 -->
+        <FrameLayout
+            android:id="@+id/splash_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/app_logo"/>
+
+        <!-- 自定义wifi预加载按钮，需设置状态为不显示，当素材为视频且视频开始播放时，SDK内部会处理为显示状态-->
+        <TextView
+            android:id="@+id/preload_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="16dp"
+            android:background="@drawable/background_circle"
+            android:gravity="center"
+            android:text="已Wi-Fi预加载"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <!--只加载广告接口，这里展示下加载结果-->
+    <LinearLayout
+        android:id="@+id/splash_load_ad_only"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:visibility="gone">
+        <Button
+            android:id="@+id/splash_load_ad_close"
+            android:text="关闭"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/splash_load_ad_refresh"
+            android:text="刷新"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/splash_load_ad_display"
+            android:text="显示广告"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/splash_load_ad_status"
+            android:hint="当前状态"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+</FrameLayout>

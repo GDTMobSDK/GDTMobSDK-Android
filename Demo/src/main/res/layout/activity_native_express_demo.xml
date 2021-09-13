@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D3D3D3"
+    tools:context="com.qq.e.union.demo.NativeExpressDemoActivity">
+
+    <RelativeLayout
+        android:id="@+id/activity_native_express"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D3D3D3"
+        tools:context="com.qq.e.union.demo.NativeExpressDemoActivity">
+
+        <TextView
+            android:id="@+id/textWidth"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="宽：" />
+
+        <EditText
+            android:id="@+id/editWidth"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/textWidth"
+            android:layout_toRightOf="@id/textWidth"
+            android:inputType="number"
+            android:maxLines="1"
+            android:text="340" />
+
+        <CheckBox
+            android:id="@+id/checkboxFullWidth"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/textWidth"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/editWidth"
+            android:text="最大宽度" />
+
+        <TextView
+            android:id="@+id/textHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@id/textWidth"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="高：" />
+
+        <EditText
+            android:id="@+id/editHeight"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/textHeight"
+            android:layout_toRightOf="@id/textHeight"
+            android:enabled="false"
+            android:inputType="number"
+            android:maxLines="1"
+            android:text="-2" />
+
+        <CheckBox
+            android:id="@+id/checkboxAutoHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/textHeight"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/editHeight"
+            android:checked="true"
+            android:text="自适应高度" />
+
+        <TextView
+            android:id="@+id/textSizeHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonDestroy"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="上面的宽、高单位为dp，可以在这里调出合适的尺寸\nADSize.AUTO_HEIGHT可以让NativeExpressADView的高度根据广告内容自适应\n"
+            android:textStyle="italic" />
+
+        <Button
+            android:id="@+id/buttonRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textSizeHint"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="加载并展示广告" />
+
+        <TextView
+            android:id="@+id/txtRefreshTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonRefresh"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="2dp"
+            android:text="如果是视频广告，直接展示。会显示下载进度条，需要视频加载完成才会播放。"
+            android:textStyle="italic" />
+
+        <Button
+            android:id="@+id/buttonPreloadVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtRefreshTip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="2dp"
+            android:text="加载广告(调用预加载视频接口)" />
+
+        <TextView
+            android:id="@+id/txtPreloadVideoTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonPreloadVideo"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="2dp"
+            android:text="如果是视频广告，会在加载完视频素材后展示。不显示下载进度条，直接是可播放状态。"
+            android:textStyle="italic" />
+
+        <Button
+            android:id="@+id/buttonDestroy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textHeight"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="调整尺寸" />
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtPreloadVideoTip"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+
+    </RelativeLayout>
+</ScrollView>
+

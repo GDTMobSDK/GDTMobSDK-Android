@@ -1,0 +1,90 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.2'
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    google()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId 'com.qq.e.union.demo'
+        minSdkVersion 16// 联盟Demo如果需要要接入快手sdk，快手最低支持16，需将此处改为16
+        targetSdkVersion 28
+        versionCode 1
+        versionName '1.0'
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'androidsupportmultidexversion.txt'
+    }
+}
+
+dependencies {
+    implementation fileTree('libs/android-query-full.0.26.7.jar')
+    implementation 'com.qq.e.union:union:4.410.1280'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    implementation 'com.google.android.gms:play-services-ads:8.3.0'
+    implementation files('aars/kssdk-ad-3.3.11-publishRelease.aar')
+    implementation files('aars/open_ad_sdk_3.8.0.0.aar')
+    implementation files('aars/Baidu_MobAds_SDK-release_v9.15.aar')
+    // 以下为流量分配功能所使用依赖，流量分配功能详情请咨询运营
+    // Mintegral SDK
+    implementation 'com.mintegral.msdk:videojs:10.1.31'
+    implementation 'com.mintegral.msdk:mtgjscommon:10.1.31'
+    implementation 'com.mintegral.msdk:playercommon:10.1.31'
+    implementation 'com.mintegral.msdk:reward:10.1.31'
+    implementation 'com.mintegral.msdk:videocommon:10.1.31'
+    implementation 'com.mintegral.msdk:optimizedata:10.1.31'
+    implementation 'com.mintegral.msdk:common:10.1.31'
+    // 开发者后台创建App勾选APK为YES则加上mtgdownloads依赖
+    implementation 'com.mintegral.msdk:mtgdownloads:10.1.31'
+    //mtgbid
+    implementation 'com.mintegral.msdk:mtgbid:10.1.31'
+}

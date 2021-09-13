@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.qq.e.union.demo.StreamADActivity"
+    tools:showIn="@layout/activity_stream_ad">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:keepScreenOn="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.qq.e.union.demo.stream.media.IjkVideoView
+            android:id="@+id/mainVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@android:color/black"/>
+
+        <TableLayout
+            android:id="@+id/hud_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:background="@color/ijk_transparent_dark"
+            android:padding="8dp" />
+
+        <ImageView
+            android:id="@+id/iv_fullscreen"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/gdt_ic_enter_fullscreen" />
+
+        <FrameLayout
+            android:id="@+id/ad_framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/et_url"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/bt_load"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+    <Button
+        android:id="@+id/bt_load"
+        android:layout_width="69dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="5dp"
+        android:text="启动"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintBaseline_toBaselineOf="@id/et_url"/>
+
+
+    <ToggleButton
+        android:id="@+id/tb_pause_clip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/background_button"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="2dp"
+        android:textColor="@color/colorWhite"
+        android:textOff="暂停"
+        android:textOn="恢复"
+        app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"/>
+
+
+<!--    <ToggleButton
+        android:id="@+id/tb_idle"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:checked="false"
+        android:textOff="闲时广告Off"
+        android:textOn="闲时广告On"
+        app:layout_constraintEnd_toStartOf="@+id/tb_rose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_url_2" />
+
+    <ToggleButton
+        android:id="@+id/tb_highlight"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:checked="false"
+        android:textOff="精彩集锦Off"
+        android:textOn="精彩集锦On"
+        app:layout_constraintStart_toStartOf="@+id/tb_idle"
+        app:layout_constraintTop_toBottomOf="@+id/tb_idle" />
+
+    <ToggleButton
+        android:id="@+id/tb_rose"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:checked="false"
+        android:textOff="如意贴Off"
+        android:textOn="如意贴On"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toEndOf="@id/tb_idle"
+        app:layout_constraintTop_toBottomOf="@+id/et_url_2"
+        app:layout_constraintEnd_toStartOf="@+id/tb_window"/>
+
+    <ToggleButton
+        android:id="@+id/tb_window"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:checked="false"
+        android:textOff="橱窗Off"
+        android:textOn="橱窗On"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tb_rose"
+        app:layout_constraintTop_toBottomOf="@+id/et_url_2" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textOff="isAdaptive = false"
+        android:textOn="isAdaptive = true"
+        app:layout_constraintEnd_toEndOf="@+id/tb_rose"
+        app:layout_constraintStart_toStartOf="@+id/tb_rose"
+        app:layout_constraintTop_toBottomOf="@+id/tb_rose" />-->
+
+</android.support.constraint.ConstraintLayout>

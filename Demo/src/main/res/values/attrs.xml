@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AdaptiveView">
+        <attr name="adaptive_layout_width" format="dimension"/>
+        <attr name="adaptive_layout_height" format="dimension"/>
+        <attr name="adaptive_ratio" format="string"/>
+        <attr name="adaptive_width_percent" format="float"/>
+        <attr name="adaptive_vertical_bias" format="float"/>
+        <attr name="adaptive_horizontal_bias" format="float"/>
+    </declare-styleable>
+</resources>
