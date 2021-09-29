@@ -26,8 +26,10 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
+import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 import com.qq.e.union.adapter.util.PxUtils;
 
 import java.util.ArrayList;
@@ -210,6 +212,9 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
       data.registerViewForInteraction(container, clickViews, customClickViews, getInteractionListener());
       tryBindDownloadListener();
     }
+    AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
+        FrameLayout.LayoutParams.WRAP_CONTENT,
+        FrameLayout.LayoutParams.WRAP_CONTENT, container, data.getAdLogo());
   }
 
   @Override

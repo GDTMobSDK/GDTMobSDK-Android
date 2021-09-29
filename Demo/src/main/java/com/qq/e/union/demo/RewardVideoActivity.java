@@ -82,6 +82,9 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
         // 2. 加载激励视频广告
         mRewardVideoAD.loadAD();
         break;
+      case R.id.is_ad_valid_button:
+        isAdValid();
+        break;
       case R.id.show_ad_button:
       case R.id.show_ad_button_activity:
         // 3. 展示激励视频广告
@@ -143,6 +146,32 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
       rvad = this.mRewardVideoAD;
     }
     return rvad;
+  }
+
+  private void isAdValid() {
+    if (mRewardVideoAD == null) {
+      Toast.makeText(this, "请加载广告后再进行校验 ！ ", Toast.LENGTH_LONG).show();
+      return;
+    }
+    VideoAdValidity validity = mRewardVideoAD.checkValidity();
+    switch (validity) {
+      case SHOWED:
+        Toast.makeText(this, "此条广告已经展示过，请再次请求广告后进行广告校验！", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onClick: " + validity.getMessage());
+        return;
+      case OVERDUE:
+        Toast.makeText(this, "激励视频广告已过期，请再次请求广告后进行广告校验！", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onClick: " + validity.getMessage());
+        return;
+      // 在视频缓存成功后展示，以省去用户的等待时间，提升用户体验
+      case NONE_CACHE:
+        Toast.makeText(this, "广告素材未缓存成功", Toast.LENGTH_SHORT).show();
+         return;
+      case VALID:
+        Log.i(TAG, "onClick: " + validity.getMessage());
+        // 展示广告
+        Toast.makeText(this, "广告有效", Toast.LENGTH_LONG).show();
+    }
   }
 
   @NonNull

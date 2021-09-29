@@ -203,11 +203,11 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
 
   @Override
   public void onADOpenOverlay() {
-    Log.i(TAG, "onADOpenOverlay");
+    Log.i(TAG, "onADOpenOverlay，即将废弃");
   }
 
   @Override
   public void onADCloseOverlay() {
-    Log.i(TAG, "onADCloseOverlay");
+    Log.i(TAG, "onADCloseOverlay，即将废弃");
   }
 }

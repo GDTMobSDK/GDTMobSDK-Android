@@ -28,7 +28,9 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
+import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 import com.qq.e.union.adapter.util.PxUtils;
 
 import java.util.ArrayList;
@@ -143,6 +145,8 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
     };
     // 注册下载监听器
     mKsNativeAd.setDownloadListener(ksAppDownloadListener);
+    AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
+        35, 12, container, mKsNativeAd.getSdkLogo()); // 参照快手 demo 设置尺寸
   }
 
   @Override
@@ -227,7 +231,7 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
     if (mKsNativeAd.getInteractionType() == InteractionType.DOWNLOAD) {
       return mKsNativeAd.getAppName();
     }
-    return null;
+    return mKsNativeAd.getProductName();
   }
 
   @Override
@@ -381,6 +385,42 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   }
 
   @Override
+  public NativeUnifiedADAppMiitInfo getAppMiitInfo() {
+    NativeUnifiedADAppMiitInfo info = new NativeUnifiedADAppMiitInfo() {
+      @Override
+      public String getAppName() {
+        return mKsNativeAd.getAppName();
+      }
+
+      @Override
+      public String getAuthorName() {
+        return mKsNativeAd.getCorporationName();
+      }
+
+      @Override
+      public long getPackageSizeBytes() {
+        return mKsNativeAd.getAppPackageSize();
+      }
+
+      @Override
+      public String getPermissionsUrl() {
+        return mKsNativeAd.getPermissionInfo();
+      }
+
+      @Override
+      public String getPrivacyAgreement() {
+        return mKsNativeAd.getAppPrivacyUrl();
+      }
+
+      @Override
+      public String getVersionName() {
+        return mKsNativeAd.getAppVersion();
+      }
+    };
+    return info;
+  }
+
+  @Override
   public void sendWinNotification(int price) {
     // 快手不支持
   }
@@ -489,12 +529,6 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   @Override
   public void setDownloadConfirmListener(DownloadConfirmListener listener) {
     //工信部需求，快手不支持
-  }
-
-  @Override
-  public NativeUnifiedADAppMiitInfo getAppMiitInfo() {
-    //工信部需求，快手不支持
-    return null;
   }
 
   @Override

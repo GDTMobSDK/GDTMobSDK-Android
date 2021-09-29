@@ -588,10 +588,11 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
                   .getPictureWidth(),
               ad.getPictureHeight()));
           initAd(ad);
+          Object mp = ad.getExtraInfo() == null ? null : ad.getExtraInfo().get("mp");
           Log.d(TAG,
               "eCPMLevel = " + ad.getECPMLevel() + "， ECPM: " + ad.getECPM()
                   + " ,videoDuration = " + ad.getVideoDuration()
-                  + ", testExtraInfo:" + ad.getExtraInfo().get("mp"));
+                  + ", testExtraInfo:" + mp);
           break;
         case MSG_VIDEO_START:
           mImagePoster.setVisibility(View.GONE);

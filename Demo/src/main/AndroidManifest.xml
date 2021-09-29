@@ -99,7 +99,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SDKVersionActivity"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".SplashActivity"

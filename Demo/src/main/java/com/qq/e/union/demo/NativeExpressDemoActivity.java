@@ -330,12 +330,12 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
 
   @Override
   public void onADOpenOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADOpenOverlay");
+    Log.i(TAG, "onADOpenOverlay，即将废弃");
   }
 
   @Override
   public void onADCloseOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADCloseOverlay");
+    Log.i(TAG, "onADCloseOverlay，即将废弃");
   }
 
   private boolean checkEditTextEmpty() {

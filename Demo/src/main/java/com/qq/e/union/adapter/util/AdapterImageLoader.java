@@ -1,6 +1,7 @@
 package com.qq.e.union.adapter.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import com.androidquery.AQuery;
@@ -20,5 +21,13 @@ public class AdapterImageLoader implements IImageLoader {
       return;
     }
     mAQuery.id(imageView).image(url, false, true, 0, 0);
+  }
+
+  @Override
+  public void displayImage(ImageView imageView, Bitmap bitmap) {
+    if (imageView == null || bitmap == null) {
+      return;
+    }
+    mAQuery.id(imageView).image(bitmap);
   }
 }

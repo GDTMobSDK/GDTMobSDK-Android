@@ -24,8 +24,10 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
+import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 
 import java.util.List;
 import java.util.Map;
@@ -98,7 +100,14 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
 
   @Override
   public int getECPM() {
-    return Constant.VALUE_NO_ECPM;
+    int ecpm = Constant.VALUE_NO_ECPM;
+    try {
+      ecpm = Integer.parseInt(data.getECPMLevel());
+    } catch (Exception e) {
+      Log.e(TAG, "get ecpm error ", e);
+    }
+    Log.d(TAG, "getECPM: " + ecpm);
+    return ecpm;
   }
 
   @Override
@@ -152,6 +161,8 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
     }, 100);
 
     imageLoader = new AdapterImageLoader(context);
+    AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
+        28, 15, container, data.getAdLogoUrl()); // 参照百度 demo 设置尺寸
   }
 
   @Override
@@ -235,6 +246,11 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
     if (videoView != null) {
       videoView.stop();
     }
+  }
+
+  @Override
+  public String getCTAText() {
+    return data.getActButtonString();
   }
 
   @Override
@@ -335,11 +351,6 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   @Override
   public boolean isSkippable() {
     return false;
-  }
-
-  @Override
-  public String getCTAText() {
-    return "";
   }
 
   @Override

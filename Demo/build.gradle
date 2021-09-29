@@ -59,7 +59,7 @@ android {
 
 dependencies {
     implementation fileTree('libs/android-query-full.0.26.7.jar')
-    implementation 'com.qq.e.union:union:4.410.1280'
+    implementation 'com.qq.e.union:union:4.420.1290'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
