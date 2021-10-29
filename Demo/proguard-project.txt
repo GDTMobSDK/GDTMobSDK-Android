@@ -59,13 +59,11 @@
 -keep interface com.google.ads.interactivemedia.** { *; }
 -dontwarn com.google.ads.interactivemedia.**
 
-# 穿山甲
--keep class com.bytedance.sdk.openadsdk.** { *; }
--keep class com.androidquery.callback.** {*;}
+# 穿山甲 4000
+-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+-keep class com.bytedance.sdk.openadsdk.** {*;}
 -keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
--keep class com.ss.sys.ces.* {*;}
--dontwarn com.ss.android.socialbase.downloader.**
--dontwarn com.ss.android.crash.log.**
+-keep class com.pgl.sys.ces.* {*;}
 
 # 百度
 -dontwarn com.baidu.mobads.sdk.api.**

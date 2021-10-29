@@ -31,7 +31,6 @@ public class DeviceInfoActivity extends Activity {
     layout.setOrientation(LinearLayout.VERTICAL);
 
     layout.addView(createTextView("IMEI: " + deviceStatus.getDeviceIdMD5()));
-    layout.addView(createTextView("Android Id: " + deviceStatus.getUid()));
     return layout;
   }
 

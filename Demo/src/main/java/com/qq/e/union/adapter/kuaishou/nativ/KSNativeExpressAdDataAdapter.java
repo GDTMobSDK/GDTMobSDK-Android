@@ -28,7 +28,7 @@ import static com.qq.e.ads.nativ.NativeExpressAD.EVENT_TYPE_ON_AD_EXPOSURE;
 import static com.qq.e.ads.nativ.NativeExpressAD.EVENT_TYPE_ON_RENDER_SUCCESS;
 
 public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements ADEventListener {
-  private static final String TAG = "KSNativeExpressAdDataAdapter";
+  private static final String TAG = "KSNativeExpressAdDataAd";
 
   private KsFeedAd mKsFeedAd;
   private final AdData mAdData;
@@ -172,6 +172,16 @@ public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements
             mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_CLOSED,
               new Object[]{KSNativeExpressAdDataAdapter.this}));
           }
+        }
+
+        @Override
+        public void onDownloadTipsDialogShow() {
+          Log.d(TAG, "onDownloadTipsDialogShow");
+        }
+
+        @Override
+        public void onDownloadTipsDialogDismiss() {
+          Log.d(TAG, "onDownloadTipsDialogShow");
         }
       });
   }

@@ -7,7 +7,6 @@
     <!--READ_PHONE_STATE权限用于允许SDK获取用户标识,针对单媒体的用户，允许获取权限的，投放定向广告；不允许获取权限的用户，投放通投广告，媒体可以选择是否把用户标识数据提供给优量汇，并承担相应广告填充和eCPM单价下降损失的结果。-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 如果需要精确定位的话请加上此权限 -->
 
     <!--mintegral 简称mtg，此处配置作用于流量分配功能，关于流量分配功能，详情请咨询运营-->
     <!--mtg所需要的权限，此处因为优量汇SDK已经有相关权限了，此处注释以做提醒-->
@@ -28,7 +27,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!--安装应用权限-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!--定位权限，不强制要求-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--SDK内自定义的权限，与下载相关，aar中已经申请-->
     <permission android:name="${applicationId}.permission.KW_SDK_BROADCAST" android:protectionLevel="signature" />
     <uses-permission android:name="${applicationId}.permission.KW_SDK_BROADCAST" />
@@ -48,7 +46,7 @@
 
     <!--可选，穿山甲提供“获取地理位置权限”和“不给予地理位置权限，开发者传入地理位置参数”两种方式上报用户位置，两种方式均可不选，添加位置权限或参数将帮助投放定位广告-->
     <!--请注意：无论通过何种方式提供给穿山甲用户地理位置，均需向用户声明地理位置权限将应用于穿山甲广告投放，穿山甲不强制获取地理位置信息-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
 
     <!-- 如果有视频相关的广告且使用textureView播放，请务必添加，否则黑屏 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />

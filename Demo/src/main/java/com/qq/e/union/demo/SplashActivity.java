@@ -153,10 +153,6 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
       lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
     }
 
-    if (!(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-      lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
     // 快手SDK所需相关权限，存储权限，此处配置作用于流量分配功能，关于流量分配，详情请咨询运营;如果您的APP不需要快手SDK的流量分配功能，则无需申请SD卡权限
     if (!(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED )){
       lackedPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -164,7 +160,9 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     if (!(checkSelfPermission( Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
       lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
-
+    if (!(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+      lackedPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
     // 如果需要的权限都已经有了，那么直接调用SDK
     if (lackedPermission.size() == 0) {
       fetchSplashAD(this, container, getPosId(), this);

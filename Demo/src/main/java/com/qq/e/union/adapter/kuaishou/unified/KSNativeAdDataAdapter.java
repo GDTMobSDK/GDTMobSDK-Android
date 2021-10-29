@@ -12,6 +12,7 @@ import com.kwad.sdk.api.KsAdVideoPlayConfig;
 import com.kwad.sdk.api.KsAppDownloadListener;
 import com.kwad.sdk.api.KsImage;
 import com.kwad.sdk.api.KsNativeAd;
+import com.kwad.sdk.api.model.AdSourceLogoType;
 import com.kwad.sdk.api.model.InteractionType;
 import com.kwad.sdk.api.model.MaterialType;
 import com.qq.e.ads.cfg.VideoOption;
@@ -94,6 +95,16 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
           public boolean handleDownloadDialog(DialogInterface.OnClickListener onClickListener) {
             return false;
           }
+
+          @Override
+          public void onDownloadTipsDialogShow() {
+            Log.d(TAG, "AdInteractionListener: onDownloadTipsDialogShow");
+          }
+
+          @Override
+          public void onDownloadTipsDialogDismiss() {
+            Log.d(TAG, "AdInteractionListener: onDownloadTipsDialogDismiss");
+          }
         });
     KsAppDownloadListener ksAppDownloadListener = new KsAppDownloadListener() {
 
@@ -145,8 +156,15 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
     };
     // 注册下载监听器
     mKsNativeAd.setDownloadListener(ksAppDownloadListener);
-    AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
-        35, 12, container, mKsNativeAd.getSdkLogo()); // 参照快手 demo 设置尺寸
+    // 参照快手 demo 设置尺寸
+    AdnLogoUtils.initAdLogo(
+        context,
+        imageLoader,
+        adLogoParams,
+        35,
+        12,
+        container,
+        mKsNativeAd.getAdSourceLogoUrl(AdSourceLogoType.NORMAL));
   }
 
   @Override

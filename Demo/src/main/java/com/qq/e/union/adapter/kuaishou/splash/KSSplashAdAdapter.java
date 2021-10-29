@@ -130,6 +130,21 @@ public class KSSplashAdAdapter extends BaseSplashAd {
             public void onSkippedAd() {
               Log.d(TAG, "用户跳过开屏广告");
             }
+
+            @Override
+            public void onDownloadTipsDialogShow() {
+              Log.d(TAG, "开屏广告出现合规下载弹窗");
+            }
+
+            @Override
+            public void onDownloadTipsDialogDismiss() {
+              Log.d(TAG, "开屏广告的合规下载弹窗消失,用户点击了下载转化后触发的关闭");
+            }
+
+            @Override
+            public void onDownloadTipsDialogCancel() {
+              Log.d(TAG, "开屏广告的合规下载弹窗消失,用户取消了下载触发的关闭");
+            }
           });
       container.addView(view);
     }

@@ -146,6 +146,16 @@ public class BDSplashAdAdapter extends BaseSplashAd {
         }
         onADFinished();
       }
+
+      @Override
+      public void onAdCacheSuccess() {
+        Log.d(TAG, "onAdCacheSuccess");
+      }
+
+      @Override
+      public void onAdCacheFailed() {
+        Log.d(TAG, "onAdCacheFailed");
+      }
     };
     //  设置开屏广告请求参数，图片宽高单位dp 非必选
     final RequestParameters parameters = new RequestParameters.Builder()

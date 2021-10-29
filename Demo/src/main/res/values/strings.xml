@@ -77,6 +77,7 @@
     <string name="express_interstitial_full_screen" />
     <string name="express_interstitial_half_screen" />
     <string name="dataDetect" />
+    <string name="HopeService" />
 
 
     <string name="N_A">N/A</string>
@@ -156,5 +157,9 @@
     <string name="splash_loading">广告加载中...</string>
 
     <string name="leak_canary_test_class_name">assertk.Assert</string>
+
+    <!--  tt   -->
+    <string name="tt_reward_feedback">反馈</string>
+    <string name="tt_ad">Ad</string>
 
 </resources>

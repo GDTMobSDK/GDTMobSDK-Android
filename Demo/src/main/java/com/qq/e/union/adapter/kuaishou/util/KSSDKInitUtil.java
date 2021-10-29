@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.kwad.sdk.api.KsAdSDK;
 import com.kwad.sdk.api.SdkConfig;
+import com.qq.e.union.adapter.util.PersonalRecommendUtils;
 
 
 /**
@@ -27,6 +28,10 @@ public class KSSDKInitUtil {
               .showNotification(true) // 是否展示下载通知栏
               .debug(true).build());
           mIsInit = true;
+          if (PersonalRecommendUtils.sKSState != null) {
+            // 个性化推荐广告，请求广告的时候设置,true为启用
+            KsAdSDK.setPersonalRecommend(PersonalRecommendUtils.sKSState);
+          }
         }
       }
     }

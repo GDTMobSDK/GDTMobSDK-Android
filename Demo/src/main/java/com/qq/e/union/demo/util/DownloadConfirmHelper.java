@@ -151,12 +151,6 @@ public class DownloadConfirmHelper {
       "\"title\": \"大致位置(基于网络)\",\n" +
       "\"level\": 1\n" +
       "},\n" +
-      "\"android.permission.ACCESS_FINE_LOCATION\": {\n" +
-      "\"desc\": \"允许该应用通过全球定位系统(GPS)或网络位置信息源(例如基站和WLAN)" +
-      "获取您的精确位置信息，您必须在设备上开启这些位置信息服务，应用才能获得位置信息。应用会使用此类服务确定您的位置，这可能会消耗更多电量。\",\n" +
-      "\"title\": \"精确位置(基于GPS和网络)\",\n" +
-      "\"level\": 1\n" +
-      "},\n" +
       "\"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS\": {\n" +
       "\"desc\": \"允许应用程序访问其他的位置信息提供程序命令。此权限使该应用可以干扰GPS或其他位置信息源的运作。\",\n" +
       "\"title\": \"获取额外的位置信息提供程序命令。\",\n" +

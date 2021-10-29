@@ -49,14 +49,14 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   @Override
   public void show() {
     if (interstitialAd != null) {
-      interstitialAd.showAd(activity);
+      interstitialAd.showAd();
     }
   }
 
   @Override
   public void showAsPopupWindow() {
     if (interstitialAd != null) {
-      interstitialAd.showAd(activity);
+      interstitialAd.showAd();
     }
   }
 
@@ -136,14 +136,14 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   @Override
   public void showAsPopupWindow(Activity act) {
     if (interstitialAd != null && interstitialAd.isAdReady()) {
-      interstitialAd.showAd(act);
+      interstitialAd.showAd();
     }
   }
 
   @Override
   public void show(Activity act) {
     if (interstitialAd != null && interstitialAd.isAdReady()) {
-      interstitialAd.showAd(act);
+      interstitialAd.showAd();
     }
   }
 

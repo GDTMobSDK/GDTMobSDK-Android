@@ -178,6 +178,11 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
             }
 
             @Override
+            public void onVideoSkipToEnd(long l) {
+              Log.d(TAG, "onVideoSkipToEnd:  l = " + l);
+            }
+
+            @Override
             public void onVideoPlayStart() {
               if (mListener != null) {
                 mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_SHOW));
@@ -191,6 +196,11 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
               if (mListener != null) {
                 mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_REWARD, new Object[]{""}));
               }
+            }
+
+            @Override
+            public void onRewardStepVerify(int i, int i1) {
+              Log.d(TAG, "onRewardStepVerify:  i = " + i + "  i1 = " + i1);
             }
           });
       mRewardVideoAd.showRewardVideoAd(mActivityReference.get(), videoPlayConfig);

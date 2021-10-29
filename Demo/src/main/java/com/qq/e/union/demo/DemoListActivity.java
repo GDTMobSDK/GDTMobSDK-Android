@@ -168,14 +168,13 @@ public class DemoListActivity extends AppCompatActivity {
   @TargetApi(Build.VERSION_CODES.M)
   private void checkAndRequestPermission() {
     List<String> lackedPermission = new ArrayList<String>();
+
     if (!(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
       lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
     }
-
-    if (!(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-      lackedPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
+    if (!(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+      lackedPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
     }
-
     if (lackedPermission.size() != 0) {
       // 建议请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限
       String[] requestPermissions = new String[lackedPermission.size()];
