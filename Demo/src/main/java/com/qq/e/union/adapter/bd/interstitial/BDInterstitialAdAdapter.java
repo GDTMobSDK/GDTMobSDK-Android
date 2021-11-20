@@ -17,6 +17,7 @@ import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.mediation.interfaces.BaseInterstitialAd;
 import com.qq.e.union.adapter.bd.util.BDAdManager;
+import com.qq.e.union.adapter.util.CallbackUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
@@ -73,6 +74,9 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
           public void run() {
             if (unifiedInterstitialADListener != null) {
               unifiedInterstitialADListener.onADReceive();
+              if (CallbackUtil.hasRenderSuccessCallback(unifiedInterstitialADListener)) {
+                unifiedInterstitialADListener.onRenderSuccess();
+              }
             }
           }
         });
@@ -282,6 +286,9 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
           public void run() {
             if (unifiedInterstitialADListener != null) {
               unifiedInterstitialADListener.onADReceive();
+              if (CallbackUtil.hasRenderSuccessCallback(unifiedInterstitialADListener)) {
+                unifiedInterstitialADListener.onRenderSuccess();
+              }
             }
           }
         });

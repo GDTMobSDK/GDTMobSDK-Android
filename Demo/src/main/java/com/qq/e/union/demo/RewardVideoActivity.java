@@ -18,7 +18,6 @@ import com.qq.e.ads.rewardvideo.RewardVideoAD;
 import com.qq.e.ads.rewardvideo.RewardVideoADListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.constants.BiddingLossReason;
-import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.comm.util.VideoAdValidity;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
@@ -180,10 +179,7 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      mS2SBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> mS2SBiddingToken = token);
   }
 
   /**
@@ -219,11 +215,7 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(RewardVideoAD rewardVideoAD) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      rewardVideoAD.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      rewardVideoAD.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(rewardVideoAD);
     if (DemoUtil.isNeedSetBidECPM()) {
       rewardVideoAD.setBidECPM(300);
     }

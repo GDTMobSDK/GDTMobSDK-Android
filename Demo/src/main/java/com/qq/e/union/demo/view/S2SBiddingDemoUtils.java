@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.qq.e.comm.managers.GDTAdSdk;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -30,24 +31,24 @@ public class S2SBiddingDemoUtils {
       Executors.newSingleThreadExecutor(r -> new Thread(r, "BIDDING_THREAD"));
   private static final String TAG = S2SBiddingDemoUtils.class.getSimpleName();
   private static final String SERVER_BIDDING_URL = "https://mi.gdt.qq.com/server_bidding";
-  private static final String POST_DATA = "{\"id\":\"5f0417f6354b680001e94518\"," +
-      "\"imp\":[{\"id\":\"1\",\"video\":{\"minduration\":0,\"maxduration\":46,\"w\":720," +
-      "\"h\":1422,\"linearity\":1,\"minbitrate\":250,\"maxbitrate\":15000,\"ext\":{\"skip\":0," +
-      "\"videotype\":\"rewarded\",\"rewarded\":1}},\"tagid\":\"POSID\",\"bidfloor\":1," +
-      "\"bidfloorcur\":\"CNY\",\"secure\":1}],\"app\":{\"id\":\"5afa947e9c8119360fba1bea\"," +
-      "\"name\":\"VungleApp123\",\"bundle\":\"com.qq.e.union.demo.union\"}," +
-      "\"device\":{\"ua\":\"Mozilla/5.0 (Linux; Android 9; SM-A207F Build/PPR1.180610.011; wv) " +
-      "AppleWebKit/537.36 KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537" +
-      ".36\",\"geo\":{\"lat\":-7.2484,\"lon\":112.7419},\"ip\":\"115.178.227.128\"," +
-      "\"devicetype\":1,\"make\":\"samsung\",\"model\":\"SM-A207F\",\"os\":\"android\"," +
-      "\"osv\":\"9\",\"h\":1422,\"w\":720,\"language\":\"en\",\"connectiontype\":2," +
-      "\"ifa\":\"dd94e183d8790d057fc73d9c761ea2fa\"," +
+  private static final String POST_DATA = "{\"id\":\"5f0417f6354b680001e94518\",\"imp\":[{\"id\":\"1\"," +
+      "\"video\":{\"minduration\":0,\"maxduration\":46,\"w\":720,\"h\":1422,\"linearity\":1,\"minbitrate\":250," +
+      "\"maxbitrate\":15000,\"ext\":{\"skip\":0,\"videotype\":\"rewarded\",\"rewarded\":1}},\"tagid\":\"POSID\"," +
+      "\"bidfloor\":1,\"bidfloorcur\":\"CNY\",\"secure\":1}],\"app\":{\"id\":\"5afa947e9c8119360fba1bea\"," +
+      "\"name\":\"VungleApp123\",\"bundle\":\"com.qq.e.union.demo.union\"},\"device\":{\"ua\":\"Mozilla/5.0 (Linux; " +
+      "Android 9; SM-A207F Build/PPR1.180610.011; wv) AppleWebKit/537.36 KHTML, like Gecko) Version/4.0 Chrome/74.0" +
+      ".3729.136 Mobile Safari/537.36\",\"geo\":{\"lat\":-7.2484,\"lon\":112.7419},\"ip\":\"115.178.227.128\"," +
+      "\"devicetype\":1,\"make\":\"samsung\",\"model\":\"SM-A207F\",\"os\":\"android\",\"osv\":\"9\",\"h\":1422," +
+      "\"w\":720,\"language\":\"en\",\"connectiontype\":2,\"ifa\":\"dd94e183d8790d057fc73d9c761ea2fa\"," +
       "\"ext\":{\"oaid" +
-      "\":\"0176863C3B9A5E419BCAF702B37BEFB38B8D05CEA84022FB76BD723BA89D2ED2116F960A73FE1FFB12499E31EF664F5EAE87386F19D8A41390FEBAA5362042BC7A601D4CB006DA4E66\"}},\"cur\":[\"CNY\"],\"ext\":{\"buyer_id\":\"TOKEN\"}}";
+      "\":\"0176863C3B9A5E419BCAF702B37BEFB38B8D05CEA84022FB76BD723BA89D2ED2116F960A73FE1FFB12499E31EF664F5EAE87386F19D8A41390FEBAA5362042BC7A601D4CB006DA4E66\"}},\"cur\":[\"CNY\"],\"ext\":{\"buyer_id\":\"TOKEN\",\"sdk_info\":\"SDK_INFO\"}}";
+
   private static Handler sHandler = new Handler(Looper.getMainLooper());
 
-  public static void requestBiddingToken(Context context, String posId, String buyerId,
-                                         RequestTokenCallBack callBack) {
+  public static void requestBiddingToken(Context context, String posId, RequestTokenCallBack callBack) {
+    String buyerId = GDTAdSdk.getGDTAdManger().getBuyerId();
+    String sdkInfo = GDTAdSdk.getGDTAdManger().getSDKInfo(posId);
+    Log.d(TAG, "sdk_info: " + sdkInfo);
     SINGLE_THREAD_EXECUTOR.execute(() -> {
       try {
         HttpURLConnection connection =
@@ -58,13 +59,14 @@ public class S2SBiddingDemoUtils {
         connection.setRequestProperty("Accept", "application/json");
         connection.setRequestProperty("Accept-Language", "en-us");
         connection.setRequestProperty("X-OpenRTB-Version", "2.5");
-        byte[] postData =
-            POST_DATA.replace("POSID", posId)
-                .replace("TOKEN", buyerId)
-                .getBytes(Charset.forName("UTF-8"));
-        if (postData != null && postData.length > 0) {
+        String postData = POST_DATA.replace("POSID", posId)
+            .replace("TOKEN", buyerId)
+            .replace("SDK_INFO", sdkInfo);
+        Log.d(TAG, "post_data: " + postData);
+        byte[] postDataBytes = postData.getBytes(Charset.forName("UTF-8"));
+        if (postDataBytes != null && postDataBytes.length > 0) {
           OutputStream out = new BufferedOutputStream(connection.getOutputStream());
-          out.write(postData);
+          out.write(postDataBytes);
           out.flush();
           out.close();
         }

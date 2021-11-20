@@ -20,7 +20,6 @@ import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.constants.BiddingLossReason;
-import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -128,10 +127,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      s2sBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
   }
 
   private void showFullScreenVideoAD() {
@@ -171,11 +167,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(UnifiedInterstitialAD interstitialAD) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      interstitialAD.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      interstitialAD.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(interstitialAD);
     if (DemoUtil.isNeedSetBidECPM()) {
       interstitialAD.setBidECPM(300);
     }

@@ -283,11 +283,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(NativeExpressADView adData) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      adData.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      adData.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(adData);
     if (DemoUtil.isNeedSetBidECPM()) {
       adData.setBidECPM(300);
     }

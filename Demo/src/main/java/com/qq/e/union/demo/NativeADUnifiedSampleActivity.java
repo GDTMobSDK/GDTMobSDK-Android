@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -175,11 +176,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(NativeUnifiedADData adData) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      adData.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      adData.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(adData);
     if (DemoUtil.isNeedSetBidECPM()) {
       adData.setBidECPM(300);
     }
@@ -536,33 +533,8 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
     }
   }
 
-  static void updateAdAction(Button button, NativeUnifiedADData ad) {
-    String buttonText = ad.getButtonText();
-    if (ad.isWeChatCanvasAd()) {
-      button.setText(TextUtils.isEmpty(buttonText) ? "去微信看看" : buttonText);
-      return;
-    }
-    if (!ad.isAppAd()) {
-      button.setText(TextUtils.isEmpty(buttonText) ? "查看详情" : buttonText);
-      return;
-    }
-    switch (ad.getAppStatus()) {
-      case AppDownloadStatus.STATUS_INSTALLED: // 已安装
-        button.setText("启动");
-        break;
-      case AppDownloadStatus.STATUS_DOWNLOADING: // 下载中
-        button.setText(ad.getProgress() + "%");
-        break;
-      case AppDownloadStatus.STATUS_DOWNLOAD_FINISHED: // 已下载
-        button.setText("安装");
-        break;
-      case AppDownloadStatus.STATUS_DOWNLOAD_FAILED: //下载失败
-        button.setText("下载失败，重新下载");
-        break;
-      default: // 其它状态，未下载、暂停等
-        button.setText(TextUtils.isEmpty(buttonText) ? "立即下载" : buttonText);
-        break;
-    }
+  static void updateAdAction(TextView button, NativeUnifiedADData ad) {
+    button.setText(ad.getButtonText());
   }
 
   @Override

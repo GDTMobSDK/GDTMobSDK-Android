@@ -20,10 +20,6 @@ import java.util.Map;
 
 public class DemoUtil {
 
-  public static int REPORT_BIDDING_DISABLE = 1;
-  public static int REPORT_BIDDING_WIN = 0;
-  public static int REPORT_BIDDING_LOSS = 1;
-  private static int sIsReportBiddingLoss = -1;
   private static boolean sNeedSetBidECPM = false;
 
   public static final void hideSoftInput(Activity activity) {
@@ -37,14 +33,6 @@ public class DemoUtil {
 
   public static void setAQueryImageUserAgent(){
     BitmapAjaxCallback.setAgent("GDTMobSDK-AQuery-"+ SDKStatus.getIntegrationSDKVersion());
-  }
-
-  public static int isReportBiddingLoss() {
-    return sIsReportBiddingLoss;
-  }
-
-  public static void setIsReportBiddingLoss(int isReportBiddingLoss) {
-    sIsReportBiddingLoss = isReportBiddingLoss;
   }
 
   public static void setNeedSetBidECPM(boolean need) {

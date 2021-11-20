@@ -257,14 +257,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onFullScreenClick"
-            android:text="简单全屏接入示例" />
+            android:text="视频信息流接入示例" />
 
         <Button
             android:id="@+id/FullScreenFeedDemoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onFullScreenFeedClick"
-            android:text="全屏视频流示例(类似微视)" />
+            android:text="沉浸式视频流示例(类似微视)" />
 
         <Button
             android:id="@+id/request_token"

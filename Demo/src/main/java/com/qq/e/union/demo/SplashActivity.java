@@ -3,7 +3,9 @@ package com.qq.e.union.demo;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,6 +20,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,7 +31,6 @@ import android.widget.Toast;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.ads.splash.SplashADZoomOutListener;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.comm.util.AdError;
@@ -80,9 +83,19 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   private boolean isZoomOut = false;
   private boolean isSupportZoomOut = true;
   private boolean isZoomOutInAnother = false;
+  // 是否适配全面屏，默认是适配全面屏，即使用顶部状态栏和底部导航栏
+  private boolean isNotchAdaptation = true;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    // 获取开屏配置（是否适配全面屏等）
+    getSplashAdSettings();
+
+    // 如需适配刘海屏水滴屏，必须在onCreate方法中设置全屏显示
+    if (isNotchAdaptation) {
+      hideSystemUI();
+    }
+
     setContentView(R.layout.activity_splash);
     container = (ViewGroup) this.findViewById(R.id.splash_container);
     Intent intent = getIntent();
@@ -209,6 +222,8 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
                              String posId, SplashADListener adListener) {
     fetchSplashADTime = System.currentTimeMillis();
     splashAD = getSplashAd(activity, posId, adListener, fetchDelay, getToken());
+    // 设置是否全屏显示
+    setSystemUi();
     if(loadAdOnly) {
       if (isFullScreen) {
         splashAD.fetchFullScreenAdOnly();
@@ -294,11 +309,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(SplashAD splashAD) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      splashAD.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      splashAD.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(splashAD);
     if (DemoUtil.isNeedSetBidECPM()) {
       splashAD.setBidECPM(300);
     }
@@ -383,6 +394,8 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   @Override
   protected void onResume() {
     super.onResume();
+    // 获取开屏配置（是否适配全面屏等）
+    getSplashAdSettings();
     if (canJump) {
       next();
     }
@@ -424,6 +437,9 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
         loadAdOnlyDisplayButton.setEnabled(false);
         break;
       case R.id.splash_load_ad_display:
+        loadAdOnly = false;
+        // 设置是否全屏显示
+        setSystemUi();
         loadAdOnlyView.setVisibility(View.GONE);
         showingAd = true;
         if (isFullScreen) {
@@ -470,5 +486,51 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   @Override
   public boolean isSupportZoomOut() {
     return isSupportZoomOut;
+  }
+
+  private void hideSystemUI() {
+    int systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+        View.SYSTEM_UI_FLAG_FULLSCREEN |
+        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      systemUiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+    } else {
+      systemUiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+    }
+    Window window = this.getWindow();
+    window.getDecorView().setSystemUiVisibility(systemUiVisibility);
+    // 五要素隐私详情页或五要素弹窗关闭回到开屏广告时，再次设置SystemUi
+    window.getDecorView().setOnSystemUiVisibilityChangeListener(visibility -> setSystemUi());
+
+    // Android P 官方方法
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      WindowManager.LayoutParams params = window.getAttributes();
+      params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+      window.setAttributes(params);
+    }
+  }
+
+  private void showSystemUI() {
+    int systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+    Window window = this.getWindow();
+    window.getDecorView().setSystemUiVisibility(systemUiVisibility);
+    // 五要素隐私详情页或五要素弹窗关闭回到开屏广告时，再次设置SystemUi
+    window.getDecorView().setOnSystemUiVisibilityChangeListener(visibility -> setSystemUi());
+  }
+
+  private void setSystemUi() {
+    if (loadAdOnly || !isNotchAdaptation) {
+      showSystemUI();
+    } else {
+      hideSystemUI();
+    }
+  }
+
+  private void getSplashAdSettings() {
+    SharedPreferences sp = this.getSharedPreferences("com.qq.e.union.demo.debug", Context.MODE_PRIVATE);
+    String splashAdNotchSetting = sp.getString("splashAdNotchAdaptation", "true");
+    isNotchAdaptation = Boolean.parseBoolean(splashAdNotchSetting);
   }
 }

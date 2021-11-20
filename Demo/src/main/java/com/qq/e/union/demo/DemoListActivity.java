@@ -93,15 +93,31 @@ public class DemoListActivity extends AppCompatActivity {
     } else if (id == R.id.action_report_bidding_disable) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
-      DemoUtil.setIsReportBiddingLoss(DemoUtil.REPORT_BIDDING_DISABLE);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_DISABLE);
     } else if (id == R.id.action_report_bidding_win) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
-      DemoUtil.setIsReportBiddingLoss(DemoUtil.REPORT_BIDDING_WIN);
-    } else if (id == R.id.action_report_bidding_loss) {
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_WIN);
+    } else if (id == R.id.action_report_bidding_loss_low_price) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
-      DemoUtil.setIsReportBiddingLoss(DemoUtil.REPORT_BIDDING_LOSS);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_LOW_PRICE);
+    } else if (id == R.id.action_report_bidding_loss_time_out) {
+      boolean checked = item.isChecked();
+      item.setChecked(!checked);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_TIME_OUT);
+    } else if (id == R.id.action_report_bidding_loss_no_ad) {
+      boolean checked = item.isChecked();
+      item.setChecked(!checked);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_NO_AD);
+    } else if (id == R.id.action_report_bidding_loss_ad_data_error) {
+      boolean checked = item.isChecked();
+      item.setChecked(!checked);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_AD_DATA_ERROR);
+    } else if (id == R.id.action_report_bidding_loss_other) {
+      boolean checked = item.isChecked();
+      item.setChecked(!checked);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_OTHER);
     } else if (id == R.id.action_check_app) {
       showOpenOrInstallAppDialog(false);
     } else if (id == R.id.action_record_bid_ecpm) {

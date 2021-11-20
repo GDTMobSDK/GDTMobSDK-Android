@@ -174,10 +174,7 @@ public class SplashADActivity extends Activity implements View.OnClickListener,
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      s2sBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> s2sBiddingToken = token);
   }
 
   @Override

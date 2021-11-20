@@ -19,7 +19,6 @@ import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
 import com.qq.e.comm.constants.BiddingLossReason;
-import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -48,6 +47,8 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
 
   private Spinner spinner;
   private PosIdArrayAdapter arrayAdapter;
+
+  private boolean isRenderFail;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
       iad.close();
       iad.destroy();
     }
+    isRenderFail = false;
     String posId = getPosId();
     Log.d(TAG, "getIAD: BiddingToken " + s2sBiddingToken);
     if (!posId.equals(currentPosId) || iad == null || !TextUtils.isEmpty(s2sBiddingToken)) {
@@ -155,14 +157,11 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      s2sBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
   }
 
   private void showAD() {
-    if (iad != null && iad.isValid()) {
+    if (iad != null && iad.isValid() && !isRenderFail) {
       iad.show();
     } else {
       Toast.makeText(this, "请加载广告并渲染成功后再进行展示 ！ ", Toast.LENGTH_LONG).show();
@@ -206,11 +205,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(UnifiedInterstitialAD interstitialAD) {
-    if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_LOSS) {
-      interstitialAD.sendLossNotification(100, BiddingLossReason.LOW_PRICE, "WinAdnID");
-    } else if (DemoUtil.isReportBiddingLoss() == DemoUtil.REPORT_BIDDING_WIN) {
-      interstitialAD.sendWinNotification(200);
-    }
+    DemoBiddingC2SUtils.reportBiddingWinLoss(interstitialAD);
     if (DemoUtil.isNeedSetBidECPM()) {
       interstitialAD.setBidECPM(300);
     }
@@ -262,6 +257,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   @Override
   public void onRenderFail() {
     Log.i(TAG, "onRenderFail");
+    isRenderFail = true;
   }
 
   @Override

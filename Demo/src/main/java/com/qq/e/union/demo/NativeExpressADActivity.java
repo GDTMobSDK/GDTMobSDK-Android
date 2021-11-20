@@ -70,10 +70,7 @@ public class NativeExpressADActivity extends Activity implements CompoundButton.
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      mS2SBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> mS2SBiddingToken = token);
   }
 
   private int getMinVideoDuration() {

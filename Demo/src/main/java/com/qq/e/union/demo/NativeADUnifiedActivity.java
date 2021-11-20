@@ -149,10 +149,7 @@ public class NativeADUnifiedActivity extends Activity implements AdapterView.OnI
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(),
-        GDTAdSdk.getGDTAdManger().getBuyerId(), token -> {
-      mS2SBiddingToken = token;
-    });
+    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> mS2SBiddingToken = token);
   }
 
   private Intent getIntent(Class cls){

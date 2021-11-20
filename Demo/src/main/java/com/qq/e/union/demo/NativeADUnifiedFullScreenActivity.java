@@ -1,16 +1,15 @@
 package com.qq.e.union.demo;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.qq.e.ads.cfg.VideoOption;
@@ -24,6 +23,7 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.PxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +32,12 @@ import java.util.Locale;
 public class NativeADUnifiedFullScreenActivity extends Activity implements NativeADUnifiedListener {
 
   private AQuery mAQuery;
-  private Button mDownloadButton;
   private RelativeLayout mADInfoContainer;
+  private NativeADUnifiedAdInfoView mADInfoView;
   private NativeUnifiedADData mAdData;
   private NativeADUnifiedFullScreenActivity.H mHandler = new NativeADUnifiedFullScreenActivity.H();
   private static final int MSG_INIT_AD = 0;
   private static final int MSG_VIDEO_START = 1;
-  private static final int MSG_UPDATE_PROGRESS = 2;
   private static final int AD_COUNT = 1;
   private static final String TAG = NativeADUnifiedFullScreenActivity.class.getSimpleName();
 
@@ -47,9 +46,6 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
   private MediaView mMediaView;
   private ImageView mImagePoster;
   private NativeAdContainer mContainer;
-  private TextView mTimeText;
-
-  private long mTotalTime;
   private boolean mBindToCustomView;
 
   @Override
@@ -70,9 +66,8 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
     mMediaView = findViewById(R.id.gdt_media_view);
     mImagePoster = findViewById(R.id.img_poster);
     mADInfoContainer = findViewById(R.id.ad_info_container);
-    mDownloadButton = findViewById(R.id.btn_download);
+    mADInfoView = findViewById(R.id.ad_info_view);
     mContainer = findViewById(R.id.native_ad_container);
-    mTimeText = findViewById(R.id.time_text);
     mAQuery = new AQuery(findViewById(R.id.native_ad_container));
   }
 
@@ -107,25 +102,30 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
     List<View> clickableViews = new ArrayList<>();
     List<View> customClickableViews = new ArrayList<>();
     if (mBindToCustomView) {
-      customClickableViews.add(mDownloadButton);
+      customClickableViews.addAll(mADInfoView.getClickableViews());
     } else {
-      clickableViews.add(mDownloadButton);
+      clickableViews.addAll(mADInfoView.getClickableViews());
     }
-    ArrayList<ImageView>imageViews = new ArrayList<>();
-    if(ad.getAdPatternType() == AdPatternType.NATIVE_2IMAGE_2TEXT ||
-        ad.getAdPatternType() == AdPatternType.NATIVE_1IMAGE_2TEXT){
+    ArrayList<ImageView> imageViews = new ArrayList<>();
+    if (ad.getAdPatternType() == AdPatternType.NATIVE_2IMAGE_2TEXT ||
+        ad.getAdPatternType() == AdPatternType.NATIVE_1IMAGE_2TEXT) {
       // 双图双文、单图双文：注册mImagePoster的点击事件
       clickableViews.add(mImagePoster);
       imageViews.add(mImagePoster);
-    } else if(ad.getAdPatternType() == AdPatternType.NATIVE_3IMAGE){
+    } else if (ad.getAdPatternType() == AdPatternType.NATIVE_3IMAGE) {
       // 三小图广告：注册native_3img_ad_container的点击事件
       clickableViews.add(findViewById(R.id.native_3img_ad_container));
       imageViews.add(findViewById(R.id.img_1));
       imageViews.add(findViewById(R.id.img_2));
       imageViews.add(findViewById(R.id.img_3));
     }
+    FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtil.dpToPx(this, 46),
+        PxUtil.dpToPx(this, 14));
+    adLogoParams.gravity = Gravity.END | Gravity.BOTTOM;
+    adLogoParams.rightMargin = PxUtil.dpToPx(this, 10);
+    adLogoParams.bottomMargin = PxUtil.dpToPx(this, 10);
     //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效，
-    ad.bindAdToView(this, mContainer, null, clickableViews, customClickableViews);
+    ad.bindAdToView(this, mContainer, adLogoParams, clickableViews, customClickableViews);
     //如果需要获得点击view的信息使用NativeADEventListenerWithClickInfo代替NativeADEventListener
     ad.setNativeAdEventListener(new NativeADEventListener() {
       @Override
@@ -147,15 +147,15 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
       @Override
       public void onADStatusChanged() {
         Log.d(TAG, "onADStatusChanged: ");
-        NativeADUnifiedSampleActivity.updateAdAction(mDownloadButton, ad);
+        mADInfoView.updateAdAction(ad);
       }
     });
     if (!imageViews.isEmpty()) {
       ad.bindImageViews(imageViews, 0);
       mADInfoContainer.setVisibility(View.VISIBLE);
-      mADInfoContainer.setBackgroundColor(Color.parseColor("#999999"));
+      // 留出空间显示进度条
+      mADInfoView.playAnim();
     } else if (ad.getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
-      mADInfoContainer.setBackgroundColor(Color.parseColor("#00000000"));
       mHandler.sendEmptyMessage(MSG_VIDEO_START);
 
       VideoOption videoOption = NativeADUnifiedSampleActivity.getVideoOption(getIntent());
@@ -185,42 +185,35 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
         public void onVideoStart() {
           Log.d(TAG, "onVideoStart");
           mADInfoContainer.setVisibility(View.VISIBLE);
-          mTotalTime = ad.getVideoDuration();
-          mTimeText.setVisibility(View.VISIBLE);
-          mTimeText.setText("倒计时： " + mTotalTime / 1000 + "s");
-          Message msg = mHandler.obtainMessage(MSG_UPDATE_PROGRESS, ad);
-          mHandler.sendMessageDelayed(msg, 500);
+          mADInfoView.playAnim();
         }
 
         @Override
         public void onVideoPause() {
           Log.d(TAG, "onVideoPause: ");
-          mHandler.removeMessages(MSG_UPDATE_PROGRESS);
         }
 
         @Override
         public void onVideoResume() {
           Log.d(TAG, "onVideoResume: ");
-          Message msg = mHandler.obtainMessage(MSG_UPDATE_PROGRESS, ad);
-          mHandler.sendMessageDelayed(msg, 0);
         }
 
         @Override
         public void onVideoCompleted() {
           Log.d(TAG, "onVideoCompleted: ");
-          removeTimeText();
+          mADInfoContainer.setVisibility(View.GONE);
+          mADInfoView.resetUI();
         }
 
         @Override
         public void onVideoError(AdError error) {
           Log.d(TAG, "onVideoError: ");
-          removeTimeText();
+          mADInfoView.resetUI();
         }
 
         @Override
         public void onVideoStop() {
           Log.d(TAG, "onVideoStop");
-          removeTimeText();
         }
 
         @Override
@@ -228,14 +221,9 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
           Log.d(TAG, "onVideoClicked");
         }
 
-        private void removeTimeText(){
-          mTimeText.setVisibility(View.GONE);
-          mHandler.removeMessages(MSG_UPDATE_PROGRESS);
-        }
       });
     }
-
-    NativeADUnifiedSampleActivity.updateAdAction(mDownloadButton, ad);
+    mADInfoView.updateAdAction(ad);
   }
 
   @Override
@@ -251,9 +239,7 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
     int patternType = ad.getAdPatternType();
     if (patternType == AdPatternType.NATIVE_2IMAGE_2TEXT
         || patternType == AdPatternType.NATIVE_VIDEO) {
-      mAQuery.id(R.id.img_logo).image(ad.getIconUrl(), false, true);
-      mAQuery.id(R.id.text_title).text(ad.getTitle());
-      mAQuery.id(R.id.text_desc).text(ad.getDesc());
+      mADInfoView.setAdInfo(ad);
     } else if (patternType == AdPatternType.NATIVE_3IMAGE) {
       mAQuery.id(R.id.native_3img_title).text(ad.getTitle());
       mAQuery.id(R.id.native_3img_desc).text(ad.getDesc());
@@ -271,7 +257,6 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
       // 必须要在Actiivty.destroy()时通知到广告数据，以便释放内存
       mAdData.destroy();
     }
-    mHandler.removeMessages(MSG_UPDATE_PROGRESS);
   }
 
   @Override
@@ -300,13 +285,6 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
         case MSG_VIDEO_START:
           mImagePoster.setVisibility(View.GONE);
           mMediaView.setVisibility(View.VISIBLE);
-          break;
-        case MSG_UPDATE_PROGRESS:
-          ad = (NativeUnifiedADData) msg.obj;
-          long remainTime = (long)Math.floor((mTotalTime - ad.getVideoCurrentPosition()) / 1000);
-          mTimeText.setText("倒计时： " + remainTime + " s");
-          Message message = mHandler.obtainMessage(MSG_UPDATE_PROGRESS, ad);
-          mHandler.sendMessageDelayed(message, 500);
           break;
       }
     }

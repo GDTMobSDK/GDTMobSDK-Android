@@ -2,7 +2,6 @@ package com.qq.e.union.demo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -13,20 +12,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.androidquery.AQuery;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -38,6 +36,7 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.PxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -264,30 +263,22 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
     private void initADItemView(int position, final ItemHolder holder) {
       Item item = mData.get(position);
       final NativeUnifiedADData ad = item.ad;
-      AQuery logoAQ = holder.logoAQ;
-      if (!TextUtils.isEmpty(ad.getIconUrl())) {
-        logoAQ.id(R.id.img_logo).image(ad.getIconUrl(), false, true);
-      }
-      holder.name.setText(ad.getTitle());
-      holder.desc.setText(ad.getDesc());
+      holder.adInfoView.setAdInfo(ad);
       // 视频广告
-      if (ad.getAdPatternType() == 2) {
+      if (ad.getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
         holder.poster.setVisibility(View.INVISIBLE);
         holder.mediaView.setVisibility(View.VISIBLE);
-        holder.adInfoContainer.setBackgroundColor(Color.parseColor("#00000000"));
-        holder.adInfoContainer.setVisibility(View.GONE);
       } else {
         holder.poster.setVisibility(View.VISIBLE);
         holder.mediaView.setVisibility(View.INVISIBLE);
-        holder.adInfoContainer.setBackgroundColor(Color.parseColor("#999999"));
-        holder.adInfoContainer.setVisibility(View.VISIBLE);
       }
+      holder.adInfoContainer.setVisibility(View.VISIBLE);
       List<View> clickableViews = new ArrayList<>();
       List<View> customClickableViews = new ArrayList<>();
       if (mBindToCustomView) {
-        customClickableViews.add(holder.download);
+        customClickableViews.addAll(holder.adInfoView.getClickableViews());
       } else {
-        clickableViews.add(holder.download);
+        clickableViews.addAll(holder.adInfoView.getClickableViews());
       }
       ArrayList<ImageView>imageViews = new ArrayList<>();
       if(ad.getAdPatternType() == AdPatternType.NATIVE_2IMAGE_2TEXT ||
@@ -296,16 +287,21 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
         clickableViews.add(holder.poster);
         imageViews.add(holder.poster);
       }
+      FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtil.dpToPx(mContext
+          , 46),
+          PxUtil.dpToPx(mContext, 14));
+      adLogoParams.gravity = Gravity.END | Gravity.BOTTOM;
+      adLogoParams.rightMargin = PxUtil.dpToPx(mContext, 10);
+      adLogoParams.bottomMargin = PxUtil.dpToPx(mContext, 10);
       //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
-      ad.bindAdToView(NativeADUnifiedFullScreenFeedActivity.this, holder.container, null,
+      ad.bindAdToView(NativeADUnifiedFullScreenFeedActivity.this, holder.container, adLogoParams,
           clickableViews, customClickableViews);
 
       if (!imageViews.isEmpty()) {
         ad.bindImageViews(imageViews, 0);
       }
       setAdListener(holder, ad);
-
-      NativeADUnifiedSampleActivity.updateAdAction(holder.download, ad);
+      holder.adInfoView.updateAdAction(ad);
     }
 
     private void setAdListener(final ItemHolder holder, final NativeUnifiedADData ad) {
@@ -329,7 +325,7 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
 
         @Override
         public void onADStatusChanged() {
-          NativeADUnifiedSampleActivity.updateAdAction(holder.download, ad);
+          holder.adInfoView.updateAdAction(ad);
         }
       });
       // 视频广告
@@ -360,6 +356,7 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
           public void onVideoStart() {
             Log.d(TAG, "onVideoStart ");
             holder.adInfoContainer.setVisibility(View.VISIBLE);
+            holder.adInfoView.playAnim();
           }
 
           @Override
@@ -375,6 +372,8 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
           @Override
           public void onVideoCompleted() {
             Log.d(TAG, "onVideoCompleted: ");
+            holder.adInfoContainer.setVisibility(View.GONE);
+            holder.adInfoView.resetUI();
           }
 
           @Override
@@ -446,13 +445,9 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
     public ImageView coverImage;
     public MediaView mediaView;
     public RelativeLayout adInfoContainer;
-    public TextView name;
-    public TextView desc;
-    public ImageView logo;
     public ImageView poster;
-    public Button download;
+    public NativeADUnifiedAdInfoView adInfoView;
     public NativeAdContainer container;
-    public AQuery logoAQ;
     public CheckBox btnMute;
 
     public ItemHolder(View itemView, int adType) {
@@ -461,14 +456,10 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
         case TYPE_AD:
           mediaView = itemView.findViewById(R.id.gdt_media_view);
           adInfoContainer = itemView.findViewById(R.id.ad_info_container);
-          logo = itemView.findViewById(R.id.img_logo);
           poster = itemView.findViewById(R.id.img_poster);
-          name = itemView.findViewById(R.id.text_title);
-          desc = itemView.findViewById(R.id.text_desc);
-          download = itemView.findViewById(R.id.btn_download);
           container = itemView.findViewById(R.id.native_ad_container);
+          adInfoView = itemView.findViewById(R.id.ad_info_view);
           btnMute = itemView.findViewById(R.id.btn_mute);
-          logoAQ = new AQuery(itemView);
 
         case TYPE_DATA:
           title = itemView.findViewById(R.id.title);

@@ -10,6 +10,7 @@ import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
 import com.qq.e.comm.util.AdError;
+import com.qq.e.union.adapter.util.CallbackUtil;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.List;
@@ -96,6 +97,9 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
             Log.d(TAG, "onRenderSuccess");
             if (unifiedInterstitialADListener != null) {
               unifiedInterstitialADListener.onADReceive();
+              if (CallbackUtil.hasRenderSuccessCallback(unifiedInterstitialADListener)) {
+                unifiedInterstitialADListener.onRenderSuccess();
+              }
             }
             mIsValid = true;
           }

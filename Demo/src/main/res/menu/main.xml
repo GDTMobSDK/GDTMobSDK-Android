@@ -53,9 +53,25 @@
                     android:orderInCategory="100"
                     android:title="上报竞胜" />
                 <item
-                    android:id="@+id/action_report_bidding_loss"
+                    android:id="@+id/action_report_bidding_loss_low_price"
                     android:orderInCategory="100"
-                    android:title="上报竞败" />
+                    android:title="上报竞败_LOW_PRICE" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_time_out"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_TIME_OUT" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_no_ad"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_NO_AD" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_ad_data_error"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_AD_DATA_ERROR" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_other"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_OTHER" />
             </group>
         </menu>
     </item>
