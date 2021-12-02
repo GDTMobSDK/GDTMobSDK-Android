@@ -59,7 +59,7 @@
 -keep interface com.google.ads.interactivemedia.** { *; }
 -dontwarn com.google.ads.interactivemedia.**
 
-# 穿山甲 4000
+# 如果接入了穿山甲，需要添加如下配置
 -keepclassmembers class * {
     *** getContext(...);
     *** getActivity(...);
@@ -94,25 +94,31 @@
 -keep class com.lynx.** { *; }
 -keep class android.support.v4.app.FragmentActivity{}
 -keep class androidx.fragment.app.FragmentActivity{}
--keep class android.support.v4.app.FragmentActivity{}
--keep class androidx.fragment.app.FragmentActivity{}
 
-# 百度
+# 如果接入了百度联盟，需要添加如下配置
 -dontwarn com.baidu.mobads.sdk.api.**
 -keepclassmembers class * extends android.app.Activity {
    public void *(android.view.View);
 }
-
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
-
 -keep class com.baidu.mobads.** { *; }
 -keep class com.style.widget.** {*;}
 -keep class com.component.** {*;}
 -keep class com.baidu.ad.magic.flute.** {*;}
 -keep class com.baidu.mobstat.forbes.** {*;}
+
+# 如果接入了快手联盟，需要添加如下配置
+-keep class org.chromium.** {*;}
+-keep class org.chromium.** { *; }
+-keep class aegon.chrome.** { *; }
+-keep class com.kwai.**{ *; }
+-dontwarn com.kwai.**
+-dontwarn com.kwad.**
+-dontwarn com.ksad.**
+-dontwarn aegon.chrome.**
 
 # MTG
 -keepattributes Signature
@@ -124,16 +130,6 @@
 -keep class **.R$* { public static final int mintegral*; }
 -keep class com.alphab.** {*; }
 -keep interface com.alphab.** {*; }
-
-# 快手
--keep class org.chromium.** {*;}
--keep class org.chromium.** { *; }
--keep class aegon.chrome.** { *; }
--keep class com.kwai.**{ *; }
--dontwarn com.kwai.**
--dontwarn com.kwad.**
--dontwarn com.ksad.**
--dontwarn aegon.chrome.**
 
 # qapm 平台
 -keep class com.tencent.qapmsdk.**{*;}

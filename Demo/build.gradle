@@ -59,7 +59,7 @@ android {
 
 dependencies {
     implementation fileTree('libs/android-query-full.0.26.7.jar')
-    implementation 'com.qq.e.union:union:4.430.1300'
+    implementation 'com.qq.e.union:union:4.431.1301'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     implementation 'com.google.android.gms:play-services-ads:8.3.0'
     implementation files('aars/kssdk-ad--3.3.17.1-publishRelease-ba91e151e.aar')
-    implementation files('aars/open_ad_sdk_4.0.1.9.aar')
+    implementation files('aars/open_ad_sdk_4.1.0.2.aar')
     implementation files('aars/Baidu_MobAds_SDK-release_v9.17.aar')
     // 以下为流量分配功能所使用依赖，流量分配功能详情请咨询运营
     // Mintegral SDK
