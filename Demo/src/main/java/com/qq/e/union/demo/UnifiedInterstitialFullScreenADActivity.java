@@ -19,7 +19,6 @@ import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -44,6 +43,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   private CheckBox btnMute;
   private Spinner spinner;
   private PosIdArrayAdapter arrayAdapter;
+  private boolean mLoadSuccess;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -69,26 +69,21 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.loadIADFullScreen:
+        mLoadSuccess = false;
         iad = getIAD();
         setVideoOption();
         iad.loadFullScreenAD();
         break;
       case R.id.showIADFullScreen:
-        showFullScreenVideoAD();
+        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true)) {
+          iad.showFullScreenAD(this);
+        }
         break;
       case R.id.isAdValid:
-        isAdValid();
+        DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), false);
         break;
       default:
         break;
-    }
-  }
-
-  private void isAdValid() {
-    if (iad == null) {
-      Toast.makeText(this, "请加载广告后再进行校验 ！ ", Toast.LENGTH_LONG).show();
-    } else {
-      Toast.makeText(this, "广告" + (iad.isValid() ? "有效" : "无效"), Toast.LENGTH_LONG).show();
     }
   }
 
@@ -130,20 +125,9 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
     S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
   }
 
-  private void showFullScreenVideoAD() {
-    if (iad == null) {
-      Toast.makeText(this, "请加载广告后再进行展示 ！ ", Toast.LENGTH_LONG).show();
-      return;
-    }
-    if (iad.isValid()) {
-      iad.showFullScreenAD(this);
-    } else {
-      Toast.makeText(this, "广告已经展示或未成功拉取，请拉取广告后再进行展示 ！ ", Toast.LENGTH_LONG).show();
-    }
-  }
-
   @Override
   public void onADReceive() {
+    mLoadSuccess = true;
     Toast.makeText(this, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
     iad.setMediaListener(this);
     // 如果支持奖励，设置ADRewardListener接收onReward回调；图文广告暂不支持奖励
@@ -152,7 +136,8 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
     Log.d(TAG, "eCPMLevel = " + iad.getECPMLevel() + ", ECPM: " + iad.getECPM()
         + ", videoduration=" + iad.getVideoDuration()
         + ", adPatternType=" + iad.getAdPatternType()
-        + ", testExtraInfo:" + iad.getExtraInfo().get("mp"));
+        + ", testExtraInfo:" + iad.getExtraInfo().get("mp")
+        + ", request_id:" + iad.getExtraInfo().get("request_id"));
     if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
       iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
     }

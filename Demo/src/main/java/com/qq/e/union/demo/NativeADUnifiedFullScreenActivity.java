@@ -135,7 +135,7 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
 
       @Override
       public void onADClicked() {
-        Log.d(TAG, "onADClicked: " + " clickUrl: " + ad.ext.get("clickUrl"));
+        Log.d(TAG, "onADClicked: ");
       }
 
       @Override

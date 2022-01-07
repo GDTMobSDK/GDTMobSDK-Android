@@ -85,9 +85,14 @@
             android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/splash_load_ad_refresh"
-            android:text="刷新"
+            android:text="加载广告"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/is_ad_valid_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="校验广告是否有效" />
         <Button
             android:id="@+id/splash_load_ad_display"
             android:text="显示广告"

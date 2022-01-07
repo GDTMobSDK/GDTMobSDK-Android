@@ -34,7 +34,7 @@ public class DemoGameTestActivity extends Activity implements RewardVideoADListe
   private RewardVideoAD rewardVideoAD;
   private EditText demoGameUrlEdt;
   private boolean showing;
-  private String demoGameUrlDefault = "http://developers.adnet.qq.com/open/tryable?debug=unsdk";
+  private String demoGameUrlDefault = "https://developers.adnet.qq.com/open/tryable?debug=unsdk";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

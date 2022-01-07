@@ -1,0 +1,48 @@
+{
+    "logs": [
+        {
+            "outputFile": "/data/landun/workspace/mediationAdapters/Util/build/intermediates/incremental/mergeUnionNormalReleaseResources/merged.dir/values/values.xml",
+            "map": [
+                {
+                    "source": "/data/landun/workspace/mediationAdapters/Util/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "41",
+                        "endOffsets": "53"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "41",
+                        "endOffsets": "92"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/data/landun/workspace/mediationAdapters/Util/build/intermediates/res/merged/unionNormal/release/values/values.xml",
+            "map": [
+                {
+                    "source": "/data/landun/workspace/mediationAdapters/Util/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "41",
+                        "endOffsets": "53"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "41",
+                        "endOffsets": "92"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.qq.e.comm.managers.GDTADManager;
-import com.qq.e.comm.managers.status.DeviceStatus;
-
 /**
  * 展示设备信息
  *
@@ -17,8 +14,7 @@ import com.qq.e.comm.managers.status.DeviceStatus;
  * @version 2018.5.3
  */
 public class DeviceInfoActivity extends Activity {
-
-  private final DeviceStatus deviceStatus = GDTADManager.getInstance().getDeviceStatus();
+//  private final DeviceStatus deviceStatus = GDTADManager.getInstance().getDeviceStatus();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +26,7 @@ public class DeviceInfoActivity extends Activity {
     LinearLayout layout = new LinearLayout(this);
     layout.setOrientation(LinearLayout.VERTICAL);
 
-    layout.addView(createTextView("IMEI: " + deviceStatus.getDeviceIdMD5()));
+//    layout.addView(createTextView("IMEI: " + deviceStatus.getDeviceIdMD5()));
     return layout;
   }
 

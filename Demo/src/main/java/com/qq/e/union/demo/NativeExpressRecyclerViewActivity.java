@@ -213,16 +213,6 @@ public class NativeExpressRecyclerViewActivity extends Activity implements
     Log.i(TAG, "onADLeftApplication: " + adView.toString());
   }
 
-  @Override
-  public void onADOpenOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADOpenOverlay: " + adView.toString());
-  }
-
-  @Override
-  public void onADCloseOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADCloseOverlay");
-  }
-
   public class NormalItem {
     private String title;
 

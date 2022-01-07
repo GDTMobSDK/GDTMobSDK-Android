@@ -33,7 +33,6 @@ import com.qq.e.ads.nativ.VideoPreloadListener;
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.constants.AppDownloadStatus;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.view.ViewUtils;
@@ -74,6 +73,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
   private boolean mLoadingAd = false;
   private boolean mBindToCustomView;
   private FrameLayout mCustomContainer;
+  private boolean mLoadSuccess;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,7 +137,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
   @Override
   public void onADLoaded(List<NativeUnifiedADData> ads) {
     Log.d(TAG, "onADLoaded");
-
+    mLoadSuccess = true;
     mLoadingAd = false;
     if (ads != null && ads.size() > 0) {
       Message msg = Message.obtain();
@@ -181,13 +181,25 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
       adData.setBidECPM(300);
     }
   }
+  
+  public void isAdValid(View view) {
+    DemoUtil.isAdValid(this, mLoadSuccess, mAdData != null && mAdData.isValid(), false);
+  }
 
   public void onPreloadVideoClicked(View view) {
+    mLoadSuccess = false;
     loadAd(true);
   }
 
-  public void onShowAdClicked(View view) {
+  public void onLoadAdClicked(View view) {
+    mLoadSuccess = false;
     loadAd(false);
+  }
+
+  public void onShowAdClicked(View view) {
+    if (mAdData != null) {
+      showAd(mAdData);
+    }
   }
 
   public void onReBindMediaView(View view) {
@@ -225,7 +237,6 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
           public void onVideoCached() {
             Log.d(TAG, "onVideoCached");
             // 视频素材加载完成，此时展示广告不会有进度条。
-            showAd(ad);
           }
 
           @Override
@@ -233,11 +244,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
             Log.d(TAG, "onVideoCacheFailed : " + msg);
           }
         });
-      } else {
-        showAd(ad);
       }
-    } else {
-      showAd(ad);
     }
   }
 
@@ -318,7 +325,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
 
       @Override
       public void onADClicked() {
-        Log.d(TAG, "onADClicked: " + " clickUrl: " + ad.ext.get("clickUrl"));
+        Log.d(TAG, "onADClicked: ");
       }
 
       @Override
@@ -561,10 +568,12 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
               ad.getPictureHeight()));
           initAd(ad);
           Object mp = ad.getExtraInfo() == null ? null : ad.getExtraInfo().get("mp");
+          Object requestId = ad.getExtraInfo() == null ? null : ad.getExtraInfo().get("request_id");
           Log.d(TAG,
               "eCPMLevel = " + ad.getECPMLevel() + "， ECPM: " + ad.getECPM()
                   + " ,videoDuration = " + ad.getVideoDuration()
-                  + ", testExtraInfo:" + mp);
+                  + ", testExtraInfo:" + mp
+                  + ", request_id:" + requestId);
           break;
         case MSG_VIDEO_START:
           mImagePoster.setVisibility(View.GONE);

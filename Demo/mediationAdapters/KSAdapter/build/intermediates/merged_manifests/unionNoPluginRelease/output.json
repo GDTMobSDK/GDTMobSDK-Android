@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "applicationId": "com.qq.e.union.ks",
+  "variantType": "LIBRARY",
+  "elements": [
+    {
+      "outputType": {
+        "type": "MERGED_MANIFESTS"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 1,
+        "versionName": "1.0",
+        "outputFile": "KSAdapter-union-noPlugin-release.aar",
+        "fullName": "unionNoPluginRelease",
+        "baseName": "union-noPlugin-release",
+        "dirName": ""
+      },
+      "path": "../../library_manifest/unionNoPluginRelease/AndroidManifest.xml",
+      "properties": {
+        "packageId": "com.qq.e.union.ks",
+        "split": ""
+      }
+    }
+  ]
+}

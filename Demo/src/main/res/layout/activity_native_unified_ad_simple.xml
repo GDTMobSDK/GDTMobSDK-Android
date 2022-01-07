@@ -24,6 +24,13 @@
                 android:onClick="onPreloadVideoClicked"
                 android:text="加载广告(调用预加载视频接口)" />
 
+            <Button
+                android:id="@+id/is_ad_valid_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="isAdValid"
+                android:text="校验广告是否有效" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
@@ -32,11 +39,18 @@
                 android:textStyle="italic" />
 
             <Button
+                android:id="@+id/btn_load_ad"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:onClick="onLoadAdClicked"
+                android:text="加载广告" />
+
+            <Button
                 android:id="@+id/btn_show_ad"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:onClick="onShowAdClicked"
-                android:text="加载并展示广告" />
+                android:text="展示广告" />
 
             <TextView
                 android:layout_width="match_parent"

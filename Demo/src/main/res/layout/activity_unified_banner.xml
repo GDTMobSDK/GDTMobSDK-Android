@@ -34,10 +34,16 @@
             android:text="关闭Banner" />
     </LinearLayout>
     <Button
-        android:id="@+id/request_token"
+        android:id="@+id/isAdValid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonContainer"
+        android:text="校验广告是否有效" />
+    <Button
+        android:id="@+id/request_token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/isAdValid"
         android:onClick="requestS2SBiddingToken"
         android:text="获取 S2S token"/>
 

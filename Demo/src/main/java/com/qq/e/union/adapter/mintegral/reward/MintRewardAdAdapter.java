@@ -15,6 +15,7 @@ import com.mintegral.msdk.out.RewardVideoListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
+import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseRewardAd;
 import com.qq.e.union.adapter.mintegral.util.MTGSDKInitUtil;
 import com.qq.e.union.adapter.util.Constant;
@@ -180,6 +181,11 @@ public class MintRewardAdAdapter extends BaseRewardAd {
     }
 
     @Override
+    public boolean isValid() {
+        return SystemClock.elapsedRealtime() <= mExpireTime;
+    }
+
+    @Override
     public boolean hasShown() {
         return mIsShown;
     }
@@ -197,6 +203,11 @@ public class MintRewardAdAdapter extends BaseRewardAd {
     public String getECPMLevel() {
         return null;
     }
+
+  @Override
+  public String getReqId() {
+    return null;
+  }
 
   @Override
     public void setVolumeOn(boolean volumOn) {
@@ -246,14 +257,14 @@ public class MintRewardAdAdapter extends BaseRewardAd {
             public void onLoadSuccess(String unitId) {
                 Log.i(TAG, "onLoadSuccess");
                 if (mListener != null) {
-                    mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_LOADED));
+                    mListener.onADEvent(new ADEvent(AdEventType.AD_LOADED));
                 }
             }
 
             @Override
             public void onVideoLoadSuccess(String unitId) {
                 Log.i(TAG, "onVideoLoadSuccess");
-                mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_VIDEO_CACHED));
+                mListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
                 mExpireTime = SystemClock.elapsedRealtime() + 30 * DateUtils.MINUTE_IN_MILLIS;
             }
 
@@ -272,9 +283,9 @@ public class MintRewardAdAdapter extends BaseRewardAd {
             @Override
             public void onAdShow() {
                 Log.i(TAG, "onAdShow");
-                mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_SHOW));
+                mListener.onADEvent(new ADEvent(AdEventType.AD_SHOW));
                 // 由于MTG没有曝光回调，所以曝光和 show 一块回调
-                mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_EXPOSE));
+                mListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
             }
 
             @Override
@@ -283,13 +294,13 @@ public class MintRewardAdAdapter extends BaseRewardAd {
                 if (isCompleteView) {
                     //激励视频播放完成,给予奖励操作  RewardName和RewardAmout由服务器返回
                     if (mListener != null) {
-                        mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_REWARD));
-                        mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_CLOSE));
+                        mListener.onADEvent(new ADEvent(AdEventType.AD_REWARD, ""));
+                        mListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
                     }
                 } else {
                     //不符合奖励条件
                     if (mListener != null) {
-                        mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_CLOSE));
+                        mListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
                     }
                 }
             }
@@ -297,13 +308,13 @@ public class MintRewardAdAdapter extends BaseRewardAd {
             @Override
             public void onVideoAdClicked(String unitId) {
                 Log.i(TAG, "onVideoAdClicked");
-                mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_AD_CLICK));
+                mListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
             }
 
             @Override
             public void onVideoComplete(String unitId) {
                 Log.i(TAG, "onVideoComplete");
-                mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_VIDEO_COMPLETE));
+                mListener.onADEvent(new ADEvent(AdEventType.VIDEO_COMPLETE));
             }
 
             @Override
@@ -322,7 +333,7 @@ public class MintRewardAdAdapter extends BaseRewardAd {
      */
     private void onAdError(int errorCode) {
         if (mListener != null) {
-            mListener.onADEvent(new ADEvent(EVENT_TYPE_ON_ERROR, new Object[]{errorCode}));
+            mListener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}));
         }
     }
 }

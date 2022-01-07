@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.qq.e.ads.banner2.UnifiedBannerADListener;
 import com.qq.e.ads.banner2.UnifiedBannerView;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
@@ -32,6 +31,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   UnifiedBannerView mBannerView;
   String mCurrentPosId;
   String mS2SBiddingToken;
+  private boolean mLoadSuccess;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
     ((EditText) findViewById(R.id.posId)).setText(PositionId.UNIFIED_BANNER_POS_ID);
     this.findViewById(R.id.refreshBanner).setOnClickListener(this);
     this.findViewById(R.id.closeBanner).setOnClickListener(this);
+    this.findViewById(R.id.isAdValid).setOnClickListener(this);
     this.getBanner().loadAD();
   }
 
@@ -107,10 +108,15 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.refreshBanner:
+        mLoadSuccess = false;
         doRefreshBanner();
         break;
       case R.id.closeBanner:
+        mLoadSuccess = false;
         doCloseBanner();
+        break;
+      case R.id.isAdValid:
+        DemoUtil.isAdValid(this, mLoadSuccess, mBannerView != null && mBannerView.isValid(), false);
         break;
       default:
         break;
@@ -149,9 +155,11 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   @Override
   public void onADReceive() {
     if (mBannerView != null) {
+      mLoadSuccess = true;
       Log.i(TAG, "onADReceive" + ", ECPM: " + mBannerView.getECPM() + ", ECPMLevel: "
           + mBannerView.getECPMLevel() + ", adNetWorkName: " + mBannerView.getAdNetWorkName()
-          + ", testExtraInfo:" + mBannerView.getExtraInfo().get("mp"));
+          + ", testExtraInfo:" + mBannerView.getExtraInfo().get("mp")
+          + ", request_id:" + mBannerView.getExtraInfo().get("request_id"));
       if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
         mBannerView.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
       }
@@ -185,7 +193,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
 
   @Override
   public void onADClicked() {
-    Log.i(TAG, "onADClicked : " + (mBannerView.getExt() != null? mBannerView.getExt().get("clickUrl") : ""));
+    Log.i(TAG, "onADClicked : ");
   }
 
   @Override
@@ -193,13 +201,4 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
     Log.i(TAG, "onADLeftApplication");
   }
 
-  @Override
-  public void onADOpenOverlay() {
-    Log.i(TAG, "onADOpenOverlay，即将废弃");
-  }
-
-  @Override
-  public void onADCloseOverlay() {
-    Log.i(TAG, "onADCloseOverlay，即将废弃");
-  }
 }

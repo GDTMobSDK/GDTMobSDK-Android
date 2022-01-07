@@ -173,7 +173,7 @@ public class NativeADUnifiedPreMovieActivity extends Activity implements NativeA
 
       @Override
       public void onADClicked() {
-        Log.d(TAG, "onADClicked: " + " clickUrl: " + ad.ext.get("clickUrl"));
+        Log.d(TAG, "onADClicked: ");
       }
 
       @Override
@@ -254,8 +254,6 @@ public class NativeADUnifiedPreMovieActivity extends Activity implements NativeA
       });
 
     }
-
-    Log.d(TAG, "isSkippable : " + mAdData.isSkippable());
 
     NativeADUnifiedSampleActivity.updateAdAction(mDownloadButton, ad);
   }

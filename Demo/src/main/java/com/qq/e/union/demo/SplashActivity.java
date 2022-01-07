@@ -85,6 +85,8 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   private boolean isZoomOutInAnother = false;
   // 是否适配全面屏，默认是适配全面屏，即使用顶部状态栏和底部导航栏
   private boolean isNotchAdaptation = true;
+  private boolean mLoadSuccess;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -101,13 +103,19 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     Intent intent = getIntent();
 
     splashHolder = (ImageView) findViewById(R.id.splash_holder);
-    boolean needLogo = intent.getBooleanExtra("need_logo", true);
-    needStartDemoList = intent.getBooleanExtra("need_start_demo_list", true);
-    loadAdOnly = intent.getBooleanExtra("load_ad_only", false);
-    isSupportZoomOut = intent.getBooleanExtra("support_zoom_out", false);
-    isZoomOutInAnother = intent.getBooleanExtra("zoom_out_in_another", false);
-    isFullScreen = intent.getBooleanExtra("is_full_screen", false);
-    fetchDelay = (Integer) intent.getSerializableExtra("fetch_delay");
+
+    boolean needLogo = false;
+    try {
+      needLogo = intent.getBooleanExtra("need_logo", true);
+      needStartDemoList = intent.getBooleanExtra("need_start_demo_list", true);
+      loadAdOnly = intent.getBooleanExtra("load_ad_only", false);
+      isSupportZoomOut = intent.getBooleanExtra("support_zoom_out", false);
+      isZoomOutInAnother = intent.getBooleanExtra("zoom_out_in_another", false);
+      isFullScreen = intent.getBooleanExtra("is_full_screen", false);
+      fetchDelay = (Integer) intent.getSerializableExtra("fetch_delay");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     loadAdOnlyView = findViewById(R.id.splash_load_ad_only);
     loadAdOnlyCloseButton = findViewById(R.id.splash_load_ad_close);
@@ -117,6 +125,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     loadAdOnlyRefreshButton = findViewById(R.id.splash_load_ad_refresh);
     loadAdOnlyRefreshButton.setOnClickListener(this);
     loadAdOnlyStatusTextView = findViewById(R.id.splash_load_ad_status);
+    findViewById(R.id.is_ad_valid_button).setOnClickListener(this);
 
     if(loadAdOnly){
       loadAdOnlyView.setVisibility(View.VISIBLE);
@@ -203,9 +212,12 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
       fetchSplashAD(this, container, getPosId(), this);
     } else {
       Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+      try {
       Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
       intent.setData(Uri.parse("package:" + getPackageName()));
-      startActivity(intent);
+        startActivity(intent);
+      } catch (Exception e) {
+      }
       finish();
     }
   }
@@ -244,8 +256,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     SplashAD splashAD;
     Log.d(TAG, "getSplashAd: BiddingToken " + token);
     if (!TextUtils.isEmpty(token)) {
-      splashAD = new SplashAD(activity, posId, adListener, fetchDelay == null ? 0 : fetchDelay, null,
-          null, token);
+      splashAD = new SplashAD(activity, posId, adListener, fetchDelay == null ? 0 : fetchDelay, token);
     } else {
       splashAD = new SplashAD(activity, posId, adListener, fetchDelay == null ? 0 : fetchDelay);
     }
@@ -263,8 +274,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
 
   @Override
   public void onADClicked() {
-    Log.i("AD_DEMO", "SplashADClicked clickUrl: "
-        + (splashAD.getExt() != null ? splashAD.getExt().get("clickUrl") : ""));
+    Log.i("AD_DEMO", "SplashADClicked");
   }
 
   /**
@@ -285,9 +295,11 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
 
   @Override
   public void onADLoaded(long expireTimestamp) {
+    mLoadSuccess = true;
     Log.i("AD_DEMO", "SplashADFetch expireTimestamp: " + expireTimestamp
         + ", eCPMLevel = " + splashAD.getECPMLevel()+ ", ECPM: " + splashAD.getECPM()
-        + ", testExtraInfo:" + splashAD.getExtraInfo().get("mp"));
+        + ", testExtraInfo:" + splashAD.getExtraInfo().get("mp")
+        + ", request_id:" + splashAD.getExtraInfo().get("request_id"));
     if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
       splashAD.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
     }
@@ -351,7 +363,11 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
       @Override
       public void run() {
         if (needStartDemoList) {
-          SplashActivity.this.startActivity(new Intent(SplashActivity.this, DemoListActivity.class));
+          try {
+            SplashActivity.this.startActivity(new Intent(SplashActivity.this, DemoListActivity.class));
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
         }
         SplashActivity.this.finish();
       }
@@ -365,7 +381,10 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   private void next() {
     if (canJump) {
       if (needStartDemoList) {
-        this.startActivity(new Intent(this, DemoListActivity.class));
+        try {
+          this.startActivity(new Intent(this, DemoListActivity.class));
+        } catch (Exception e) {
+        }
       }
       if (isZoomOut && isZoomOutInAnother) {
         //防止移除view后显示底图导致屏幕闪烁
@@ -424,9 +443,14 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.splash_load_ad_close:
+        mLoadSuccess = false;
         this.finish();
         break;
+      case R.id.is_ad_valid_button:
+        DemoUtil.isAdValid(this, mLoadSuccess, splashAD != null && splashAD.isValid(), false);
+        break;
       case R.id.splash_load_ad_refresh:
+        mLoadSuccess = false;
         showingAd = false;
         if (isFullScreen) {
           splashAD.fetchFullScreenAdOnly();

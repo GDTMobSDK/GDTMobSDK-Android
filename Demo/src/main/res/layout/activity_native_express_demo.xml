@@ -90,7 +90,27 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:text="加载并展示广告" />
+            android:text="加载广告" />
+
+        <Button
+            android:id="@+id/buttonShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textSizeHint"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@+id/buttonRefresh"
+            android:text="展示广告" />
+
+        <Button
+            android:id="@+id/is_ad_valid_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textSizeHint"
+            android:layout_toRightOf="@+id/buttonShow"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="校验广告是否有效" />
 
         <TextView
             android:id="@+id/txtRefreshTip"

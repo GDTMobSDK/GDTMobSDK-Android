@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "applicationId": "com.qq.e.union.util",
+  "variantType": "LIBRARY",
+  "elements": [
+    {
+      "outputType": {
+        "type": "MERGED_MANIFESTS"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 1,
+        "versionName": "1.0",
+        "outputFile": "Util-dataDetect-noPlugin-release.aar",
+        "fullName": "dataDetectNoPluginRelease",
+        "baseName": "dataDetect-noPlugin-release",
+        "dirName": ""
+      },
+      "path": "../../library_manifest/dataDetectNoPluginRelease/AndroidManifest.xml",
+      "properties": {
+        "packageId": "com.qq.e.union.util",
+        "split": ""
+      }
+    }
+  ]
+}

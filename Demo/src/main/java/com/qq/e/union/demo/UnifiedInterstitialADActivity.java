@@ -18,7 +18,6 @@ import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -49,6 +48,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   private PosIdArrayAdapter arrayAdapter;
 
   private boolean isRenderFail;
+  private boolean mLoadSuccess;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -86,32 +86,30 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.loadIAD:
+        mLoadSuccess = false;
         iad = getIAD();
         setVideoOption();
         iad.loadAD();
         break;
       case R.id.showIAD:
-        showAD();
+        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
+          iad.show();
+        }
         break;
       case R.id.showIADAsPPW:
-        showAsPopup();
+        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
+          iad.showAsPopupWindow();
+        }
         break;
       case R.id.closeIAD:
+        mLoadSuccess = false;
         close();
         break;
       case R.id.isAdValid:
-        isAdValid();
+        DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), false);
         break;
       default:
         break;
-    }
-  }
-
-  private void isAdValid() {
-    if (iad == null) {
-      Toast.makeText(this, "请加载广告后再进行校验 ！ ", Toast.LENGTH_LONG).show();
-    } else {
-      Toast.makeText(this, "广告" + (iad.isValid() ? "有效" : "无效"), Toast.LENGTH_LONG).show();
     }
   }
 
@@ -160,22 +158,6 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
     S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
   }
 
-  private void showAD() {
-    if (iad != null && iad.isValid() && !isRenderFail) {
-      iad.show();
-    } else {
-      Toast.makeText(this, "请加载广告并渲染成功后再进行展示 ！ ", Toast.LENGTH_LONG).show();
-    }
-  }
-
-  private void showAsPopup() {
-    if (iad != null && iad.isValid()) {
-      iad.showAsPopupWindow();
-    } else {
-      Toast.makeText(this, "请加载广告并渲染成功后再进行展示 ！ ", Toast.LENGTH_LONG).show();
-    }
-  }
-
   private void close() {
     if (iad != null) {
       iad.close();
@@ -186,11 +168,13 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
 
   @Override
   public void onADReceive() {
+    mLoadSuccess = true;
     Toast.makeText(this, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
     // onADReceive之后才可调用getECPM()
     Log.d(TAG, "onADReceive eCPMLevel = " + iad.getECPMLevel()+ ", ECPM: " + iad.getECPM()
         + ", videoduration=" + iad.getVideoDuration()
-        + ", testExtraInfo:" + iad.getExtraInfo().get("mp"));
+        + ", testExtraInfo:" + iad.getExtraInfo().get("mp")
+        + ", request_id:" + iad.getExtraInfo().get("request_id"));
     if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
       iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
     }

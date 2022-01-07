@@ -22,7 +22,6 @@ import com.qq.e.ads.nativ.NativeExpressAD;
 import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.ads.nativ.NativeExpressMediaListener;
 import com.qq.e.comm.constants.AdPatternType;
-import com.qq.e.comm.constants.BiddingLossReason;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -42,12 +41,14 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   private ViewGroup container;
   private NativeExpressAD nativeExpressAD;
   private NativeExpressADView nativeExpressADView;
-  private Button buttonRefresh,buttonPreloadVideo, buttonResize;
+  private Button buttonRefresh,buttonPreloadVideo, buttonResize, buttonShow;
   private EditText editTextWidth, editTextHeight; // 编辑框输入的宽高
   private int adWidth, adHeight; // 广告宽高
   private CheckBox checkBoxFullWidth, checkBoxAutoHeight;
   private boolean isAdFullWidth, isAdAutoHeight; // 是否采用了ADSize.FULL_WIDTH，ADSize.AUTO_HEIGHT
   private boolean isPreloadVideo;
+  private boolean mLoadSuccess;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -58,10 +59,13 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     editTextHeight = (EditText) findViewById(R.id.editHeight);
     buttonRefresh = (Button) findViewById(R.id.buttonRefresh);
     buttonPreloadVideo = (Button) findViewById(R.id.buttonPreloadVideo);
+    buttonShow = findViewById(R.id.buttonShow);
     buttonResize = (Button) findViewById(R.id.buttonDestroy);
     buttonRefresh.setOnClickListener(this);
     buttonPreloadVideo.setOnClickListener(this);
     buttonResize.setOnClickListener(this);
+    buttonShow.setOnClickListener(this);
+    findViewById(R.id.is_ad_valid_button).setOnClickListener(this);
     checkBoxFullWidth = (CheckBox) findViewById(R.id.checkboxFullWidth);
     checkBoxAutoHeight =  (CheckBox) findViewById(R.id.checkboxAutoHeight);
     checkBoxFullWidth.setOnCheckedChangeListener(this);
@@ -97,15 +101,26 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.buttonRefresh:
+        mLoadSuccess = false;
         isPreloadVideo = false;
         refreshAd();
         break;
       case R.id.buttonPreloadVideo:
+        mLoadSuccess = false;
         isPreloadVideo = true;
         refreshAd();
         break;
       case R.id.buttonDestroy:
+        mLoadSuccess = false;
         resizeAd();
+        break;
+      case R.id.is_ad_valid_button:
+        DemoUtil.isAdValid(this, mLoadSuccess, nativeExpressADView != null && nativeExpressADView.isValid(), false);
+        break;
+      case R.id.buttonShow:
+        if(nativeExpressADView != null){
+          nativeExpressADView.render();
+        }
         break;
     }
   }
@@ -203,7 +218,8 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
       }
       Log.d(TAG, "eCPMLevel = " + adData.getECPMLevel()+ ", ECPM: " + adData.getECPM()
           + ", videoDuration = " + adData.getVideoDuration()
-          + ", testExtraInfo:" + adData.getExtraInfo().get("mp"));
+          + ", testExtraInfo:" + adData.getExtraInfo().get("mp")
+          + ", request_id:" + adData.getExtraInfo().get("request_id"));
       return infoBuilder.toString();
     }
     return null;
@@ -238,6 +254,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
 
   @Override
   public void onADLoaded(List<NativeExpressADView> adList) {
+    mLoadSuccess = true;
     Log.i(TAG, "onADLoaded: " + adList.size());
     // 释放前一个展示的NativeExpressADView的资源
     if (nativeExpressADView != null) {
@@ -271,7 +288,6 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     if(!isPreloadVideo) {
       // 广告可见才会产生曝光，否则将无法产生收益。
       container.addView(nativeExpressADView);
-      nativeExpressADView.render();
     }
   }
 
@@ -306,7 +322,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
 
   @Override
   public void onADClicked(NativeExpressADView adView) {
-    Log.i(TAG, "onADClicked" + adView.ext.get("clickUrl"));
+    Log.i(TAG, "onADClicked");
   }
 
   @Override
@@ -322,16 +338,6 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   @Override
   public void onADLeftApplication(NativeExpressADView adView) {
     Log.i(TAG, "onADLeftApplication");
-  }
-
-  @Override
-  public void onADOpenOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADOpenOverlay，即将废弃");
-  }
-
-  @Override
-  public void onADCloseOverlay(NativeExpressADView adView) {
-    Log.i(TAG, "onADCloseOverlay，即将废弃");
   }
 
   private boolean checkEditTextEmpty() {
@@ -420,7 +426,6 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
         }
         // 广告可见才会产生曝光，否则将无法产生收益。
         container.addView(nativeExpressADView);
-        nativeExpressADView.render();
       }
     }
 

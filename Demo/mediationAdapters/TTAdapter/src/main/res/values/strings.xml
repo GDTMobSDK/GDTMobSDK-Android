@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TTAdapter</string>
+    <string name="tt_reward_feedback">反馈</string>
+    <string name="tt_ad">Ad</string>
+</resources>

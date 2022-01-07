@@ -1,6 +1,6 @@
 package com.qq.e.union.demo;
 
-import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -23,12 +23,15 @@ import java.util.Map;
 
 public class InnerDemoApplication extends MultiDexApplication {
 
+  private static Application appContext;
+
   @Override
   public void onCreate() {
     super.onCreate();
+    appContext = this;
     config(this);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-      String processName = getProcessName(this);
+      String processName = Application.getProcessName();
       String packageName = this.getPackageName();
       if (!packageName.equals(processName)) {
         WebView.setDataDirectorySuffix(processName);
@@ -76,14 +79,7 @@ public class InnerDemoApplication extends MultiDexApplication {
     }
   }
 
-  private String getProcessName(Context context) {
-    if (context == null) return null;
-    ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-    for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-      if (processInfo.pid == android.os.Process.myPid()) {
-        return processInfo.processName;
-      }
-    }
-    return null;
+  public static Context getAppContext() {
+    return appContext;
   }
 }

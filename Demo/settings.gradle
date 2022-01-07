@@ -1,0 +1,2 @@
+// 若采用源码依赖方式则需要解除这里的注释
+// include ':mediationAdapters:Util',':mediationAdapters:BDAdapter',':mediationAdapters:TTAdapter',':mediationAdapters:KSAdapter'

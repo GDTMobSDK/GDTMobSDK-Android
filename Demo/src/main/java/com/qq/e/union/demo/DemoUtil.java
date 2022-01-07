@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.qq.e.comm.constants.LoadAdParams;
@@ -50,5 +51,16 @@ public class DemoUtil {
     LoadAdParams loadAdParams = new LoadAdParams();
     loadAdParams.setDevExtra(info);
     return loadAdParams;
+  }
+
+  public static boolean isAdValid(Context context, boolean loadSuccess, boolean isValid, boolean showAd) {
+    if (!loadSuccess) {
+      Toast.makeText(context, "请加载广告成功后再进行校验 ！ ", Toast.LENGTH_LONG).show();
+    } else {
+      if (!showAd || !isValid) {
+        Toast.makeText(context, "广告" + (isValid ? "有效" : "无效"), Toast.LENGTH_LONG).show();
+      }
+    }
+    return isValid;
   }
 }

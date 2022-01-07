@@ -1,0 +1,129 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+	package
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:3:5-32
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:1-59:12
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:6:5-67
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:6:22-64
+permission#${applicationId}.openadsdk.permission.TT_PANGOLIN
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:9:5-11:47
+	android:protectionLevel
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:11:9-44
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:10:9-73
+uses-permission#${applicationId}.openadsdk.permission.TT_PANGOLIN
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:14:5-89
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:14:22-86
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:15:5-75
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:15:22-72
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:16:5-79
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:16:22-76
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:17:5-81
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:17:22-78
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:18:5-76
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:18:22-73
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:19:5-81
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:19:22-78
+uses-permission#android.permission.REQUEST_INSTALL_PACKAGES
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:20:5-83
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:20:22-80
+uses-permission#android.permission.GET_TASKS
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:24:5-68
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:24:22-65
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:27:5-79
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:27:22-76
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:30:5-68
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:30:22-65
+uses-permission#android.permission.RECEIVE_USER_PRESENT
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:31:5-79
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:31:22-76
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:32:5-78
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:32:22-75
+uses-permission#android.permission.EXPAND_STATUS_BAR
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:35:5-76
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:35:22-73
+uses-permission#android.permission.QUERY_ALL_PACKAGES
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:37:5-77
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:37:22-74
+application
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:39:5-56:19
+provider#com.bytedance.sdk.openadsdk.TTFileProvider
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:41:9-49:20
+	android:grantUriPermissions
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:45:13-47
+	android:authorities
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:43:13-66
+	android:exported
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:44:13-37
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:42:13-70
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:46:13-48:57
+	android:resource
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:48:17-54
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:47:17-67
+provider#com.bytedance.sdk.openadsdk.multipro.TTMultiProvider
+ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:51:9-54:40
+	android:authorities
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:53:13-67
+	android:exported
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:54:13-37
+	android:name
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml:52:13-80
+uses-sdk
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		ADDED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml
+		INJECTED from /data/landun/workspace/mediationAdapters/TTAdapter/src/main/AndroidManifest.xml

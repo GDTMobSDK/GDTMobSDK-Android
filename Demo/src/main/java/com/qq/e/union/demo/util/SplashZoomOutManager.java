@@ -9,8 +9,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import com.qq.e.ads.splash.SplashAD;
-import com.qq.e.comm.managers.GDTADManager;
 import com.qq.e.union.adapter.util.PxUtils;
+import com.qq.e.union.demo.DemoApplication;
 import com.qq.e.union.demo.view.ViewUtils;
 
 /*
@@ -52,7 +52,7 @@ public class SplashZoomOutManager {
   }
 
   private SplashZoomOutManager() {
-    Context context = GDTADManager.getInstance().getAppContext();
+    Context context = DemoApplication.getAppContext();
     int deviceWidth = Math.min(PxUtils.getDeviceHeightInPixel(context),PxUtils.getDeviceWidthInPixel(context));
     zoomOutWidth = Math.round(deviceWidth * 0.3f);//屏幕宽度的30%，之前使用PxUtils.dpToPx(context, 90);
     zoomOutHeight = Math.round(zoomOutWidth * 16 / 9);//根据宽度计算高度，之前使用PxUtils.dpToPx(context, 160);

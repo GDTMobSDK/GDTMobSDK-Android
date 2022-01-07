@@ -1,0 +1,84 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.qq.e.union.bd"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="28" />
+9-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml
+10
+11    <!-- 百度SDK不会强制获取任何权限，以下权限为可选权限，不获取不影响SDK功能 -->
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:6:5-67
+12-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:6:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:7:5-79
+13-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:7:22-76
+14    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+14-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:8:5-76
+14-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:8:22-73
+15    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+15-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:9:5-75
+15-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:9:22-72
+16    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+16-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:10:5-81
+16-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:10:22-78
+17    <uses-permission android:name="android.permissio.WRITE_EXTERNAL_STORAGE" />
+17-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:11:5-80
+17-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:11:22-77
+18
+19    <!-- 高于Android 7的系统上，如果应用的 targetSdkVersion >= 26 ，推荐增加权限声明（SDK将通过此权限触发App安装动作） -->
+20    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+20-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:14:5-83
+20-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:14:22-80
+21
+22    <!-- 高于Android 11的系统上，如果应用的 targetSdkVersion >= 30 ，推荐增加以下权限声明（SDK将通过此权限正常触发广告行为，并保证广告的正确投放。此权限需要在用户隐私文档中声明。） -->
+23    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+23-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:17:5-77
+23-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:17:22-74
+24
+25    <application>
+25-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:20:5-42:19
+26        <activity
+26-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:21:9-24:63
+27            android:name="com.baidu.mobads.sdk.api.AppActivity"
+27-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:22:13-64
+28            android:configChanges="screenSize|keyboard|keyboardHidden|orientation"
+28-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:23:13-83
+29            android:theme="@android:style/Theme.NoTitleBar" />
+29-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:24:13-60
+30        <!-- 如果使用激励视频/全屏视频功能，需要主动在AndroidManifest.xml里面声明MobRewardVideoActivity -->
+31        <activity
+31-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:26:9-30:75
+32            android:name="com.baidu.mobads.sdk.api.MobRewardVideoActivity"
+32-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:27:13-75
+33            android:configChanges="screenSize|orientation|keyboardHidden"
+33-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:28:13-74
+34            android:launchMode="singleTask"
+34-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:29:13-44
+35            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+35-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:30:13-72
+36
+37        <provider
+37-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:32:9-40:20
+38            android:name="com.baidu.mobads.sdk.api.BdFileProvider"
+38-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:33:13-67
+39            android:authorities="${applicationId}.bd.provider"
+39-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:34:13-63
+40            android:exported="false"
+40-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:35:13-37
+41            android:grantUriPermissions="true" >
+41-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:36:13-47
+42            <meta-data
+42-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:37:13-39:57
+43                android:name="android.support.FILE_PROVIDER_PATHS"
+43-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:38:17-67
+44                android:resource="@xml/bd_file_paths" />
+44-->/data/landun/workspace/mediationAdapters/BDAdapter/src/main/AndroidManifest.xml:39:17-54
+45        </provider>
+46    </application>
+47
+48</manifest>

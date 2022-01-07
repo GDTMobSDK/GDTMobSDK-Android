@@ -20,6 +20,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,7 +48,9 @@ public class S2SBiddingDemoUtils {
   private static Handler sHandler = new Handler(Looper.getMainLooper());
 
   public static void requestBiddingToken(Context context, String posId, RequestTokenCallBack callBack) {
-    String buyerId = GDTAdSdk.getGDTAdManger().getBuyerId();
+    Map<String, Object> map = new HashMap<>();
+    map.put("staIn", "abcdefg"); // 开发者自定义参数，默认不传
+    String buyerId = GDTAdSdk.getGDTAdManger().getBuyerId(map);
     String sdkInfo = GDTAdSdk.getGDTAdManger().getSDKInfo(posId);
     Log.d(TAG, "sdk_info: " + sdkInfo);
     SINGLE_THREAD_EXECUTOR.execute(() -> {
