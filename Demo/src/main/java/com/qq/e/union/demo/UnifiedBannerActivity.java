@@ -9,14 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.qq.e.ads.banner2.UnifiedBannerADListener;
 import com.qq.e.ads.banner2.UnifiedBannerView;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
+import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
@@ -24,7 +28,7 @@ import java.util.Locale;
 
 
 public class UnifiedBannerActivity extends Activity implements OnClickListener,
-    UnifiedBannerADListener {
+    UnifiedBannerADListener, AdapterView.OnItemSelectedListener {
 
   private static final String TAG = UnifiedBannerActivity.class.getSimpleName();
   ViewGroup mBannerContainer;
@@ -32,16 +36,24 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   String mCurrentPosId;
   String mS2SBiddingToken;
   private boolean mLoadSuccess;
+  private PosIdArrayAdapter mArrayAdapter;
+  private EditText mPosIdEdit;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_unified_banner);
     mBannerContainer = (ViewGroup) this.findViewById(R.id.bannerContainer);
-    ((EditText) findViewById(R.id.posId)).setText(PositionId.UNIFIED_BANNER_POS_ID);
+    mPosIdEdit = findViewById(R.id.posId);
+    mPosIdEdit.setText(PositionId.UNIFIED_BANNER_POS_ID);
     this.findViewById(R.id.refreshBanner).setOnClickListener(this);
     this.findViewById(R.id.closeBanner).setOnClickListener(this);
     this.findViewById(R.id.isAdValid).setOnClickListener(this);
+    Spinner spinner = findViewById(R.id.id_spinner);
+    mArrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.unified_banner));
+    mArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spinner.setAdapter(mArrayAdapter);
+    spinner.setOnItemSelectedListener(this);
     this.getBanner().loadAD();
   }
 
@@ -90,6 +102,12 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
       // 默认 30 秒轮播，可以不设置
       this.mBannerView.setRefresh(30);
     }
+    mBannerView.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+      @Override
+      public void onComplainSuccess() {
+        Log.d(TAG, "onComplainSuccess");
+      }
+    });
     return this.mBannerView;
   }
 
@@ -141,7 +159,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   }
 
   private String getPosID() {
-    String posId = ((EditText) findViewById(R.id.posId)).getText().toString();
+    String posId = mPosIdEdit.getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.BANNER_POS_ID : posId;
   }
 
@@ -201,4 +219,15 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
     Log.i(TAG, "onADLeftApplication");
   }
 
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    mArrayAdapter.setSelectedPos(position);
+    mPosIdEdit.setText(getResources().getStringArray(R.array.unified_banner_value)[position]);
+    getBanner().loadAD();
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> parent) {
+
+  }
 }

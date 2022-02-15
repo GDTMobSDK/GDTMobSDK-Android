@@ -497,6 +497,39 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
    return mRequestId;
   }
 
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (ttFullVideoAd != null) {
+      ttFullVideoAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+    if (ttNativeInteraction != null) {
+      ttNativeInteraction.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (ttFullVideoAd != null) {
+      ttFullVideoAd.win((double) price);
+    }
+    if (ttNativeInteraction != null) {
+      ttNativeInteraction.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (ttFullVideoAd != null) {
+      ttFullVideoAd.setPrice((double) price);
+    }
+    if (ttNativeInteraction != null) {
+      ttNativeInteraction.setPrice((double) price);
+    }
+  }
+
   /******************************以下方法暂未使用*****************************/
 
 

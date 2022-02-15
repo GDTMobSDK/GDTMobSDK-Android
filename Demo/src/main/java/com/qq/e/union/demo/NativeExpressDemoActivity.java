@@ -22,6 +22,7 @@ import com.qq.e.ads.nativ.NativeExpressAD;
 import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.ads.nativ.NativeExpressMediaListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -41,13 +42,14 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   private ViewGroup container;
   private NativeExpressAD nativeExpressAD;
   private NativeExpressADView nativeExpressADView;
-  private Button buttonRefresh,buttonPreloadVideo, buttonResize, buttonShow;
+  private Button buttonRefresh, buttonPreloadVideo, buttonResize, buttonShow, buttonLoadAndShow;
   private EditText editTextWidth, editTextHeight; // 编辑框输入的宽高
   private int adWidth, adHeight; // 广告宽高
   private CheckBox checkBoxFullWidth, checkBoxAutoHeight;
   private boolean isAdFullWidth, isAdAutoHeight; // 是否采用了ADSize.FULL_WIDTH，ADSize.AUTO_HEIGHT
   private boolean isPreloadVideo;
   private boolean mLoadSuccess;
+  private boolean mIsLoadAndShow;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,13 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     buttonRefresh = (Button) findViewById(R.id.buttonRefresh);
     buttonPreloadVideo = (Button) findViewById(R.id.buttonPreloadVideo);
     buttonShow = findViewById(R.id.buttonShow);
+    buttonLoadAndShow = findViewById(R.id.buttonLoadAndShow);
     buttonResize = (Button) findViewById(R.id.buttonDestroy);
     buttonRefresh.setOnClickListener(this);
     buttonPreloadVideo.setOnClickListener(this);
     buttonResize.setOnClickListener(this);
     buttonShow.setOnClickListener(this);
+    buttonLoadAndShow.setOnClickListener(this);
     findViewById(R.id.is_ad_valid_button).setOnClickListener(this);
     checkBoxFullWidth = (CheckBox) findViewById(R.id.checkboxFullWidth);
     checkBoxAutoHeight =  (CheckBox) findViewById(R.id.checkboxAutoHeight);
@@ -121,6 +125,12 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
         if(nativeExpressADView != null){
           nativeExpressADView.render();
         }
+        break;
+      case R.id.buttonLoadAndShow:
+        mLoadSuccess = false;
+        isPreloadVideo = false;
+        mIsLoadAndShow = true;
+        refreshAd();
         break;
     }
   }
@@ -270,6 +280,12 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     }
 
     nativeExpressADView = adList.get(0);
+    nativeExpressADView.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+      @Override
+      public void onComplainSuccess() {
+        Log.i(TAG, "onComplainSuccess");
+      }
+    });
     reportBiddingResult(nativeExpressADView);
     if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
       nativeExpressADView.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
@@ -285,9 +301,13 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     } else {
       isPreloadVideo = false;
     }
-    if(!isPreloadVideo) {
+    if (!isPreloadVideo) {
       // 广告可见才会产生曝光，否则将无法产生收益。
       container.addView(nativeExpressADView);
+      if(mIsLoadAndShow){
+        nativeExpressADView.render();
+        mIsLoadAndShow = false;
+      }
     }
   }
 
@@ -426,6 +446,10 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
         }
         // 广告可见才会产生曝光，否则将无法产生收益。
         container.addView(nativeExpressADView);
+        if(mIsLoadAndShow){
+          nativeExpressADView.render();
+          mIsLoadAndShow = false;
+        }
       }
     }
 

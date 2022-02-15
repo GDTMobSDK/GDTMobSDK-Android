@@ -138,6 +138,45 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
   }
 
   @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (data == null || data.size() == 0) {
+      return;
+    }
+    for (TTFeedAdDataAdapter adapter: data) {
+      if (adapter != null) {
+        adapter.sendLossNotification(price, reason, adnId);
+      }
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (data == null || data.size() == 0) {
+      return;
+    }
+    for (TTFeedAdDataAdapter adapter: data) {
+      if (adapter != null) {
+        adapter.sendWinNotification(price);
+      }
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (data == null || data.size() == 0) {
+      return;
+    }
+    for (TTFeedAdDataAdapter adapter: data) {
+      if (adapter != null) {
+        adapter.setBidECPM(price);
+      }
+    }
+  }
+
+  @Override
   public void setECPMLevel(String level) {
     if (data != null) {
       for (TTFeedAdDataAdapter adapter : data) {

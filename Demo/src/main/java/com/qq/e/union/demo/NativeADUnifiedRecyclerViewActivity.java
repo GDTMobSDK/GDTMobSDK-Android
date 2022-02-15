@@ -31,6 +31,7 @@ import com.qq.e.ads.nativ.NativeUnifiedAD;
 import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 
@@ -331,6 +332,13 @@ public class NativeADUnifiedRecyclerViewActivity extends Activity
     }
 
     private void setAdListener(final CustomHolder holder, final NativeUnifiedADData ad) {
+      ad.setNegativeFeedbackListener(new NegativeFeedbackListener(){
+
+        @Override
+        public void onComplainSuccess() {
+          Log.d(TAG, "onComplainSuccess: ");
+        }
+      });
       //这里示例NativeADEventListenerWithClickInfo用法，如不需要view信息可继续使用NativeADEventListener
       ad.setNativeAdEventListener(new NativeADEventListenerWithClickInfo() {
         @Override

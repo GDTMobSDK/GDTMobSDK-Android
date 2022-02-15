@@ -291,9 +291,31 @@ public class TTRewardAdAdapter extends BaseRewardAd {
     return builder
         .setCodeId(posId)
         .setImageAcceptedSize(1080, 1920)
-        .setRewardName(rewardName) //奖励的名称
-        .setRewardAmount(rewardAmount)  //奖励的数量
         .setUserID(userId)// 用户id,必传参数
         .setOrientation(getScreenOrientation()); //必填参数，期望视频的播放方向：TTAdConstant.HORIZONTAL 或 TTAdConstant.VERTICAL
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (rewardAd != null) {
+      rewardAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (rewardAd != null) {
+      rewardAd.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (rewardAd != null) {
+      rewardAd.setPrice((double) price);
+    }
   }
 }

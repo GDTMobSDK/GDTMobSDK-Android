@@ -19,6 +19,7 @@ import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -111,6 +112,12 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
           .build();
       iad.setServerSideVerificationOptions(options);
       iad.setLoadAdParams(DemoUtil.getLoadAdParams("full_screen_interstitial"));
+      iad.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+        @Override
+        public void onComplainSuccess() {
+          Log.d(TAG,"onComplainSuccess");
+        }
+      });
       currentPosId = posId;
     }
     return iad;
@@ -133,7 +140,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
     // 如果支持奖励，设置ADRewardListener接收onReward回调；图文广告暂不支持奖励
     iad.setRewardListener(this);
     // onADReceive之后才可调用getECPM()
-    Log.d(TAG, "eCPMLevel = " + iad.getECPMLevel() + ", ECPM: " + iad.getECPM()
+    Log.d(TAG, "onADReceive， eCPMLevel = " + iad.getECPMLevel() + ", ECPM: " + iad.getECPM()
         + ", videoduration=" + iad.getVideoDuration()
         + ", adPatternType=" + iad.getAdPatternType()
         + ", testExtraInfo:" + iad.getExtraInfo().get("mp")

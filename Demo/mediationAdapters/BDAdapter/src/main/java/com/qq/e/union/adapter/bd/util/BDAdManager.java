@@ -24,6 +24,8 @@ public class BDAdManager {
             .setAppName("网盟demo")
             // 2、应用在mssp平台申请到的appsid，和包名一一对应，此处设置等同于在AndroidManifest.xml里面设置
             .setAppsid(appId)
+            // 注意，如果setHttps设置为true，会导致百度无法拉取到 banner 广告
+            .setHttps(false)
             .build(context);
         bdAdConfig.init();
 

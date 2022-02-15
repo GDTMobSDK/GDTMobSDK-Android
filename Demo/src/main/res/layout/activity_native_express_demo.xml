@@ -155,6 +155,16 @@
             android:layout_marginRight="16dp"
             android:text="调整尺寸" />
 
+        <Button
+            android:id="@+id/buttonLoadAndShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/buttonDestroy"
+            android:layout_toRightOf="@id/buttonDestroy"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="加载并展示广告" />
+
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="wrap_content"

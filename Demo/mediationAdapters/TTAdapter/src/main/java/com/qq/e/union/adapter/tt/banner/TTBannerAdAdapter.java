@@ -196,4 +196,28 @@ public class TTBannerAdAdapter extends BaseBannerAd {
   public View getAdView() {
     return mAdView;
   }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (mTTAd != null) {
+      mTTAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (mTTAd != null) {
+      mTTAd.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (mTTAd != null) {
+      mTTAd.setPrice((double) price);
+    }
+  }
 }

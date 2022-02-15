@@ -18,6 +18,7 @@ import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 
 import java.util.HashMap;
@@ -193,6 +194,12 @@ public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements
   public int getECPM() {
     return mKsFeedAd.getECPM();
   }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    return mAdData.getExtraInfo();
+  }
+
   @Override
   public String getECPMLevel() {
     return mAdData.getECPMLevel();
@@ -261,5 +268,10 @@ public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements
   @Override
   public boolean isValid() {
     return true;
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener listener) {
+
   }
 }

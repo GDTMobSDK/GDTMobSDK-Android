@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -74,6 +75,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
   private boolean mBindToCustomView;
   private FrameLayout mCustomContainer;
   private boolean mLoadSuccess;
+  private boolean mIsLoadAndShow;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -196,6 +198,13 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
     loadAd(false);
   }
 
+  public void onLoadAndShowAdClicked(View view) {
+    mLoadSuccess = false;
+    mIsLoadAndShow = true;
+    loadAd(false);
+  }
+
+
   public void onShowAdClicked(View view) {
     if (mAdData != null) {
       showAd(mAdData);
@@ -237,6 +246,10 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
           public void onVideoCached() {
             Log.d(TAG, "onVideoCached");
             // 视频素材加载完成，此时展示广告不会有进度条。
+            if (mIsLoadAndShow) {
+              showAd(ad);
+              mIsLoadAndShow = false;
+            }
           }
 
           @Override
@@ -244,6 +257,16 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
             Log.d(TAG, "onVideoCacheFailed : " + msg);
           }
         });
+      } else {
+        if (mIsLoadAndShow) {
+          showAd(ad);
+          mIsLoadAndShow = false;
+        }
+      }
+    } else {
+      if (mIsLoadAndShow) {
+        showAd(ad);
+        mIsLoadAndShow = false;
       }
     }
   }
@@ -374,6 +397,12 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
           mCTAButton.setVisibility(View.INVISIBLE);
           mDownloadButton.setVisibility(View.VISIBLE);
         }
+        ad.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+          @Override
+          public void onComplainSuccess() {
+            Log.d(TAG, "onComplainSuccess ");
+          }
+        });
     }
   private void bindMediaView(NativeUnifiedADData ad) {
     VideoOption videoOption = getVideoOption(getIntent());

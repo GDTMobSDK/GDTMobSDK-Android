@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.baidu.mobads.sdk.api.NativeResponse;
 import com.baidu.mobads.sdk.api.XNativeView;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -385,6 +386,11 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   @Override
   public String getButtonText() {
     return data.getActButtonString();
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener listener) {
+
   }
 
   @Override

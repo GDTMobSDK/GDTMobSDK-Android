@@ -17,9 +17,8 @@ import android.widget.Toast;
 import com.qq.e.ads.rewardvideo.RewardVideoAD;
 import com.qq.e.ads.rewardvideo.RewardVideoADListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
-import com.qq.e.comm.constants.BiddingLossReason;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
-import com.qq.e.comm.util.VideoAdValidity;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
@@ -110,6 +109,12 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
       } else {
         rvad = new RewardVideoAD(this, editPosId, this, volumeOn);
       }
+      rvad.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+        @Override
+        public void onComplainSuccess() {
+          Log.i(TAG, "onComplainSuccess");
+        }
+      });
       ServerSideVerificationOptions options = new ServerSideVerificationOptions.Builder()
               .setCustomData("APP's custom data") // 设置激励视频服务端验证的自定义信息
               .setUserId("APP's user id for server verify") // 设置服务端验证的用户信息

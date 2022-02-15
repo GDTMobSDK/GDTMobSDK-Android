@@ -207,4 +207,28 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
         // 期望模板广告view的size, 单位dp, 根据需求手动设置
         .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight);
   }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (ttInteractionExpressAd != null) {
+      ttInteractionExpressAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (ttInteractionExpressAd != null) {
+      ttInteractionExpressAd.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (ttInteractionExpressAd != null) {
+      ttInteractionExpressAd.setPrice((double) price);
+    }
+  }
 }

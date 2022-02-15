@@ -94,4 +94,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <Spinner
+        android:layout_below="@id/posIdContainer"
+        android:layout_marginTop="10dp"
+        android:id="@+id/id_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

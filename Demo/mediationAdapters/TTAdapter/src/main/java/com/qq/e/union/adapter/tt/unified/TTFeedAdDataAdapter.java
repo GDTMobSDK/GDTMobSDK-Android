@@ -12,6 +12,7 @@ import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFeedAd;
 import com.bytedance.sdk.openadsdk.TTImage;
 import com.bytedance.sdk.openadsdk.TTNativeAd;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -439,22 +440,30 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
     ecpmLevel = level;
   }
 
-  /* ================================以下方法暂不支持=========================================== */
-
-  @Override
-  public void sendWinNotification(int price) {
-
-  }
+  
 
   @Override
   public void sendLossNotification(int price, int reason, String adnId) {
+    if (data != null) {
+      data.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
 
+  @Override
+  public void sendWinNotification(int price) {
+    if (data != null) {
+      data.win((double) price);
+    }
   }
 
   @Override
   public void setBidECPM(int price) {
-
+    if (data != null) {
+      data.setPrice((double) price);
+    }
   }
+
+  /* ================================以下方法暂不支持=========================================== */
 
   @Override
   public Map<String, Object> getExtraInfo() {
@@ -579,6 +588,10 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   @Override
   public String getButtonText() {
     return data.getButtonText();
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener callback) {
   }
 
   @Override

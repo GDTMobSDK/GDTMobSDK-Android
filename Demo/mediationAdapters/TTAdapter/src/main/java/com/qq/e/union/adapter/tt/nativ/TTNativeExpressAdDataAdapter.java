@@ -18,6 +18,7 @@ import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.adapter.util.Constant;
@@ -285,6 +286,27 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
     return mAdData.getECPMLevel();
   }
 
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    if (mTTNativeExpressAd != null) {
+      mTTNativeExpressAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    if (mTTNativeExpressAd != null) {
+      mTTNativeExpressAd.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    if (mTTNativeExpressAd != null) {
+      mTTNativeExpressAd.setPrice((double) price);
+    }
+  }
+
   /**
    * ======================================================================
    * 以下方法暂不支持
@@ -296,21 +318,12 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return mAdData.getExtraInfo();
+  }
+
+  @Override
   public void preloadVideo() {
-
-  }
-
-  @Override
-  public void sendWinNotification(int price) {
-  }
-
-  @Override
-  public void sendLossNotification(int price, int reason, String adnId) {
-
-  }
-
-  @Override
-  public void setBidECPM(int price) {
 
   }
 
@@ -348,5 +361,10 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
   @Override
   public boolean isValid() {
     return true;
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener listener) {
+
   }
 }

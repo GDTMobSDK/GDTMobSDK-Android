@@ -51,6 +51,7 @@ public class TTSplashAdAdapter extends BaseSplashAd {
 
   private final String posId;
   private TTAdNative mTTAdNative;
+  private TTSplashAd mTTSplashAd;
   private ADListener adListener;
   private View skipView;        // 开发者传入的跳过按钮
   private ViewGroup container;
@@ -128,6 +129,7 @@ public class TTSplashAdAdapter extends BaseSplashAd {
           onADFailed(ErrorCode.NO_AD_FILL);
           return;
         }
+        mTTSplashAd = ad;
         try {
           ecpm = (int) ad.getMediaExtraInfo().get("price");
         } catch (Exception e) {
@@ -271,6 +273,30 @@ public class TTSplashAdAdapter extends BaseSplashAd {
   @Override
   public String getReqId() {
     return requestId;
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (mTTSplashAd != null) {
+      mTTSplashAd.loss((double) price, String.valueOf(reason), adnId);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (mTTSplashAd != null) {
+      mTTSplashAd.win((double) price);
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (mTTSplashAd != null) {
+      mTTSplashAd.setPrice((double) price);
+    }
   }
 
   @Override

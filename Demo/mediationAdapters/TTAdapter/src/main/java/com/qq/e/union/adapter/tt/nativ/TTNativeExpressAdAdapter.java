@@ -152,6 +152,45 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
     return mRequestId;
   }
 
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (mTTNativeExpressAdDataAdapters == null || mTTNativeExpressAdDataAdapters.size() == 0) {
+      return;
+    }
+    for (TTNativeExpressAdDataAdapter adapter: mTTNativeExpressAdDataAdapters) {
+      if (adapter != null) {
+        adapter.sendLossNotification(price, reason, adnId);
+      }
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (mTTNativeExpressAdDataAdapters == null || mTTNativeExpressAdDataAdapters.size() == 0) {
+      return;
+    }
+    for (TTNativeExpressAdDataAdapter adapter: mTTNativeExpressAdDataAdapters) {
+      if (adapter != null) {
+        adapter.sendWinNotification(price);
+      }
+    }
+  }
+
+  @Override
+  public void setBidECPM(int price) {
+    super.setBidECPM(price);
+    if (mTTNativeExpressAdDataAdapters == null || mTTNativeExpressAdDataAdapters.size() == 0) {
+      return;
+    }
+    for (TTNativeExpressAdDataAdapter adapter: mTTNativeExpressAdDataAdapters) {
+      if (adapter != null) {
+        adapter.setBidECPM(price);
+      }
+    }
+  }
+
 
   /**
    * ======================================================================

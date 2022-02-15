@@ -19,6 +19,7 @@ import com.qq.e.ads.nativ.NativeExpressAD;
 import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.ads.nativ.NativeExpressMediaListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -163,6 +164,12 @@ public class NativeExpressRecyclerViewActivity extends Activity implements
         if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
           view.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
         }
+        view.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+          @Override
+          public void onComplainSuccess() {
+            Log.d(TAG,"onComplainSuccess");
+          }
+        });
         Log.i(TAG, "ad load[" + i + "]: " + getAdInfo(view));
         if (view.getBoundData().getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
           view.setMediaListener(mediaListener);

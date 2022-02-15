@@ -15,6 +15,7 @@ import com.kwad.sdk.api.KsNativeAd;
 import com.kwad.sdk.api.model.AdSourceLogoType;
 import com.kwad.sdk.api.model.InteractionType;
 import com.kwad.sdk.api.model.MaterialType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -531,6 +532,11 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   @Override
   public String getButtonText() {
     return mKsNativeAd.getActionDescription();
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener callback) {
+
   }
 
   @Override

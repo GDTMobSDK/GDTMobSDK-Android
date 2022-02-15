@@ -18,6 +18,7 @@ import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
@@ -142,6 +143,12 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
       } else {
         iad = new UnifiedInterstitialAD(this, posId, this);
       }
+      iad.setNegativeFeedbackListener(new NegativeFeedbackListener() {
+        @Override
+        public void onComplainSuccess() {
+          Log.i(TAG, "onComplainSuccess");
+        }
+      });
       iad.setMediaListener(this);
       iad.setLoadAdParams(DemoUtil.getLoadAdParams("interstitial"));
       currentPosId = posId;

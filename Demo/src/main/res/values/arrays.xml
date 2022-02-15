@@ -62,6 +62,16 @@
         <item>2071446720902845</item>
     </string-array>
 
+    <string-array name="unified_banner">
+        <item>横幅1</item>
+        <item>横幅2</item>
+    </string-array>
+
+    <string-array name="unified_banner_value">
+        <item>4080052898050840</item>
+        <item>9001603994849786</item>
+    </string-array>
+
     <array name="native_ad_unified_ad">
         <item>图文视频-1280 * 720 (默认)</item>
         <item>只出横版视频</item>
@@ -86,7 +96,7 @@
 
     <string-array name="reward_video_value">
         <item>9011264358826997</item>
-        <item>2071040720915430</item>
+        <item>5082873307844506</item>
         <item>2051345750415462</item>
     </string-array>
 

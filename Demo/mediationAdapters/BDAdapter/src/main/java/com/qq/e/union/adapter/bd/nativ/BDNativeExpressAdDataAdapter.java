@@ -19,6 +19,7 @@ import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.union.adapter.util.Constant;
 
@@ -202,6 +203,11 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return mAdData.getExtraInfo();
+  }
+
+  @Override
   public void preloadVideo() {
 
   }
@@ -259,5 +265,10 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
   @Override
   public boolean isValid() {
     return true;
+  }
+
+  @Override
+  public void setNegativeFeedbackListener(NegativeFeedbackListener listener) {
+
   }
 }
