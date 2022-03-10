@@ -113,7 +113,7 @@ public class TTRewardAdAdapter extends BaseRewardAd {
         try {
           ecpm = (int) ad.getMediaExtraInfo().get("price");
         } catch (Exception e) {
-          Log.e(TAG, "get ecpm error ", e);
+          Log.d(TAG, "get ecpm error ", e);
         }
         Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
         try {

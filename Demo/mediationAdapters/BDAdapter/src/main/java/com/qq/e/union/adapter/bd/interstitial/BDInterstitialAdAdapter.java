@@ -275,7 +275,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
         try {
           ecpm = Integer.parseInt(fullScreenVideoAd.getECPMLevel());
         } catch (Exception e) {
-          Log.e(TAG, "get ecpm error ", e);
+          Log.d(TAG, "get ecpm error ", e);
         }
         Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
         mainHandler.post(new Runnable() {

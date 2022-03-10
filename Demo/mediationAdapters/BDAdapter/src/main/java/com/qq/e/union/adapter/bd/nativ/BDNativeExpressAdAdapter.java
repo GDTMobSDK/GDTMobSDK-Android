@@ -164,7 +164,7 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
         try {
           mEcpm = Integer.parseInt(ad.getECPMLevel());
         } catch (Exception e) {
-          Log.e(TAG, "get ecpm error ", e);
+          Log.d(TAG, "get ecpm error ", e);
         }
         Log.d(TAG, "onAdDataSuccess: ecpm = " + mEcpm);
       }

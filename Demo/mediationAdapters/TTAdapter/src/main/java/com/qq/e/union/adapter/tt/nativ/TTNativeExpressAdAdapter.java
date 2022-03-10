@@ -115,7 +115,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
         try {
           mEcpm = (int) ad.getMediaExtraInfo().get("price");
         } catch (Exception e) {
-          Log.e(TAG, "get ecpm error ", e);
+          Log.d(TAG, "get ecpm error ", e);
         }
         Log.d(TAG, "onAdDataSuccess: ecpm = " + mEcpm);
         try {

@@ -48,7 +48,7 @@ public class TTAdManagerHolder {
             sInit = true;
             Log.d(TAG, "init success");
             // 初始化之后申请下权限，开发者如果不想申请可以将此处删除
-            TTAdSdk.getAdManager().requestPermissionIfNecessary(context);
+            // TTAdSdk.getAdManager().requestPermissionIfNecessary(context);
           }
 
           /**

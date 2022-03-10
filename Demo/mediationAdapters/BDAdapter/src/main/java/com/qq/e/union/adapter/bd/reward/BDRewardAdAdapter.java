@@ -88,7 +88,7 @@ public class BDRewardAdAdapter extends BaseRewardAd {
           try {
             ecpm = Integer.parseInt(rewardAd.getECPMLevel());
           } catch (Exception e) {
-            Log.e(TAG, "get ecpm error ", e);
+            Log.d(TAG, "get ecpm error ", e);
           }
           Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
           fireAdEvent(AdEventType.AD_LOADED);
