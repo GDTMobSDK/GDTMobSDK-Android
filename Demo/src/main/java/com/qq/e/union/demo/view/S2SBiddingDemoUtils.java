@@ -1,13 +1,12 @@
 package com.qq.e.union.demo.view;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.qq.e.comm.managers.GDTAdSdk;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +46,7 @@ public class S2SBiddingDemoUtils {
 
   private static Handler sHandler = new Handler(Looper.getMainLooper());
 
-  public static void requestBiddingToken(Context context, String posId, RequestTokenCallBack callBack) {
+  public static void requestBiddingToken(String posId, RequestTokenCallBack callBack) {
     Map<String, Object> map = new HashMap<>();
     map.put("staIn", "abcdefg"); // 开发者自定义参数，默认不传
     String buyerId = GDTAdSdk.getGDTAdManger().getBuyerId(map);
@@ -80,24 +79,24 @@ public class S2SBiddingDemoUtils {
           JSONObject jsonObject = new JSONObject(response);
           String token = jsonObject.optString("token");
           if (TextUtils.isEmpty(token)) {
-            showToast(context, "回包中无 token");
+            ToastUtil.s("回包中无 token");
           } else {
-            showToast(context, "请求 token 成功");
+            ToastUtil.s("请求 token 成功");
             if (callBack != null) {
               Log.d(TAG, "requestBiddingToken: " + callBack);
               callBack.onSuccess(token);
             }
           }
         } else {
-          showToast(context, "请求 token 失败： " + responseCode);
+          ToastUtil.s("请求 token 失败： " + responseCode);
           Log.e(TAG,
               "requestBiddingToken: responseCode: " + responseCode + ", msg:" + connection.getResponseMessage());
         }
       } catch (IOException e) {
-        showToast(context, "请求 token 失败： " + e.getMessage());
+        ToastUtil.s("请求 token 失败： " + e.getMessage());
         e.printStackTrace();
       } catch (JSONException e) {
-        showToast(context, "请求 token 失败： " + e.getMessage());
+        ToastUtil.s("请求 token 失败： " + e.getMessage());
         e.printStackTrace();
       }
     });
@@ -142,12 +141,6 @@ public class S2SBiddingDemoUtils {
       charset = "UTF-8";
     }
     return new String(bytes, charset);
-  }
-
-  private static void showToast(Context context, String msg) {
-    sHandler.post(() -> {
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-    });
   }
 
   public interface RequestTokenCallBack {

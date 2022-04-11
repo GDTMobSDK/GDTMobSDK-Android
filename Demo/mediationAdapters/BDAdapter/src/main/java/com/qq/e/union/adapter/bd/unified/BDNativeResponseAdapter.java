@@ -3,13 +3,16 @@ package com.qq.e.union.adapter.bd.unified;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.baidu.mobads.sdk.api.NativeResponse;
 import com.baidu.mobads.sdk.api.XNativeView;
+import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
@@ -29,6 +32,7 @@ import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,9 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   private Handler mainHandler = new Handler(Looper.getMainLooper());
   private IImageLoader imageLoader;
   private String ecpmLevel;
+  private NativeAdContainer container;
+  private List clickViews;
+  private List customClickViews;
 
   private static final String TAG = BDNativeResponseAdapter.class.getSimpleName();
 
@@ -133,38 +140,50 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   public void bindAdToView(Context context, NativeAdContainer container,
                            FrameLayout.LayoutParams adLogoParams, List<View> clickViews,
                            List<View> customClickViews) {
-    View.OnClickListener listener = v -> {
-      Log.d(TAG, "AD_CLICKED: ");
-      data.handleClick(v);
-      if (adListener != null) {
-        adListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
-      }
-    };
-    if (clickViews != null && clickViews.size() > 0) {
-      for (View v : clickViews) {
-        v.setOnClickListener(listener);
-      }
+    this.container = container;
+    // 视频广告应该通过 bindMediaView 进行绑定
+    if(!isVideo()){
+      registerViewForInteraction(container, clickViews, customClickViews, null);
+    } else {
+      this.container = container;
+      this.clickViews = clickViews;
+      this.customClickViews = customClickViews;
     }
-
-    if (customClickViews != null && customClickViews.size() > 0) {
-      for (View v : customClickViews) {
-        v.setOnClickListener(listener);
-      }
-    }
-
-    // 由于百度没有曝光或展示的回调，所以在这里回调
-    // 使用延时，是为了防止调用 {@link NativeUnifiedADData#setNativeAdEventListener} 在当前方法之后
-    mainHandler.postDelayed(() -> {
-      Log.d(TAG, "AD_EXPOSED: ");
-      data.recordImpression(container);
-      if (adListener != null) {
-        adListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
-      }
-    }, 100);
-
     imageLoader = new AdapterImageLoader(context);
     AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
         28, 15, container, data.getAdLogoUrl()); // 参照百度 demo 设置尺寸
+    container.setViewStatusListener(new ViewStatusListener() {
+      @Override
+      public void onAttachToWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.VISIBLE);
+        }
+      }
+
+      @Override
+      public void onDetachFromWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.INVISIBLE);
+        }
+      }
+
+      @Override
+      public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+      }
+
+      @Override
+      public void onWindowVisibilityChanged(int visibility) {
+
+      }
+
+      @Override
+      public void onDispatchTouchEvent(MotionEvent event) {
+
+      }
+    });
   }
 
   @Override
@@ -209,12 +228,95 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
       }
     });
     mediaView.addView(videoView);
+    registerViewForInteraction(container, clickViews, customClickViews, mediaView);
     videoView.setNativeItem(data);
+    videoView.setVideoMute(videoOption.getAutoPlayMuted());
     videoView.render();
   }
 
   private boolean isVideo() {
     return data.getMaterialType() == NativeResponse.MaterialType.VIDEO;
+  }
+
+  // 获取安装状态、下载进度所对应的按钮文案
+  private String getBtnText(NativeResponse nrAd) {
+    if (nrAd == null) {
+      return "";
+    }
+    String actButtonString = nrAd.getActButtonString();
+    if (nrAd.getAdActionType() == NativeResponse.ACTION_TYPE_APP_DOWNLOAD
+        || nrAd.getAdActionType() == NativeResponse.ACTION_TYPE_DEEP_LINK) {
+      int status = nrAd.getDownloadStatus();
+      if (status >= 0 && status <= 100) {
+        return "下载中：" + status + "%";
+      } else if (status == 101) {
+        return "点击安装";
+      } else if (status == 102) {
+        return "继续下载";
+      } else if (status == 103) {
+        return "点击启动";
+      } else if (status == 104) {
+        return "重新下载";
+      } else {
+        if (!TextUtils.isEmpty(actButtonString)) {
+          return actButtonString;
+        }
+        return "点击下载";
+      }
+    }
+    if (!TextUtils.isEmpty(actButtonString)) {
+      return actButtonString;
+    }
+    return "查看详情";
+  }
+
+  private void registerViewForInteraction(NativeAdContainer container, List<View> clickViews,
+                                          List<View> customClickViews, MediaView mediaView) {
+    if (mediaView != null) {
+      clickViews.add(mediaView);
+    }
+    /**
+     * 注册可点击的View，点击和曝光会在内部完成
+     * @Param view 广告容器或广告View
+     * @Param clickViews 可点击的View，默认展示下载整改弹框
+     * @Param creativeViews 带有广告文案之类的View，点击不会触发下载整改弹框
+     * @Param interactionListener 点击、曝光回调
+     */
+    data.registerViewForInteraction(container, clickViews, customClickViews,
+        new NativeResponse.AdInteractionListener() {
+          @Override
+          public void onAdClick() {
+            Log.i(TAG, "onAdClick:" + data.getTitle());
+            if (adListener != null) {
+              adListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+            }
+          }
+
+          @Override
+          public void onADExposed() {
+            Log.i(TAG,
+                "onADExposed:" + data.getTitle() + ", actionType = " + data.getAdActionType());
+            data.recordImpression(container);
+            if (adListener != null) {
+              adListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
+            }
+          }
+
+          @Override
+          public void onADExposureFailed(int reason) {
+            Log.i(TAG, "onADExposureFailed: " + reason);
+          }
+
+          @Override
+          public void onADStatusChanged() {
+            Log.i(TAG, "onADStatusChanged:" + getBtnText(data));
+          }
+
+          @Override
+          public void onAdUnionClick() {
+            Log.i(TAG, "onADUnionClick");
+          }
+        });
   }
 
   @Override
@@ -270,6 +372,7 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
       videoView.stop();
       videoView = null;
     }
+    AdnLogoUtils.clearPreviousLogoView(container);
   }
 
   /* ==================================以下方法暂不支持==========================================*/
@@ -299,7 +402,9 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   }
 
   @Override
-  public void setVideoMute(boolean mute) { }
+  public void setVideoMute(boolean mute) {
+    videoView.setVideoMute(mute);
+  }
 
   @Override
   public boolean isAppAd() {
@@ -385,7 +490,7 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
 
   @Override
   public String getButtonText() {
-    return data.getActButtonString();
+    return getBtnText(data);
   }
 
   @Override

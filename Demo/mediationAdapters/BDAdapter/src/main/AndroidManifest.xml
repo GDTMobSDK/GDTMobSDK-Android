@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permissio.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- 高于Android 7的系统上，如果应用的 targetSdkVersion >= 26 ，推荐增加权限声明（SDK将通过此权限触发App安装动作）-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />

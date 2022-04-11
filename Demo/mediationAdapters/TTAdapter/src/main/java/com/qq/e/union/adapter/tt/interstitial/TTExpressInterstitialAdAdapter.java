@@ -11,6 +11,8 @@ import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.AdEventType;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
+import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
  * 穿山甲插屏全屏-模板和插屏半屏-模板广告视频适配器
  * 作用：封装穿山甲，适配优量汇插屏全屏-模板和插屏半屏-模板广告
  */
-public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
+public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter implements TTAdManagerHolder.InitCallBack {
 
   private final String TAG = getClass().getSimpleName();
   private TTNativeExpressAd ttInteractionExpressAd;
@@ -34,6 +36,10 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
   // ExpressInterstitial的加载、展示逻辑和NativeInterstitial不同
   @Override
   public void loadAd() {
+    LoadAdUtil.load(this);
+  }
+
+  private void loadAdAfterInitSuccess() {
     Log.d(TAG, "loadAD");
     if (ttAdNative == null) {
       Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
@@ -47,7 +53,7 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
       public void onError(int code, String message) {
         Log.d(TAG, "load error : " + code + ", " + message);
         if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL));
+          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL, code, message));
         }
       }
 
@@ -229,6 +235,20 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter{
     super.setBidECPM(price);
     if (ttInteractionExpressAd != null) {
       ttInteractionExpressAd.setPrice((double) price);
+    }
+  }
+
+  @Override
+  public void onInitSuccess() {
+    loadAdAfterInitSuccess();
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    if (unifiedInterstitialADListener != null) {
+      unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
+          ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
   }
 }

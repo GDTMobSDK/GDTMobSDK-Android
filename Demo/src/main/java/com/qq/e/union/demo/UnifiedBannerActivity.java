@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.qq.e.ads.banner2.UnifiedBannerADListener;
 import com.qq.e.ads.banner2.UnifiedBannerView;
@@ -22,12 +20,13 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
 
 
-public class UnifiedBannerActivity extends Activity implements OnClickListener,
+public class UnifiedBannerActivity extends BaseActivity implements OnClickListener,
     UnifiedBannerADListener, AdapterView.OnItemSelectedListener {
 
   private static final String TAG = UnifiedBannerActivity.class.getSimpleName();
@@ -96,7 +95,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
             .getText().toString());
         this.mBannerView.setRefresh(refreshInterval);
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "请输入合法的轮播时间间隔!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("请输入合法的轮播时间间隔!");
       }
     } else {
       // 默认 30 秒轮播，可以不设置
@@ -134,7 +133,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
         doCloseBanner();
         break;
       case R.id.isAdValid:
-        DemoUtil.isAdValid(this, mLoadSuccess, mBannerView != null && mBannerView.isValid(), false);
+        DemoUtil.isAdValid(mLoadSuccess, mBannerView != null && mBannerView.isValid(), false);
         break;
       default:
         break;
@@ -142,7 +141,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> mS2SBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2SBiddingToken = token);
   }
 
   private void doRefreshBanner() {
@@ -167,7 +166,7 @@ public class UnifiedBannerActivity extends Activity implements OnClickListener,
   public void onNoAD(AdError adError) {
     String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
         adError.getErrorCode(), adError.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
   }
 
   @Override

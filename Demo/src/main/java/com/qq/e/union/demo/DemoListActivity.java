@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.qq.e.ads.dfa.GDTAppDialogClickListener;
 import com.qq.e.ads.splash.SplashAD;
@@ -29,7 +28,10 @@ import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.union.adapter.test.activity.MediationTestActivity;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
+import com.qq.e.union.tools.ToolsActivity;
+import com.qq.e.union.tools.view.MockFloatWindowManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,11 +78,8 @@ public class DemoListActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if (id == R.id.action_settings) {
-      Toast.makeText(this, "优量汇，结盟而赢", Toast.LENGTH_LONG).show();
+      ToastUtil.l("优量汇，结盟而赢");
       return true;
-    } else if (id == R.id.action_muid) {
-      Intent intent = new Intent(this, DeviceInfoActivity.class);
-      startActivity(intent);
     } else if (id == R.id.action_mediation_tool) {
       Intent intent = new Intent(this, MediationTestActivity.class);
       startActivity(intent);
@@ -124,6 +123,16 @@ public class DemoListActivity extends AppCompatActivity {
       boolean isCheck = item.isChecked();
       item.setChecked(!isCheck);
       DemoUtil.setNeedSetBidECPM(!isCheck);
+    } else if (id == R.id.action_ad_tools_window) {
+      boolean isChecked = item.isChecked();
+      item.setChecked(!isChecked);
+      if (!isChecked) {
+        MockFloatWindowManager.getInstance().show(getApplicationContext());
+      } else {
+        MockFloatWindowManager.getInstance().remove();
+      }
+    } else if (id == R.id.action_ad_tools) {
+      startActivity(new Intent(this, ToolsActivity.class));
     }
     return super.onOptionsItemSelected(item);
   }
@@ -212,7 +221,7 @@ public class DemoListActivity extends AppCompatActivity {
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == 1024 && !hasAllPermissionsGranted(grantResults)) {
-      Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+      ToastUtil.l("应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。");
       // 如果用户没有授权，那么应该说明意图，引导用户去设置里面授权。
       Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
       intent.setData(Uri.parse("package:" + getPackageName()));
@@ -270,7 +279,7 @@ public class DemoListActivity extends AppCompatActivity {
       if (isFromBackPress) {
         finish();
       } else {
-        Toast.makeText(DemoListActivity.this, "没有可以安装或激活的应用", Toast.LENGTH_SHORT).show();
+        ToastUtil.s("没有可以安装或激活的应用");
       }
     }
 

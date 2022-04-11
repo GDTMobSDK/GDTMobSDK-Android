@@ -5,6 +5,7 @@
         <item>图文+视频，小规格</item>
         <item>视频，大规格(竖版视频)</item>
         <item>视频，小规格 (横版视频)</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="unified_interstitial_value">
@@ -12,6 +13,7 @@
         <item>9021340750299543</item>
         <item>7011249988911812</item>
         <item>6001646908910578</item>
+        <item>101362</item>
     </string-array>
 
     <array name="unified_interstitial_video">
@@ -19,6 +21,7 @@
         <item>图文广告</item>
         <item>竖版视频</item>
         <item>横版视频</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="unified_interstitial_video_value">
@@ -26,6 +29,7 @@
         <item>3002037099789704</item>
         <item>9051949928507973</item>
         <item>5081642918611034</item>
+        <item>101361</item>
     </string-array>
 
     <array name="native_express_video_ad">
@@ -43,6 +47,7 @@
         <item>视频-上文下图</item>
         <item>视频-双图双文</item>
         <item>视频-纯图1280*720</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="native_express_video_ad_value">
@@ -60,16 +65,19 @@
         <item>5001144790200890</item>
         <item>1071447710703842</item>
         <item>2071446720902845</item>
+        <item>101365</item>
     </string-array>
 
     <string-array name="unified_banner">
         <item>横幅1</item>
         <item>横幅2</item>
+        <item>聚合广告位组id</item>
     </string-array>
 
     <string-array name="unified_banner_value">
         <item>4080052898050840</item>
         <item>9001603994849786</item>
+        <item>101364</item>
     </string-array>
 
     <array name="native_ad_unified_ad">
@@ -78,6 +86,7 @@
         <item>只出竖版视频</item>
         <item>图文视频-三小图 或 (1280 * 720)</item>
         <item>图文-1080 * 1920 或 800 * 1200</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="native_ad_unified_ad_value">
@@ -86,18 +95,21 @@
         <item>1021241710113708</item>
         <item>8051843730219893</item>
         <item>7031143770818824</item>
+        <item>101360</item>
     </string-array>
 
     <array name="reward_video">
         <item>激励视频</item>
         <item>激励视频(不支持横屏广告)</item>
         <item>激励浏览</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="reward_video_value">
         <item>9011264358826997</item>
         <item>5082873307844506</item>
         <item>2051345750415462</item>
+        <item>101359</item>
     </string-array>
 
     <array name="splash_ad">
@@ -105,13 +117,15 @@
         <item>竖图+拼接竖图(1280*720)</item>
         <item>仅视频</item>
         <item>支持开屏V+的广告位</item>
+        <item>聚合广告位组id</item>
     </array>
 
     <string-array name="splash_ad_value">
-        <item>2001447730515391</item>
-        <item>4091948740215333</item>
-        <item>3071604182864574</item>
-        <item>2091501132563573</item>
+        <item>9093517612222759</item>
+        <item>6083113602838470</item>
+        <item>4013112622631808</item>
+        <item>7023116672537906</item>
+        <item>101363</item>
     </string-array>
 
     <!-- demo 引用字段 -->

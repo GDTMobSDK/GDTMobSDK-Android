@@ -5,11 +5,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.comm.managers.status.SDKStatus;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,12 +53,12 @@ public class DemoUtil {
     return loadAdParams;
   }
 
-  public static boolean isAdValid(Context context, boolean loadSuccess, boolean isValid, boolean showAd) {
+  public static boolean isAdValid(boolean loadSuccess, boolean isValid, boolean showAd) {
     if (!loadSuccess) {
-      Toast.makeText(context, "请加载广告成功后再进行校验 ！ ", Toast.LENGTH_LONG).show();
+      ToastUtil.l("请加载广告成功后再进行校验 ！ ");
     } else {
       if (!showAd || !isValid) {
-        Toast.makeText(context, "广告" + (isValid ? "有效" : "无效"), Toast.LENGTH_LONG).show();
+        ToastUtil.l("广告" + (isValid ? "有效" : "无效"));
       }
     }
     return isValid;

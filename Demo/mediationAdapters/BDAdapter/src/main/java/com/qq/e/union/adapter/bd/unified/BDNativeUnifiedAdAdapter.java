@@ -32,7 +32,7 @@ import static com.qq.e.comm.adevent.AdEventType.VIDEO_CACHE;
 /**
  * 百度自渲染广告适配器
  */
-public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements BaiduNativeManager.PortraitVideoAdListener {
+public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements BaiduNativeManager.FeedAdListener {
 
   private static final String TAG = BDNativeUnifiedAdAdapter.class.getSimpleName();
   private final Handler mainHandler;
@@ -85,11 +85,7 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
 
     BaiduNativeManager nativeManager = new BaiduNativeManager(context, posId);
 
-    if (isVideoAd) {
-      nativeManager.loadPortraitVideoAd(requestParameters, this);
-    } else {
-      nativeManager.loadFeedAd(requestParameters, this);
-    }
+    nativeManager.loadFeedAd(requestParameters, this);
   }
 
   public void setAdListener(ADListener listener) {
@@ -100,20 +96,20 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
   @Override
   public void onNativeFail(int errorCode, String message) {
     Log.d(TAG, "onNativeFail: " + errorCode + ", message:" + message);
-    onAdFailed(ErrorCode.NO_AD_FILL);
+    onAdFailed(ErrorCode.NO_AD_FILL, errorCode, message);
   }
 
   @Override
   public void onNoAd(int i, String s) {
     Log.w(TAG, "onLoadFail reason:" + i + "errorCode:" + s);
-    onAdFailed(ErrorCode.NO_AD_FILL);
+    onAdFailed(ErrorCode.NO_AD_FILL, i, s);
   }
 
   @Override
   public void onNativeLoad(List<NativeResponse> arg0) {
     Log.d(TAG, "onNativeLoad: " + arg0);
     if (arg0 == null || arg0.isEmpty()) {
-      onAdFailed(ErrorCode.NO_AD_FILL);
+      onAdFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
       return;
     }
     onAdDataSuccess(arg0);
@@ -137,12 +133,6 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
     Log.i(TAG, "onLpClosed.");
   }
 
-  @Override
-  public void onAdClick() {
-    Log.d(TAG, "onAdClick.");
-    fireAdEvent(AD_CLICKED);
-  }
-
   /**
    * 加载广告成功回调
    *
@@ -163,8 +153,8 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
   /**
    * @param errorCode 错误码
    */
-  private void onAdFailed(int errorCode) {
-    fireAdEvent(AdEventType.NO_AD, new Object[]{errorCode});
+  private void onAdFailed(int errorCode, Integer onlineErrorCode, String errorMessage) {
+    fireAdEvent(AdEventType.NO_AD, new Object[]{errorCode}, onlineErrorCode, errorMessage);
   }
 
   @Override

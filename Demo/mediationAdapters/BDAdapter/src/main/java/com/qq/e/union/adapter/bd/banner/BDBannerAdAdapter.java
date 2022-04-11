@@ -76,7 +76,8 @@ public class BDBannerAdAdapter extends BaseBannerAd {
         Log.d(TAG, "onAdFailed: " + s);
         mUiHandler.post(() -> {
           if (mBannerADListener != null) {
-            mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL));
+            mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
+                ErrorCode.DEFAULT_ERROR_CODE, s));
           }
         });
       }

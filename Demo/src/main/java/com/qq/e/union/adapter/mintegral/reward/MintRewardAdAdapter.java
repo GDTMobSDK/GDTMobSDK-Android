@@ -194,9 +194,12 @@ public class MintRewardAdAdapter extends BaseRewardAd {
     public int getECPM() {
         // mBidResponsed.getPrice() 单位:元
         // return 单位:分
-        int ecpm = (int) ((Float.valueOf(mBidResponsed.getPrice())) * 100);
-        Log.i(TAG,"ecpm: "+ecpm+" currency: "+mBidResponsed.getCur());
-        return mBidResponsed != null ? ecpm : Constant.VALUE_NO_ECPM;
+        if (mBidResponsed != null) {
+            int ecpm = (int) ((Float.parseFloat(mBidResponsed.getPrice())) * 100);
+            Log.i(TAG, "ecpm: " + ecpm + " currency: " + mBidResponsed.getCur());
+            return ecpm;
+        }
+        return Constant.VALUE_NO_ECPM;
     }
 
     @Override

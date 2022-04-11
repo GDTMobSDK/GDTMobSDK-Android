@@ -10,6 +10,9 @@ import com.bytedance.sdk.openadsdk.TTAdManager;
 import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.qq.e.union.adapter.util.PersonalRecommendUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 可以用一个单例来保存TTAdManager实例，在需要初始化sdk的时候调用
  */
@@ -17,22 +20,26 @@ public class TTAdManagerHolder {
 
   private final static String TAG = TTAdManagerHolder.class.getSimpleName();
 
-  private static volatile boolean sInit;
+  private static volatile InitStatus sInitStatus = InitStatus.UN_INIT;
+  private static List<InitCallBack> sCallBackList = new ArrayList<>();
+
+  public enum InitStatus{
+    UN_INIT,
+    INIT_SUCCESS,
+    INIT_FAIL,
+  }
 
   public static TTAdManager get() {
-    if (!sInit) {
-      throw new RuntimeException("TTAdSdk is not init, please check.");
-    }
     return TTAdSdk.getAdManager();
   }
 
   public static void init(Context context, String appId) {
-    Log.d(TAG, "init: context: " + context + ", appId: " + appId + ", sInit: " + sInit);
-    if (sInit) {
+    Log.d(TAG, "init: context: " + context + ", appId: " + appId + ", sInit: " + sInitStatus);
+    if (sInitStatus.equals(InitStatus.INIT_SUCCESS)) {
       return;
     }
     synchronized (TTAdManagerHolder.class) {
-      if (!sInit) {
+      if (!sInitStatus.equals(InitStatus.INIT_SUCCESS)) {
 
         // 穿山甲在3450版本对SDK的初始化方法进行了较大的改动，支持了同步初始化和异步初始化两种方式
         // 若您接入的是穿山甲Pro版本的SDK，则只能使用异步初始化的方式。同时混淆规则也要同步调整
@@ -45,10 +52,14 @@ public class TTAdManagerHolder {
            */
           @Override
           public void success() {
-            sInit = true;
+            sInitStatus = InitStatus.INIT_SUCCESS;
             Log.d(TAG, "init success");
             // 初始化之后申请下权限，开发者如果不想申请可以将此处删除
             // TTAdSdk.getAdManager().requestPermissionIfNecessary(context);
+            for (InitCallBack initCallBack: sCallBackList) {
+              initCallBack.onInitSuccess();
+            }
+            sCallBackList.clear();
           }
 
           /**
@@ -57,9 +68,17 @@ public class TTAdManagerHolder {
            */
           @Override
           public void fail(int code, String msg) {
+            sInitStatus = InitStatus.INIT_FAIL;
             Log.d(TAG, "init fail, code = " + code + "s = " + msg);
+            for (InitCallBack initCallBack: sCallBackList) {
+              initCallBack.onInitFail();
+            }
+            sCallBackList.clear();
           }
         });
+
+        // 清理 7 天以上部分文件内容
+        // DeleteLruApkUtils.deleteApkFile(context);
       }
     }
   }
@@ -87,5 +106,19 @@ public class TTAdManagerHolder {
       builder.data("[{\"name\":\"" + PersonalRecommendUtils.sTTKey + "\",\"value\":\"" + PersonalRecommendUtils.sTTState + "\"}]");
     }
     return builder.build();
+  }
+
+  public static InitStatus getSdkInitStatus(){
+    return sInitStatus;
+  }
+
+  public static void registerInitCallback(InitCallBack initCallBack) {
+    sCallBackList.add(initCallBack);
+  }
+
+  public interface InitCallBack{
+    void onInitSuccess();
+
+    void onInitFail();
   }
 }

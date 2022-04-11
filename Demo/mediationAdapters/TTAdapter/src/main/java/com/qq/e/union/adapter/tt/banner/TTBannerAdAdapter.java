@@ -12,6 +12,7 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseBannerAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
@@ -24,7 +25,7 @@ import java.util.List;
  * 宽高比 6.4 : 1 测试广告位为 901121223
  */
 
-public class TTBannerAdAdapter extends BaseBannerAd {
+public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder.InitCallBack {
 
   private static final String TAG = "TTBannerAdAdapter";
   private final String mPosId;
@@ -48,6 +49,10 @@ public class TTBannerAdAdapter extends BaseBannerAd {
 
   @Override
   public void loadAD() {
+    LoadAdUtil.load(this);
+  }
+
+  private void loadADAfterInitSuccess() {
     //step:创建广告请求参数AdSlot,具体参数含义参考文档
     AdSlot adSlot = new AdSlot.Builder()
         .setCodeId(mPosId) //广告位id
@@ -60,7 +65,7 @@ public class TTBannerAdAdapter extends BaseBannerAd {
       public void onError(int code, String message) {
         Log.w(TAG, "onError: " + code + ", " + message);
         if (mBannerADListener != null) {
-          mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL));
+          mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL, code, message));
         }
       }
 
@@ -158,7 +163,7 @@ public class TTBannerAdAdapter extends BaseBannerAd {
       public void onSelected(int position, String value, boolean enforce) {
 
         if (enforce) {
-          Log.w(TAG, "dislick onSelected: 模版Banner 穿山甲sdk强制将view关闭了");
+          Log.w(TAG, "dislick onSelected: 模板Banner 穿山甲sdk强制将view关闭了");
         }
         if (mBannerADListener != null) {
           mBannerADListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));;
@@ -218,6 +223,20 @@ public class TTBannerAdAdapter extends BaseBannerAd {
     super.setBidECPM(price);
     if (mTTAd != null) {
       mTTAd.setPrice((double) price);
+    }
+  }
+
+  @Override
+  public void onInitSuccess() {
+    loadADAfterInitSuccess();
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    if (mBannerADListener != null) {
+      mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
+          ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
   }
 }

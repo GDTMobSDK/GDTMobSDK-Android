@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
@@ -26,6 +24,7 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ import java.util.List;
  * Created by noughtchen on 2017/4/17.
  */
 
-public class NativeExpressDemoActivity extends Activity implements View.OnClickListener,
+public class NativeExpressDemoActivity extends BaseActivity implements View.OnClickListener,
         NativeExpressAD.NativeExpressADListener, CompoundButton.OnCheckedChangeListener {
 
   private static final String TAG = "ExpressDemoActivity";
@@ -54,7 +53,6 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_native_express_demo);
     container = (ViewGroup) findViewById(R.id.container);
     editTextWidth = (EditText) findViewById(R.id.editWidth);
@@ -74,6 +72,14 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     checkBoxAutoHeight =  (CheckBox) findViewById(R.id.checkboxAutoHeight);
     checkBoxFullWidth.setOnCheckedChangeListener(this);
     checkBoxAutoHeight.setOnCheckedChangeListener(this);
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  protected void loadAd() {
+    mLoadSuccess = false;
+    isPreloadVideo = false;
+    refreshAd();
   }
 
   @Override
@@ -105,9 +111,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.buttonRefresh:
-        mLoadSuccess = false;
-        isPreloadVideo = false;
-        refreshAd();
+        loadAd();
         break;
       case R.id.buttonPreloadVideo:
         mLoadSuccess = false;
@@ -119,7 +123,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
         resizeAd();
         break;
       case R.id.is_ad_valid_button:
-        DemoUtil.isAdValid(this, mLoadSuccess, nativeExpressADView != null && nativeExpressADView.isValid(), false);
+        DemoUtil.isAdValid(mLoadSuccess, nativeExpressADView != null && nativeExpressADView.isValid(), false);
         break;
       case R.id.buttonShow:
         if(nativeExpressADView != null){
@@ -164,7 +168,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
       nativeExpressAD.loadAD(1, DemoUtil.getLoadAdParams("native_express"));
     } catch (NumberFormatException e) {
       Log.w(TAG, "ad size invalid.");
-      Toast.makeText(this, "请输入合法的宽高数值", Toast.LENGTH_SHORT).show();
+      ToastUtil.s("请输入合法的宽高数值");
     }
   }
 
@@ -206,7 +210,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
       }
     } catch (NumberFormatException e) {
       Log.w(TAG, "ad size invalid.");
-      Toast.makeText(this, "请输入合法的宽高数值", Toast.LENGTH_SHORT).show();
+      ToastUtil.s("请输入合法的宽高数值");
     }
   }
 
@@ -364,7 +368,7 @@ public class NativeExpressDemoActivity extends Activity implements View.OnClickL
     String width = editTextWidth.getText().toString();
     String height = editTextHeight.getText().toString();
     if (TextUtils.isEmpty(width) || TextUtils.isEmpty(height)) {
-      Toast.makeText(this, "请先输入广告位的宽、高！", Toast.LENGTH_SHORT).show();
+      ToastUtil.s("请先输入广告位的宽、高！");
       return true;
     }
 

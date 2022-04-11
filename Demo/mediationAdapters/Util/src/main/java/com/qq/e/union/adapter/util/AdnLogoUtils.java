@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
@@ -50,7 +52,19 @@ public class AdnLogoUtils {
     return adLogoView;
   }
 
-  private static LogoImageView getAddedLogo(NativeAdContainer container) {
+  public static void clearPreviousLogoView(NativeAdContainer container) {
+    if (container != null) {
+      LogoImageView logoImageView;
+      if ((logoImageView = getAddedLogo(container)) != null) {
+        ViewParent parent = logoImageView.getParent();
+        if (parent != null) {
+          ((ViewGroup) parent).removeView(logoImageView);
+        }
+      }
+    }
+  }
+
+  public static LogoImageView getAddedLogo(NativeAdContainer container) {
     for (int i = 0; i < container.getChildCount(); i++) {
       View child = container.getChildAt(i);
       if (child instanceof LogoImageView) {

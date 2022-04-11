@@ -1,9 +1,7 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,13 +16,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
@@ -36,13 +30,14 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
-public class NativeADUnifiedListViewActivity extends Activity implements NativeADUnifiedListener, AbsListView.OnScrollListener {
+public class NativeADUnifiedListViewActivity extends BaseActivity implements NativeADUnifiedListener, AbsListView.OnScrollListener {
 
   private static final String TAG = NativeADUnifiedListViewActivity.class.getSimpleName();
   private CustomAdapter mAdapter;
@@ -103,11 +98,6 @@ public class NativeADUnifiedListViewActivity extends Activity implements NativeA
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAds != null) {
-      for (NativeUnifiedADData ad : mAds) {
-        ad.resume();
-      }
-    }
   }
 
   @Override
@@ -150,7 +140,7 @@ public class NativeADUnifiedListViewActivity extends Activity implements NativeA
     mIsLoading = false;
     String msg = "onNoAd error code: " + error.getErrorCode() + ", error msg: " + error.getErrorMsg();
     Log.d(TAG, msg);
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    ToastUtil.s(msg);
   }
 
   @Override

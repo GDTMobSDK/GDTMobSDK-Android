@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,17 +10,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MAX;
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MIN;
 
 
-public class NativeADUnifiedActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class NativeADUnifiedActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
 
   private Spinner mPlayNetworkSpinner;
   private CheckBox mVideoOptionCheckBox;
@@ -98,10 +96,10 @@ public class NativeADUnifiedActivity extends Activity implements AdapterView.OnI
         if (rst > 0) {
           return rst;
         } else {
-          Toast.makeText(getApplicationContext(), "最小视频时长输入须大于0!", Toast.LENGTH_LONG).show();
+          ToastUtil.l("最小视频时长输入须大于0!");
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最小视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最小视频时长输入不是整数!");
       }
     }
     return 0;
@@ -115,10 +113,10 @@ public class NativeADUnifiedActivity extends Activity implements AdapterView.OnI
         if (rst >= VIDEO_DURATION_SETTING_MIN && rst <= VIDEO_DURATION_SETTING_MAX) {
           return rst;
         } else {
-          Toast.makeText(getApplicationContext(), "最大视频时长输入不在有效区间内!", Toast.LENGTH_LONG).show();
+          ToastUtil.l("最大视频时长输入不在有效区间内!");
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最大视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最大视频时长输入不是整数!");
       }
     }
     return 0;
@@ -149,7 +147,7 @@ public class NativeADUnifiedActivity extends Activity implements AdapterView.OnI
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> mS2SBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2SBiddingToken = token);
   }
 
   private Intent getIntent(Class cls){

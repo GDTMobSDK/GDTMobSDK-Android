@@ -13,7 +13,7 @@ import com.qq.e.union.adapter.util.PersonalRecommendUtils;
  */
 public class KSSDKInitUtil {
 
-  private static boolean mIsInit;
+  private static volatile boolean mIsInit;
 
   public static void init(Context appContext, String appId) {
     Log.d("KSSDKInitUtil", "init: context: " + appContext + ", appid: " + appId + ", mIsInit: " + mIsInit);

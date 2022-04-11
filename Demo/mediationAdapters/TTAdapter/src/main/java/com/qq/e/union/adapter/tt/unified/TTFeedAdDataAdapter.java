@@ -3,6 +3,7 @@ package com.qq.e.union.adapter.tt.unified;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFeedAd;
 import com.bytedance.sdk.openadsdk.TTImage;
 import com.bytedance.sdk.openadsdk.TTNativeAd;
+import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
@@ -31,6 +33,7 @@ import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 import com.qq.e.union.adapter.util.PxUtils;
 
 import java.util.ArrayList;
@@ -63,6 +66,7 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   private List<View> customClickViews;
   private int apkStatus;
   private String ecpmLevel;
+  private boolean hasExposed;
   /**
    * 要持有一下下载 listener，否则会被回收
    */
@@ -217,6 +221,38 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
     AdnLogoUtils.initAdLogo(context, imageLoader, adLogoParams,
         FrameLayout.LayoutParams.WRAP_CONTENT,
         FrameLayout.LayoutParams.WRAP_CONTENT, container, data.getAdLogo());
+    container.setViewStatusListener(new ViewStatusListener() {
+      @Override
+      public void onAttachToWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.VISIBLE);
+        }
+      }
+
+      @Override
+      public void onDetachFromWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.INVISIBLE);
+        }
+      }
+
+      @Override
+      public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+      }
+
+      @Override
+      public void onWindowVisibilityChanged(int visibility) {
+
+      }
+
+      @Override
+      public void onDispatchTouchEvent(MotionEvent event) {
+
+      }
+    });
   }
 
   @Override
@@ -338,7 +374,11 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
 
       @Override
       public void onAdShow(TTNativeAd ttNativeAd) {
-        Log.d(TAG, "onAdShow: ");
+        Log.d(TAG, "onAdShow: " + hasExposed);
+        if (hasExposed) {
+          return;
+        }
+        hasExposed = true;
         if (listener != null) {
           listener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
         }
@@ -428,6 +468,7 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
       mediaView.removeAllViews();
       mediaView = null;
     }
+    AdnLogoUtils.clearPreviousLogoView(container);
     data = null;
   }
 

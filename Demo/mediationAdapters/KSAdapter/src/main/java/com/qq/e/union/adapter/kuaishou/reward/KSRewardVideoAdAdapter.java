@@ -129,12 +129,14 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
           return;
         }
         Log.e(TAG, "onError: code : " + code + "  msg: " + msg);
-        onAdError(ErrorCode.NO_AD_FILL);
+        onAdError(ErrorCode.NO_AD_FILL, code, msg);
       }
 
       @Override
-      public void onRequestResult(int adNumber) {
-        Log.d(TAG, "激励视频广告请求填充个数: " + adNumber);
+      public void onRewardVideoResult(@Nullable List<KsRewardVideoAd> adList) {
+        if (adList != null) {
+          Log.d(TAG, "激励视频广告请求填充个数: " + adList.size());
+        }
       }
 
       @Override
@@ -178,7 +180,7 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
             @Override
             public void onVideoPlayError(int code, int extra) {
               Log.d(TAG, "code = "+ code + "  extra = " + extra);
-              onAdError(ErrorCode.VIDEO_PLAY_ERROR);
+              onAdError(ErrorCode.VIDEO_PLAY_ERROR, code, ErrorCode.DEFAULT_ERROR_MESSAGE);
             }
 
             @Override
@@ -242,9 +244,9 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
   /**
    * @param errorCode 错误码
    */
-  private void onAdError(int errorCode) {
+  private void onAdError(int errorCode, Integer onlineErrorCode, String errorMessage) {
     if (mListener != null) {
-      mListener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}));
+      mListener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}, onlineErrorCode, errorMessage));
     }
   }
 }

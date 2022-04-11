@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,86 +8,93 @@ import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADZoomOutListener;
 import com.qq.e.comm.constants.LoadAdParams;
-import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.SplashZoomOutManager;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 import com.qq.e.union.demo.view.ViewUtils;
 
 /**
- * @author tysche
+ * 开屏广告接入示例入口
  */
-
-public class SplashADActivity extends Activity implements View.OnClickListener,
+public class SplashADActivity extends BaseActivity implements View.OnClickListener,
     AdapterView.OnItemSelectedListener {
-  private static final String TAG = "AD_DEMO_SPLASH_ZOOMOUT";
+  private static final String TAG = "SplashADActivity";
   private static final int REQ_ZOOM_OUT = 1024;
-  private EditText posIdEdt;
-  private String s2sBiddingToken;
+  private static final Pair<String, Integer>[] DEV_LOGO_DATA = new Pair[]{
+      new Pair<>("无 Logo", 0),
+      new Pair<>("长条 Logo（默认）", R.drawable.gdt_splash_logo),
+      new Pair<>("方形 Logo", R.drawable.gdticon)
+  };
 
-  private PosIdArrayAdapter arrayAdapter;
+  private EditText mPosIdEdt;
+  private String mS2sBiddingToken;
+  private ViewGroup mZoomOutView;
+  private CheckBox mPreloadSupportZoomOut;
+  private CheckBox mSupportZoomOut;
+  private CheckBox mZoomOutInAnother;
+  private CheckBox mIsFullScreen;
+  private Spinner mPosIdSpinner;
+  private Spinner mDevLogoSpinner;
+  private PosIdArrayAdapter mPosIdArrayAdapter;
+  private PosIdArrayAdapter mDevLogoArrayAdapter;
 
-  private ViewGroup zoomOutView;
-  private CheckBox preloadSupportZoomOut;
-  private CheckBox supportZoomOut;
-  private CheckBox zoomOutInAnother;
-  private CheckBox isFullScreen;
+  private int mDevLogoResId;
+
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_splash_ad);
-    posIdEdt = findViewById(R.id.posId);
+    mPosIdEdt = findViewById(R.id.posId);
 
     findViewById(R.id.splashADPreloadButton).setOnClickListener(this);
     findViewById(R.id.splashADDemoButton).setOnClickListener(this);
     findViewById(R.id.splashFetchAdOnly).setOnClickListener(this);
 
-    Spinner spinner = findViewById(R.id.id_spinner);
-    arrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.splash_ad));
-    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    spinner.setAdapter(arrayAdapter);
-    spinner.setOnItemSelectedListener(this);
-    preloadSupportZoomOut = findViewById(R.id.checkBoxPreloadSupportZoomOut);
-    Spinner devLogo = findViewById(R.id.devLogo);
-    Pair<String, Integer>[] devLogoData = new Pair[] {
-      new Pair<>("选择开发者 logo", 0),
-      new Pair<>("长条 logo", R.drawable.gdt_splash_logo) ,
-      new Pair<>("方形 logo", R.drawable.gdticon)
-    };
-    ArrayAdapter<Pair<String, Integer>> devLogoAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, devLogoData);
-    devLogoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    devLogo.setAdapter(devLogoAdapter);
-    isFullScreen = findViewById(R.id.isFullScreen);
-    isFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        devLogo.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-      }
-    });
-    supportZoomOut = findViewById(R.id.checkSupportZoomOut);
-    zoomOutInAnother = findViewById(R.id.checkZoomOutInAnother);
-    supportZoomOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        zoomOutInAnother.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-      }
-    });
-  }
+    mPosIdSpinner = findViewById(R.id.id_spinner);
+    mDevLogoSpinner = findViewById(R.id.devLogo);
+    mPosIdArrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item,
+        getResources().getStringArray(R.array.splash_ad));
+    mPosIdArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    mPosIdSpinner.setAdapter(mPosIdArrayAdapter);
+    mPosIdSpinner.setOnItemSelectedListener(this);
+    mPreloadSupportZoomOut = findViewById(R.id.checkBoxPreloadSupportZoomOut);
+    String[] devLogo = new String[DEV_LOGO_DATA.length];
+    for (int i = 0; i < DEV_LOGO_DATA.length; i++) {
+      devLogo[i] = DEV_LOGO_DATA[i].first;
+    }
+    mDevLogoArrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, devLogo);
+    mDevLogoArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    mDevLogoSpinner.setAdapter(mDevLogoArrayAdapter);
+    mDevLogoSpinner.setOnItemSelectedListener(this);
 
-  private int getDeveloperLogo() {
-    return ((Pair<String, Integer>)((Spinner)findViewById(R.id.devLogo)).getSelectedItem()).second;
+    mIsFullScreen = findViewById(R.id.isFullScreen);
+    mIsFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        // 默认展示长条 logo
+        mDevLogoSpinner.setSelection(1, true);
+        mDevLogoSpinner.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+      }
+    });
+    mSupportZoomOut = findViewById(R.id.checkSupportZoomOut);
+    mZoomOutInAnother = findViewById(R.id.checkZoomOutInAnother);
+    mSupportZoomOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mZoomOutInAnother.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+      }
+    });
   }
 
   private Integer getFetchDelay() {
@@ -99,14 +105,13 @@ public class SplashADActivity extends Activity implements View.OnClickListener,
     try {
       return Integer.parseInt(s.toString());
     } catch (Exception e) {
-      Toast.makeText(SplashADActivity.this.getApplicationContext(), "开屏加载超时时间输入有误！",
-              Toast.LENGTH_SHORT).show();
+      ToastUtil.s("开屏加载超时时间输入有误！");
       return null;
     }
   }
 
   private boolean isFullScreen() {
-    return isFullScreen.isChecked();
+    return mIsFullScreen.isChecked();
   }
 
   private String getPosID() {
@@ -118,16 +123,18 @@ public class SplashADActivity extends Activity implements View.OnClickListener,
     return ((CheckBox) findViewById(R.id.checkBox)).isChecked();
   }
 
-  private boolean isPreloadSupportZoomOut(){
-    return preloadSupportZoomOut.isChecked();
+  private boolean isPreloadSupportZoomOut() {
+    return mPreloadSupportZoomOut.isChecked();
   }
+
   @Override
   public void onClick(View v) {
     cleanZoomOut();
     switch (v.getId()) {
       case R.id.splashADPreloadButton:
         //如果需要预加载支持开屏V+的广告这里adListener参数需要是SplashADZoomOutListener的实例
-        SplashAD splashAD = new SplashAD(this, getPosID(), isPreloadSupportZoomOut() ? new PreloadSplashZoomOutListener() : null);
+        SplashAD splashAD = new SplashAD(this, getPosID(), isPreloadSupportZoomOut() ?
+            new PreloadSplashZoomOutListener() : null);
         LoadAdParams params = new LoadAdParams();
         params.setLoginAppId("testAppId");
         params.setLoginOpenid("testOpenId");
@@ -155,35 +162,40 @@ public class SplashADActivity extends Activity implements View.OnClickListener,
     intent.putExtra("pos_id", getPosID());
     intent.putExtra("need_logo", needLogo());
     intent.putExtra("need_start_demo_list", false);
-    boolean isSupportZoomOut = supportZoomOut.isChecked();
+    boolean isSupportZoomOut = mSupportZoomOut.isChecked();
     intent.putExtra("support_zoom_out", isSupportZoomOut);
     if (isSupportZoomOut) {
-      intent.putExtra("zoom_out_in_another", zoomOutInAnother.isChecked());
+      intent.putExtra("zoom_out_in_another", mZoomOutInAnother.isChecked());
     }
     boolean fullScreen = isFullScreen();
     intent.putExtra("is_full_screen", fullScreen);
     if (fullScreen) {
-      intent.putExtra("developer_logo", getDeveloperLogo());
+      intent.putExtra("developer_logo", mDevLogoResId);
     }
     intent.putExtra("fetch_delay", getFetchDelay());
-    Log.d(TAG, "getSplashActivityIntent: BiddingToken " + s2sBiddingToken);
-    if (!TextUtils.isEmpty(s2sBiddingToken)) {
-      intent.putExtra(Constants.TOKEN, s2sBiddingToken);
+    Log.d(TAG, "getSplashActivityIntent: BiddingToken " + mS2sBiddingToken);
+    if (!TextUtils.isEmpty(mS2sBiddingToken)) {
+      intent.putExtra(Constants.TOKEN, mS2sBiddingToken);
     }
     return intent;
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosID(), token -> s2sBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2sBiddingToken = token);
   }
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-    arrayAdapter.setSelectedPos(position);
-    posIdEdt.setText(getResources().getStringArray(R.array.splash_ad_value)[position]);
-    //支持开屏V+的广告位,自动打开预加载支持闪挂
-    if (getResources().getStringArray(R.array.splash_ad)[position].contains("V+")) {
-      preloadSupportZoomOut.setChecked(true);
+    if (parent == mPosIdSpinner) {
+      mPosIdArrayAdapter.setSelectedPos(position);
+      mPosIdEdt.setText(getResources().getStringArray(R.array.splash_ad_value)[position]);
+      //支持开屏V+的广告位,自动打开预加载支持闪挂
+      if (getResources().getStringArray(R.array.splash_ad)[position].contains("V+")) {
+        mPreloadSupportZoomOut.setChecked(true);
+      }
+    } else if (parent == mDevLogoSpinner) {
+      mDevLogoArrayAdapter.setSelectedPos(position);
+      mDevLogoResId = DEV_LOGO_DATA[position].second;
     }
   }
 
@@ -193,31 +205,31 @@ public class SplashADActivity extends Activity implements View.OnClickListener,
   }
 
   private void cleanZoomOut() {
-    if (zoomOutView != null) {
-      ViewUtils.removeFromParent(zoomOutView);
-      zoomOutView = null;
+    if (mZoomOutView != null) {
+      ViewUtils.removeFromParent(mZoomOutView);
+      mZoomOutView = null;
     }
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    Log.i("AD_DEMO", requestCode+"=="+resultCode);
+    Log.i("AD_DEMO", requestCode + "==" + resultCode);
     if (requestCode == REQ_ZOOM_OUT && resultCode == RESULT_OK) {
       final SplashZoomOutManager zoomOutManager = SplashZoomOutManager.getInstance();
       SplashAD zoomAd = zoomOutManager.getSplashAD();
-      zoomOutView = zoomOutManager.startZoomOut((ViewGroup) getWindow().getDecorView(),
-              findViewById(android.R.id.content), new SplashZoomOutManager.AnimationCallBack() {
+      mZoomOutView = zoomOutManager.startZoomOut((ViewGroup) getWindow().getDecorView(),
+          findViewById(android.R.id.content), new SplashZoomOutManager.AnimationCallBack() {
 
-                @Override
-                public void animationStart(int animationTime) {
+            @Override
+            public void animationStart(int animationTime) {
 
-                }
+            }
 
-                @Override
-                public void animationEnd() {
-                  zoomAd.zoomOutAnimationFinish();
-                }
-              });
+            @Override
+            public void animationEnd() {
+              zoomAd.zoomOutAnimationFinish();
+            }
+          });
     }
   }
 

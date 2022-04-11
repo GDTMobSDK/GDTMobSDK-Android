@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -18,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
@@ -36,13 +34,14 @@ import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.constants.AppDownloadStatus;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class NativeADUnifiedSampleActivity extends Activity implements NativeADUnifiedListener {
+public class NativeADUnifiedSampleActivity extends BaseActivity implements NativeADUnifiedListener {
 
   private AQuery mAQuery;
   private Button mDownloadButton;
@@ -185,7 +184,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
   }
   
   public void isAdValid(View view) {
-    DemoUtil.isAdValid(this, mLoadSuccess, mAdData != null && mAdData.isValid(), false);
+    DemoUtil.isAdValid(mLoadSuccess, mAdData != null && mAdData.isValid(), false);
   }
 
   public void onPreloadVideoClicked(View view) {
@@ -240,7 +239,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
     if (ad.getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
       if(mPreloadVideo) {
         // 如果是视频广告，可以调用preloadVideo预加载视频素材
-        Toast.makeText(this, "正在加载视频素材", Toast.LENGTH_SHORT).show();
+        ToastUtil.s("正在加载视频素材");
         ad.preloadVideo(new VideoPreloadListener() {
           @Override
           public void onVideoCached() {
@@ -492,10 +491,6 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAdData != null) {
-      // 必须要在Activity.onResume()时通知到广告数据，以便重置广告恢复状态
-      mAdData.resume();
-    }
   }
 
   private void renderAdUi(NativeUnifiedADData ad) {
@@ -578,8 +573,7 @@ public class NativeADUnifiedSampleActivity extends Activity implements NativeADU
     Log.d(TAG, "onNoAd error code: " + error.getErrorCode()
         + ", error msg: " + error.getErrorMsg());
     mLoadingAd = false;
-    Toast.makeText(getApplicationContext(),error.getErrorCode()
-            + ", error msg: " + error.getErrorMsg(),Toast.LENGTH_LONG).show();
+    ToastUtil.l(error.getErrorCode() + ", error msg: " + error.getErrorMsg());
   }
 
   private class H extends Handler {

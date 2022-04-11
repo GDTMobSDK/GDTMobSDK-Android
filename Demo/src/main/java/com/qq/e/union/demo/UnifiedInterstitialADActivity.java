@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -12,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
@@ -22,6 +20,7 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
@@ -30,7 +29,7 @@ import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MAX;
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MIN;
 
 
-public class UnifiedInterstitialADActivity extends Activity implements OnClickListener,
+public class UnifiedInterstitialADActivity extends BaseActivity implements OnClickListener,
     UnifiedInterstitialADListener, UnifiedInterstitialMediaListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
   private static final String TAG = UnifiedInterstitialADActivity.class.getSimpleName();
@@ -53,7 +52,6 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_unified_interstitial_ad);
     spinner = findViewById(R.id.id_spinner);
     arrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.unified_interstitial));
@@ -73,6 +71,18 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
     btnMute = findViewById(R.id.btn_mute);
     btnDetailMute = findViewById(R.id.btn_detail_mute);
     networkSpinner = findViewById(R.id.spinner_network);
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  protected void loadAd() {
+    if (mIsLoadAndShow) {
+      posIdEdt.setText(mBackupPosId);
+    }
+    mLoadSuccess = false;
+    iad = getIAD();
+    setVideoOption();
+    iad.loadAD();
   }
 
   @Override
@@ -87,18 +97,15 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.loadIAD:
-        mLoadSuccess = false;
-        iad = getIAD();
-        setVideoOption();
-        iad.loadAD();
+        loadAd();
         break;
       case R.id.showIAD:
-        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
+        if (DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
           iad.show();
         }
         break;
       case R.id.showIADAsPPW:
-        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
+        if (DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
           iad.showAsPopupWindow();
         }
         break;
@@ -107,7 +114,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
         close();
         break;
       case R.id.isAdValid:
-        DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), false);
+        DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), false);
         break;
       default:
         break;
@@ -162,21 +169,21 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> s2sBiddingToken = token);
   }
 
   private void close() {
     if (iad != null) {
       iad.close();
     } else {
-      Toast.makeText(this, "广告尚未加载 ！ ", Toast.LENGTH_LONG).show();
+      ToastUtil.l("广告尚未加载 ！ ");
     }
   }
 
   @Override
   public void onADReceive() {
     mLoadSuccess = true;
-    Toast.makeText(this, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
+    ToastUtil.l("广告加载成功 ！ ");
     // onADReceive之后才可调用getECPM()
     Log.d(TAG, "onADReceive eCPMLevel = " + iad.getECPMLevel()+ ", ECPM: " + iad.getECPM()
         + ", videoduration=" + iad.getVideoDuration()
@@ -186,6 +193,10 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
       iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
     }
     reportBiddingResult(iad);
+    if(mIsLoadAndShow && DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail){
+      mIsLoadAndShow = false;
+      iad.show();
+    }
   }
 
   /**
@@ -212,7 +223,7 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
   public void onNoAD(AdError error) {
     String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
         error.getErrorCode(), error.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
   }
 
   @Override
@@ -313,10 +324,10 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
         if (rst > 0) {
           return rst;
         } else {
-          Toast.makeText(getApplicationContext(), "最小视频时长输入须大于0!", Toast.LENGTH_LONG).show();
+          ToastUtil.l("最小视频时长输入须大于0!");
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最小视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最小视频时长输入不是整数!");
       }
     }
     return 0;
@@ -332,10 +343,10 @@ public class UnifiedInterstitialADActivity extends Activity implements OnClickLi
         } else {
           String msg = String.format("最大视频时长输入不在有效区间[%d,%d]内",
               VIDEO_DURATION_SETTING_MIN, VIDEO_DURATION_SETTING_MAX);
-          Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+          ToastUtil.l(msg);
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最大视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最大视频时长输入不是整数!");
       }
     }
     return 0;

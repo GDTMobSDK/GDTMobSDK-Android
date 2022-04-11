@@ -24,6 +24,7 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.mediation.interfaces.BaseInterstitialAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.Constant;
@@ -39,7 +40,7 @@ import java.util.List;
  * 穿山甲插屏全屏和插屏半屏广告视频适配器
  * 作用：封装穿山甲，适配优量汇插屏全屏和插屏半屏广告
  */
-public class TTInterstitialAdAdapter extends BaseInterstitialAd {
+public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdManagerHolder.InitCallBack {
 
   private final String TAG = getClass().getSimpleName();
   protected final String posId;
@@ -55,8 +56,10 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
   private ImageView mCloseImageView;
   private TextView mDislikeView;
   private ViewGroup mRootView;
-  private Activity mContext;
+  private boolean mHasVideoCached;
   private final AdapterImageLoader mAdImageLoader;
+  private boolean mIsFullScreen;
+  protected Activity mContext;
   protected boolean mIsValid = false;
   protected int ecpm = Constant.VALUE_NO_ECPM;
   protected String mRequestId;
@@ -65,7 +68,7 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
     super(context, appId, posId, ext);
     TTAdManagerHolder.init(context, appId);
     ttAdNative = TTAdManagerHolder.get().createAdNative(context);
-    mAdImageLoader = new AdapterImageLoader(mContext);
+    mAdImageLoader = new AdapterImageLoader(context);
     mContext = context;
     this.posId = posId;
     this.activityReference = new WeakReference<>(ContextUtils.getActivity(context));
@@ -248,6 +251,11 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public void loadAd() {
+    mIsFullScreen = false;
+    LoadAdUtil.load(this);
+  }
+
+  private void loadAdAfterInitSuccess() {
     mIsValid = false;
     if (ttAdNative == null) {
       Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
@@ -261,7 +269,8 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
       public void onError(int code, String message) {
         Log.d(TAG, "loadAd error : " + code + ", " + message);
         if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL));
+          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
+              ErrorCode.NO_AD_FILL, code, message));
         }
       }
 
@@ -301,6 +310,11 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public void loadFullScreenAD() {
+    mIsFullScreen = true;
+    LoadAdUtil.load(this);
+  }
+
+  private void loadFullScreenADAfterInitSuccess() {
     AdSlot adSlot = setFullScreenAdSlotParams(new AdSlot.Builder()).build();
     mIsValid = false;
     ttAdNative.loadFullScreenVideoAd(adSlot, new TTAdNative.FullScreenVideoAdListener() {
@@ -308,7 +322,8 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
       public void onError(int code, String message) {
         Log.e(TAG, "Callback --> onError: " + code + ", " + message);
         if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL));
+          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
+              ErrorCode.NO_AD_FILL, code, message));
         }
       }
 
@@ -427,11 +442,14 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onFullScreenVideoCached() {
-        Log.d(TAG, "Callback --> onFullScreenVideoCached");
-        // 视频缓存
-        // mIsLoaded = true;
-        if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
+        if (!mHasVideoCached) {
+          mHasVideoCached = true;
+          Log.d(TAG, "Callback --> onFullScreenVideoCached");
+          // 视频缓存
+          // mIsLoaded = true;
+          if (unifiedInterstitialADListener != null) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
+          }
         }
       }
 
@@ -563,4 +581,22 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {}
+
+  @Override
+  public void onInitSuccess() {
+    if (mIsFullScreen) {
+      loadFullScreenADAfterInitSuccess();
+    } else {
+      loadAdAfterInitSuccess();
+    }
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    if (unifiedInterstitialADListener != null) {
+      unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
+          ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
+    }
+  }
 }

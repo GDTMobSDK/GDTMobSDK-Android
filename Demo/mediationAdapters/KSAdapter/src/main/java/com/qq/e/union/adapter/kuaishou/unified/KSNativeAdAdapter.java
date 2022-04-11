@@ -15,6 +15,7 @@ import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseNativeUnifiedAd;
 import com.qq.e.union.adapter.kuaishou.util.KSSDKInitUtil;
 import com.qq.e.union.adapter.util.Constant;
+import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +49,14 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
       @Override
       public void onError(int code, String msg) {
         Log.d(TAG, "onError: " + code + ", msg: " + msg);
-        onAdFailed(code);
+        onAdFailed(code, msg);
       }
 
       @Override
       public void onNativeAdLoad(@Nullable List<KsNativeAd> adList) {
         if (adList == null || adList.isEmpty()) {
           Log.d(TAG, "onNativeAdLoad: no ad");
-          onAdFailed(0);
+          onAdFailed(ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
         } else {
           onAdSuccess(adList);
         }
@@ -87,11 +88,12 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
     mADListener = listener;
   }
 
-  private void onAdFailed(int errorCode) {
+  private void onAdFailed(int errorCode, String errorMessage) {
     if (mADListener == null) {
       return;
     }
-    mADListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errorCode}));
+    mADListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errorCode}, errorCode,
+        errorMessage));
   }
 
   @Override

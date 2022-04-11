@@ -72,7 +72,7 @@ public class BDRewardAdAdapter extends BaseRewardAd {
       public void onVideoDownloadFailed() {
         Log.d(TAG, "onVideoDownloadFailed");
         // 视频缓存失败，如果想走本地播放，可以在这儿重新load下一条广告，最好限制load次数（4-5次即可）。
-        onAdError(ErrorCode.VIDEO_DOWNLOAD_FAIL);
+        onAdError(ErrorCode.VIDEO_DOWNLOAD_FAIL, ErrorCode.DEFAULT_ERROR_MESSAGE);
       }
 
       @Override
@@ -138,7 +138,7 @@ public class BDRewardAdAdapter extends BaseRewardAd {
       @Override
       public void onAdFailed(String arg0) {
         Log.d(TAG, "onAdFailed: " + arg0);
-        onAdError(ErrorCode.NO_AD_FILL);
+        onAdError(ErrorCode.NO_AD_FILL, arg0);
       }
 
 
@@ -154,9 +154,9 @@ public class BDRewardAdAdapter extends BaseRewardAd {
           /**
            * @param errorCode 错误码
            */
-          private void onAdError(int errorCode) {
+          private void onAdError(int errorCode, String errorMessage) {
             Log.d(TAG, "onAdError: errorCode");
-            fireAdEvent(AdEventType.AD_ERROR, new Object[]{errorCode});
+            fireAdEvent(AdEventType.AD_ERROR, new Object[]{errorCode}, ErrorCode.DEFAULT_ERROR_CODE, errorMessage);
           }
         }, false);
   }

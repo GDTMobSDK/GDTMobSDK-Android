@@ -14,6 +14,7 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.mediation.interfaces.BaseNativeExpressAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
@@ -21,7 +22,7 @@ import com.qq.e.union.adapter.util.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
+public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTAdManagerHolder.InitCallBack {
 
   private static final String TAG = TTNativeExpressAdAdapter.class.getSimpleName();
 
@@ -34,6 +35,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
   private List<TTNativeExpressAdDataAdapter> mTTNativeExpressAdDataAdapters;
   private int mEcpm = Constant.VALUE_NO_ECPM;
   private String mRequestId;
+  private int mCount;
 
   public TTNativeExpressAdAdapter(Context context, ADSize adSize, String appId, String posId,
                                   String ext) {
@@ -58,10 +60,11 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
 
   @Override
   public void loadAD(int count, LoadAdParams params) {
-    loadExpressAd(count);
+    mCount = count;
+    LoadAdUtil.load(this);
   }
 
-  private void loadExpressAd(int count) {
+  private void loadExpressAdAfterInitSuccess(int count) {
     Log.d(TAG, "loadData: ");
     if (mTTAdNative == null) {
       Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
@@ -82,7 +85,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
         if (mListener == null) {
           return;
         }
-        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}, code, message));
       }
 
       @Override
@@ -102,7 +105,8 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
       return;
     }
     if (ads == null || ads.size() == 0) {
-      mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+      mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL},
+          ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
 
     mTTNativeExpressAdDataAdapters = new ArrayList<>();
@@ -212,4 +216,17 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd {
 
   }
 
+  @Override
+  public void onInitSuccess() {
+    loadExpressAdAfterInitSuccess(mCount);
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    if (mListener != null) {
+      mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL},
+          ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
+    }
+  }
 }

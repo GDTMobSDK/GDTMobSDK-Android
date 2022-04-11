@@ -69,7 +69,7 @@ public class KSNativeExpressAdAdapter extends BaseNativeExpressAd {
   public void loadAD(int count) {
     if (mPosId < 0) {
       Log.d(TAG, "posId 异常 ");
-      onLoadError();
+      onLoadError(ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
       return;
     }
     KsScene scene = new KsScene.Builder(mPosId)
@@ -80,14 +80,14 @@ public class KSNativeExpressAdAdapter extends BaseNativeExpressAd {
         @Override
         public void onError(int code, String msg) {
           Log.d(TAG, "广告数据请求失败 " + code + msg);
-          onLoadError();
+          onLoadError(code, msg);
         }
 
         @Override
         public void onFeedAdLoad(@Nullable List<KsFeedAd> adList) {
           if (adList == null || adList.isEmpty()) {
             Log.d(TAG, "广告数据为空 ");
-            onLoadError();
+            onLoadError(ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
             return;
           }
           mKSNativeExpressAdDataAdapters = new ArrayList<>();
@@ -118,9 +118,10 @@ public class KSNativeExpressAdAdapter extends BaseNativeExpressAd {
       });
   }
 
-  private void onLoadError() {
+  private void onLoadError(Integer errorCode, String errorMessage) {
     if (mListener != null) {
-      mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+      mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL},
+          errorCode, errorMessage));
     }
   }
 

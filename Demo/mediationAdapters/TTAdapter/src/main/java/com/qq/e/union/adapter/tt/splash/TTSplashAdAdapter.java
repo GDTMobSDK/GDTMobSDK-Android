@@ -19,6 +19,7 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.mediation.interfaces.BaseSplashAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
@@ -28,7 +29,7 @@ import com.qq.e.union.adapter.util.PxUtils;
  * 穿山甲开屏广告适配器
  * 作用：封装穿山甲开屏广告，适配优量汇开屏广告
  */
-public class TTSplashAdAdapter extends BaseSplashAd {
+public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder.InitCallBack {
 
   private static final String TAG = TTSplashAdAdapter.class.getSimpleName();
 
@@ -113,20 +114,20 @@ public class TTSplashAdAdapter extends BaseSplashAd {
       @Override
       public void onError(int code, String message) {
         Log.d(TAG, "onError: code: " + code + "message: " + message);
-        onADFailed(ErrorCode.NO_AD_FILL);
+        onADFailed(ErrorCode.NO_AD_FILL, code, message);
       }
 
       @Override
       public void onTimeout() {
         Log.d(TAG, "onTimeout: ");
-        onADFailed(ErrorCode.TIME_OUT);
+        onADFailed(ErrorCode.TIME_OUT, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
       }
 
       @Override
       public void onSplashAdLoad(TTSplashAd ad) {
         Log.d(TAG, "onSplashAdLoad: ad: " + ad);
         if (ad == null) {
-          onADFailed(ErrorCode.NO_AD_FILL);
+          onADFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
           return;
         }
         mTTSplashAd = ad;
@@ -222,7 +223,7 @@ public class TTSplashAdAdapter extends BaseSplashAd {
     }
   }
 
-  private void onADFailed(final int errCode) {
+  private void onADFailed(final int errCode, Integer onlineErrorCode, String errorMessage) {
     synchronized (this) {
       if (finished) {
         return;
@@ -230,7 +231,7 @@ public class TTSplashAdAdapter extends BaseSplashAd {
       finished = true;
     }
     if (adListener != null) {
-      adListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errCode}));
+      adListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errCode}, onlineErrorCode, errorMessage));
     }
   }
 
@@ -239,6 +240,10 @@ public class TTSplashAdAdapter extends BaseSplashAd {
    */
   @Override
   public void fetchAdOnly() {
+    LoadAdUtil.load(this);
+  }
+
+  private void fetchAdAfterInitSuccess(){
     AdSlot adSlot = new AdSlot.Builder()
         .setCodeId(posId)
         .setSupportDeepLink(true)
@@ -334,5 +339,16 @@ public class TTSplashAdAdapter extends BaseSplashAd {
   @Override
   public void setDeveloperLogo(byte[] logoData) {
     /* 穿山甲暂不支持 */
+  }
+
+  @Override
+  public void onInitSuccess() {
+    fetchAdAfterInitSuccess();
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    onADFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
   }
 }

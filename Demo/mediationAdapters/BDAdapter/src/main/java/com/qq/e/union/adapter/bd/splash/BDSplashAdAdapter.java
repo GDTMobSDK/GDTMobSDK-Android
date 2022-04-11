@@ -83,14 +83,14 @@ public class BDSplashAdAdapter extends BaseSplashAd {
     fireAdEvent(AdEventType.AD_CLOSED);
   }
 
-  private void onADFailed(int errorCode) {
+  private void onADFailed(int errorCode, String errorMessage) {
     synchronized (this) {
       if (finished) {
         return;
       }
       finished = true;
     }
-    fireAdEvent(AdEventType.NO_AD, new Object[]{errorCode});
+    fireAdEvent(AdEventType.NO_AD, new Object[]{errorCode}, ErrorCode.DEFAULT_ERROR_CODE, errorMessage);
   }
 
   private void onADLoaded() {
@@ -121,7 +121,7 @@ public class BDSplashAdAdapter extends BaseSplashAd {
       @Override
       public void onAdFailed(String arg0) {
         Log.d(TAG, "onAdFailed: " + arg0);
-        BDSplashAdAdapter.this.onADFailed(ErrorCode.NO_AD_FILL);
+        BDSplashAdAdapter.this.onADFailed(ErrorCode.NO_AD_FILL, arg0);
       }
 
       @Override

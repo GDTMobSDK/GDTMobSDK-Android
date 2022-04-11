@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -28,12 +27,13 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class NativeADUnifiedPreMovieActivity extends Activity implements NativeADUnifiedListener {
+public class NativeADUnifiedPreMovieActivity extends BaseActivity implements NativeADUnifiedListener {
 
   private AQuery mAQuery;
   private Button mDownloadButton;
@@ -261,10 +261,6 @@ public class NativeADUnifiedPreMovieActivity extends Activity implements NativeA
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAdData != null) {
-      // 必须要在Actiivty.onResume()时通知到广告数据，以便重置广告恢复状态
-      mAdData.resume();
-    }
   }
 
   private void renderAdUi(NativeUnifiedADData ad) {
@@ -312,7 +308,7 @@ public class NativeADUnifiedPreMovieActivity extends Activity implements NativeA
     mIsLoading = false;
     Log.d(TAG, "onNoAd error code: " + error.getErrorCode()
         + ", error msg: " + error.getErrorMsg());
-    Toast.makeText(this, "未拉取到广告！", Toast.LENGTH_LONG).show();
+    ToastUtil.l("未拉取到广告！");
   }
 
   private class H extends Handler {
@@ -329,7 +325,7 @@ public class NativeADUnifiedPreMovieActivity extends Activity implements NativeA
                   .getPictureWidth(),
               ad.getPictureHeight()));
           initAd(ad);
-          Toast.makeText(NativeADUnifiedPreMovieActivity.this, "拉取广告成功", Toast.LENGTH_LONG).show();
+          ToastUtil.l("拉取广告成功");
           Log.d(TAG, "eCPMLevel = " + ad.getECPMLevel() + " , " +
               "videoDuration = " + ad.getVideoDuration());
           break;

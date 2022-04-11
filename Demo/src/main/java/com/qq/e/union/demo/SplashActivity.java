@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
@@ -34,6 +33,7 @@ import com.qq.e.ads.splash.SplashADZoomOutListener;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.comm.util.AdError;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.List;
  *
  * 这里为了示例开屏V+广告使用了SplashADZoomOutListener，如不需要使用开屏V+广告可以继续使用之前的SplashADListener
  */
-public class SplashActivity extends Activity implements SplashADZoomOutListener,View.OnClickListener {
+public class SplashActivity extends BaseActivity implements SplashADZoomOutListener,View.OnClickListener {
 
   private static final String TAG = "SplashActivity";
 
@@ -175,6 +175,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
       lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
     }
 
+    // 检查读写存储权限开始
     // 快手SDK所需相关权限，存储权限，此处配置作用于流量分配功能，关于流量分配，详情请咨询运营;如果您的APP不需要快手SDK的流量分配功能，则无需申请SD卡权限
     if (!(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED )){
       lackedPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -185,6 +186,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     if (!(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
       lackedPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
     }
+    // 检查读写存储权限结束
     // 如果需要的权限都已经有了，那么直接调用SDK
     if (lackedPermission.size() == 0) {
       fetchSplashAD(this, container, getPosId(), this);
@@ -211,7 +213,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     if (requestCode == 1024 && hasAllPermissionsGranted(grantResults)) {
       fetchSplashAD(this, container, getPosId(), this);
     } else {
-      Toast.makeText(this, "应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。", Toast.LENGTH_LONG).show();
+      ToastUtil.l("应用缺少必要的权限！请点击\"权限\"，打开所需要的权限。");
       try {
       Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
       intent.setData(Uri.parse("package:" + getPackageName()));
@@ -344,7 +346,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     handler.post(new Runnable() {
       @Override
       public void run() {
-        Toast.makeText(SplashActivity.this.getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        ToastUtil.s(str);
       }
     });
     if(loadAdOnly && !showingAd) {
@@ -364,7 +366,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
       public void run() {
         if (needStartDemoList) {
           try {
-            SplashActivity.this.startActivity(new Intent(SplashActivity.this, DemoListActivity.class));
+            SplashActivity.this.startActivity(new Intent(SplashActivity.this, BuildConfig.demolist));
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -382,7 +384,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
     if (canJump) {
       if (needStartDemoList) {
         try {
-          this.startActivity(new Intent(this, DemoListActivity.class));
+          this.startActivity(new Intent(this, BuildConfig.demolist));
         } catch (Exception e) {
         }
       }
@@ -447,7 +449,7 @@ public class SplashActivity extends Activity implements SplashADZoomOutListener,
         this.finish();
         break;
       case R.id.is_ad_valid_button:
-        DemoUtil.isAdValid(this, mLoadSuccess, splashAD != null && splashAD.isValid(), false);
+        DemoUtil.isAdValid(mLoadSuccess, splashAD != null && splashAD.isValid(), false);
         break;
       case R.id.splash_load_ad_refresh:
         mLoadSuccess = false;

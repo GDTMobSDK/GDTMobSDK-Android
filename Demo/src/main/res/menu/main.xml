@@ -9,12 +9,6 @@
         android:title="@string/action_settings"/>
 
     <item
-        android:id="@+id/action_muid"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_muid"/>
-
-    <item
         android:id="@+id/action_mediation_tool"
         android:orderInCategory="100"
         android:showAsAction="never"
@@ -81,4 +75,15 @@
         android:showAsAction="never"
         android:checkable="true"
         android:title="是否设置曝光扣费"/>
+    <item
+        android:id="@+id/action_ad_tools_window"
+        android:checkable="true"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="广告助手" />
+    <item
+        android:id="@+id/action_ad_tools"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="广告助手（非悬浮窗）" />
 </menu>

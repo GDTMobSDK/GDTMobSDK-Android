@@ -9,7 +9,7 @@ import com.baidu.mobads.sdk.api.MobadsPermissionSettings;
 
 public class BDAdManager {
 
-  private static boolean inited;
+  private static volatile boolean inited;
 
   public static void init(Context context, String appId) {
     Log.d("BDAdManager", "init: context: " + context + ", appId: " + appId + ", inited: " + inited);

@@ -3,6 +3,7 @@ package com.qq.e.union.adapter.kuaishou.unified;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -15,6 +16,7 @@ import com.kwad.sdk.api.KsNativeAd;
 import com.kwad.sdk.api.model.AdSourceLogoType;
 import com.kwad.sdk.api.model.InteractionType;
 import com.kwad.sdk.api.model.MaterialType;
+import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
@@ -33,6 +35,7 @@ import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.IImageLoader;
+import com.qq.e.union.adapter.util.LogoImageView;
 import com.qq.e.union.adapter.util.PxUtils;
 
 import java.util.ArrayList;
@@ -58,6 +61,7 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   private int mDownloadProgress;
   private IImageLoader imageLoader;
   private String mEcpmLevel;
+  private NativeAdContainer container;
 
   public KSNativeAdDataAdapter(KsNativeAd ksNativeAd) {
     mKsNativeAd = ksNativeAd;
@@ -77,6 +81,7 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
       clickViews = customClickViews;
     }
     imageLoader = new AdapterImageLoader(context);
+    this.container = container;
     mKsNativeAd
         .registerViewForInteraction(container, clickViews, new KsNativeAd.AdInteractionListener() {
           @Override
@@ -167,6 +172,38 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
         12,
         container,
         mKsNativeAd.getAdSourceLogoUrl(AdSourceLogoType.NORMAL));
+    container.setViewStatusListener(new ViewStatusListener() {
+      @Override
+      public void onAttachToWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.VISIBLE);
+        }
+      }
+
+      @Override
+      public void onDetachFromWindow() {
+        LogoImageView logoImageView = AdnLogoUtils.getAddedLogo(container);
+        if (logoImageView != null) {
+          logoImageView.setVisibility(View.INVISIBLE);
+        }
+      }
+
+      @Override
+      public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+      }
+
+      @Override
+      public void onWindowVisibilityChanged(int visibility) {
+
+      }
+
+      @Override
+      public void onDispatchTouchEvent(MotionEvent event) {
+
+      }
+    });
   }
 
   @Override
@@ -467,7 +504,7 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
 
   @Override
   public void destroy() {
-    // 快手不支持
+    AdnLogoUtils.clearPreviousLogoView(container);
   }
 
   @Override

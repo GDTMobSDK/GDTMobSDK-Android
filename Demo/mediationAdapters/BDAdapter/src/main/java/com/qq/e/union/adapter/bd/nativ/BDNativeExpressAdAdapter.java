@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 百度 模版信息流 Adapter
+ * 百度 模板信息流 Adapter
  * 测试广告位为 6481012
  */
 public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
@@ -113,7 +113,7 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
         if (mListener == null) {
           return;
         }
-        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}, code, msg));
       }
 
       @Override

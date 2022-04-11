@@ -12,6 +12,7 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseNativeUnifiedAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * 穿山甲数据流广告适配器
  */
-public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
+public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTAdManagerHolder.InitCallBack {
 
   private static final String TAG = TTNativeUnifiedAdAdapter.class.getSimpleName();
 
@@ -34,6 +35,7 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
   private boolean isSupportDeepLink;
   private List<TTFeedAdDataAdapter> data;
   private String ecpmLevel;
+  private int mCount;
 
   /**
    * @param ext 开发者自定义字段，是一个 json
@@ -52,6 +54,11 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
 
   @Override
   public void loadData(int count) {
+    mCount = count;
+    LoadAdUtil.load(this);
+  }
+
+  private void loadDataAfterInitSuccess(int count) {
     Log.d(TAG, "loadData: ");
     if (mTTAdNative == null) {
       Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
@@ -71,14 +78,14 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
       @Override
       public void onError(int code, String message) {
         Log.d(TAG, "onError: code: " + code + ", message: " +message);
-        onAdFailed(ErrorCode.NO_AD_FILL);
+        onAdFailed(ErrorCode.NO_AD_FILL, code, message);
       }
 
       @Override
       public void onFeedAdLoad(List<TTFeedAd> ads) {
         Log.d(TAG, "onFeedAdLoad: ads" + ads);
         if (ads == null || ads.isEmpty()) {
-          onAdFailed(ErrorCode.NO_AD_FILL);
+          onAdFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
           return;
         }
         onAdDataSuccess(ads);
@@ -109,11 +116,11 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
     listener.onADEvent(new ADEvent(AdEventType.AD_LOADED, new Object[]{result}));
   }
 
-  private void onAdFailed(int errorCode) {
+  private void onAdFailed(int errorCode, Integer onlineErrorCode, String errorMessage) {
     if (listener == null) {
       return;
     }
-    listener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errorCode}));
+    listener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{errorCode}, onlineErrorCode, errorMessage));
   }
 
   @Override
@@ -183,6 +190,17 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd {
         adapter.setEcpmLevel(level);
       }
     }
+  }
+
+  @Override
+  public void onInitSuccess() {
+    loadDataAfterInitSuccess(mCount);
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    onAdFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
   }
 
   /**

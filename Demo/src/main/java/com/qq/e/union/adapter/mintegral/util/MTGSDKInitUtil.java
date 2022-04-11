@@ -8,11 +8,11 @@ import com.mintegral.msdk.out.MIntegralSDKFactory;
 import java.util.Map;
 
 public class MTGSDKInitUtil {
-  private static boolean mIsInit;
+  private static volatile boolean mIsInit;
 
   public static void initSDK(Context context, String appId, String appKey) {
 
-    if (context != null && !mIsInit) {
+    if (context != null) { // 暂时去掉 mIsInit，如果后面 mtg adapter 使用再重新设计这部分代码
       synchronized (MTGSDKInitUtil.class) {
         if (!mIsInit) {
           // mintegral 初始化

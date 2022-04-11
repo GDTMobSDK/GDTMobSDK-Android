@@ -47,4 +47,14 @@ public class ErrorCode {
    */
   public static final int ERROR_CODE_OTHER = 6000;
 
+  /**
+   * 第三方ADN不返回错误码时上报的默认错误码
+   */
+  public static final int DEFAULT_ERROR_CODE = -1;
+
+  /**
+   * 第三方ADN不返回错误信息时上报的默认错误信息
+   */
+  public static final String DEFAULT_ERROR_MESSAGE = "no_reason";
+
 }

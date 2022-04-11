@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.qq.e.ads.cfg.VideoOption;
@@ -34,6 +33,7 @@ import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import java.util.WeakHashMap;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class NativeADUnifiedRecyclerViewActivity extends Activity
+public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
     implements NativeADUnifiedListener {
 
   private static final String TAG = NativeADUnifiedRecyclerViewActivity.class.getSimpleName();
@@ -162,17 +162,12 @@ public class NativeADUnifiedRecyclerViewActivity extends Activity
     mIsLoading = false;
     String msg = "onNoAd error code: " + error.getErrorCode() + ", error msg: " + error.getErrorMsg();
     Log.d(TAG, msg);
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    ToastUtil.s(msg);
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAds != null) {
-      for (NativeUnifiedADData ad : mAds) {
-        ad.resume();
-      }
-    }
   }
 
   @Override

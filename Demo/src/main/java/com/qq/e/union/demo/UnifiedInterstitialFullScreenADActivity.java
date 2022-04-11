@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -11,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.interstitial2.ADRewardListener;
@@ -23,6 +21,7 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
@@ -32,7 +31,7 @@ import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MAX;
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MIN;
 
 
-public class UnifiedInterstitialFullScreenADActivity extends Activity implements OnClickListener,
+public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implements OnClickListener,
     UnifiedInterstitialADListener, UnifiedInterstitialMediaListener, ADRewardListener, AdapterView.OnItemSelectedListener {
 
   private static final String TAG = UnifiedInterstitialFullScreenADActivity.class.getSimpleName();
@@ -48,7 +47,6 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_unified_interstitial_fullscreen_video_ad);
     spinner = findViewById(R.id.id_spinner);
     arrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.unified_interstitial_video));
@@ -64,24 +62,33 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
     this.findViewById(R.id.loadIADFullScreen).setOnClickListener(this);
     this.findViewById(R.id.showIADFullScreen).setOnClickListener(this);
     this.findViewById(R.id.isAdValid).setOnClickListener(this);
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  protected void loadAd() {
+    if (mIsLoadAndShow) {
+      posIdEdt.setText(mBackupPosId);
+    }
+    mLoadSuccess = false;
+    iad = getIAD();
+    setVideoOption();
+    iad.loadFullScreenAD();
   }
 
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.loadIADFullScreen:
-        mLoadSuccess = false;
-        iad = getIAD();
-        setVideoOption();
-        iad.loadFullScreenAD();
+        loadAd();
         break;
       case R.id.showIADFullScreen:
-        if (DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), true)) {
+        if (DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true)) {
           iad.showFullScreenAD(this);
         }
         break;
       case R.id.isAdValid:
-        DemoUtil.isAdValid(this, mLoadSuccess, iad != null && iad.isValid(), false);
+        DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), false);
         break;
       default:
         break;
@@ -129,13 +136,13 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> s2sBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> s2sBiddingToken = token);
   }
 
   @Override
   public void onADReceive() {
     mLoadSuccess = true;
-    Toast.makeText(this, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
+    ToastUtil.l("广告加载成功 ！ ");
     iad.setMediaListener(this);
     // 如果支持奖励，设置ADRewardListener接收onReward回调；图文广告暂不支持奖励
     iad.setRewardListener(this);
@@ -149,6 +156,10 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
       iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
     }
     reportBiddingResult(iad);
+    if(mIsLoadAndShow && DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true)){
+      mIsLoadAndShow = false;
+      iad.showFullScreenAD(this);
+    }
   }
 
   /**
@@ -175,7 +186,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   public void onNoAD(AdError error) {
     String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
         error.getErrorCode(), error.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
   }
 
   @Override
@@ -252,7 +263,7 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
   public void onVideoError(AdError error) {
     String msg = "onVideoError, code = " + error.getErrorCode() + ", msg = " + error.getErrorMsg();
     Log.i(TAG, msg);
-    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
   }
 
   @Override
@@ -273,10 +284,10 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
         if (rst > 0) {
           return rst;
         } else {
-          Toast.makeText(getApplicationContext(), "最小视频时长输入须大于0!", Toast.LENGTH_LONG).show();
+          ToastUtil.l("最小视频时长输入须大于0!");
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最小视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最小视频时长输入不是整数!");
       }
     }
     return 0;
@@ -290,10 +301,10 @@ public class UnifiedInterstitialFullScreenADActivity extends Activity implements
           return rst;
         } else {
           String msg = String.format("最大视频时长输入不在有效区间[%d,%d]内", VIDEO_DURATION_SETTING_MIN, VIDEO_DURATION_SETTING_MAX);
-          Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+          ToastUtil.l(msg);
         }
       } catch (NumberFormatException e) {
-        Toast.makeText(getApplicationContext(), "最大视频时长输入不是整数!", Toast.LENGTH_LONG).show();
+        ToastUtil.l("最大视频时长输入不是整数!");
       }
     }
     return 0;

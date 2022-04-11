@@ -36,7 +36,7 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
  * Created by noughtchen on 2017/4/26.
  */
 
-public class NativeExpressRecyclerViewActivity extends Activity implements
+public class NativeExpressRecyclerViewActivity extends BaseActivity implements
     NativeExpressAD.NativeExpressADListener {
 
   private static final String TAG = NativeExpressRecyclerViewActivity.class.getSimpleName();

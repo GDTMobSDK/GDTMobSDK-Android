@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -22,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.qq.e.ads.cfg.VideoOption;
@@ -37,12 +35,13 @@ import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.PxUtil;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class NativeADUnifiedFullScreenFeedActivity extends Activity implements NativeADUnifiedListener {
+public class NativeADUnifiedFullScreenFeedActivity extends BaseActivity implements NativeADUnifiedListener {
 
   private static final String TAG = NativeADUnifiedFullScreenFeedActivity.class.getSimpleName();
 
@@ -143,7 +142,7 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
   public void onADLoaded(List<NativeUnifiedADData> ads) {
     // 防止在onDestory后网络回包
     if(mAds != null){
-      Toast.makeText(this,  "拉取到 " + ads.size() + " 条广告", Toast.LENGTH_SHORT).show();
+      ToastUtil.s("拉取到 " + ads.size() + " 条广告");
       mAds.addAll(ads);
       Message msg = mHandler.obtainMessage(MSG_REFRESH_LIST, ads);
       mHandler.sendMessage(msg);
@@ -152,7 +151,7 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
 
   @Override
   public void onNoAD(AdError error) {
-    Toast.makeText(this,  "没有拉到广告!", Toast.LENGTH_SHORT).show();
+    ToastUtil.s("没有拉到广告!");
     Log.d(TAG, "onNoAd error code: " + error.getErrorCode()
         + ", error msg: " + error.getErrorMsg());
   }
@@ -160,11 +159,6 @@ public class NativeADUnifiedFullScreenFeedActivity extends Activity implements N
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAds != null) {
-      for (NativeUnifiedADData ad : mAds) {
-        ad.resume();
-      }
-    }
     if(videoIsPaused){
       mCurrentVideoView.seekTo(mVideoViewCurrentPosition);
       mCurrentVideoView.start();

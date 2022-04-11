@@ -3,7 +3,7 @@ package com.qq.e.union.adapter.kuaishou.splash;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -72,7 +72,7 @@ public class KSSplashAdAdapter extends BaseSplashAd {
       public void onError(int code, String msg) {
         Log.d(TAG, "开屏广告请求失败" + code + msg);
         if (mADListener != null) {
-          mADListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{code}));
+          mADListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{code}, code, msg));
         }
       }
 
@@ -82,7 +82,7 @@ public class KSSplashAdAdapter extends BaseSplashAd {
       }
 
       @Override
-      public void onSplashScreenAdLoad(@NonNull KsSplashScreenAd splashScreenAd) {
+      public void onSplashScreenAdLoad(@Nullable KsSplashScreenAd splashScreenAd) {
         Log.d(TAG, "开始数据返回成功");
         mSplashScreenAd = splashScreenAd;
         if (mADListener != null) {

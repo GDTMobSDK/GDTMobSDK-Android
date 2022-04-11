@@ -10,7 +10,7 @@ import com.qq.e.comm.managers.status.SDKStatus;
 /**
  * 版本号展示 Activity
  */
-public class SDKVersionActivity extends Activity {
+public class SDKVersionActivity extends BaseActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

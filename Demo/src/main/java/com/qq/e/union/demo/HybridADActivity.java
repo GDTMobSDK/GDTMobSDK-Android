@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -8,19 +7,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.qq.e.ads.hybrid.HybridAD;
 import com.qq.e.ads.hybrid.HybridADListener;
 import com.qq.e.ads.hybrid.HybridADSetting;
 import com.qq.e.comm.util.AdError;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.Locale;
 
 /**
  * Created by chaotao on 2018/12/24 .
  **/
-public class HybridADActivity extends Activity implements View.OnClickListener, HybridADListener {
+public class HybridADActivity extends BaseActivity implements View.OnClickListener, HybridADListener {
 
   private static final String TAG = HybridADActivity.class.getSimpleName();
 
@@ -54,7 +53,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.titleBarHeight(Integer.valueOf(s));
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "导航栏高度输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏高度输入不合法");
         return null;
       }
     }
@@ -63,7 +62,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.titleBarColor(Long.valueOf(s, 16).intValue());
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "导航栏颜色输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏颜色输入不合法");
         return null;
       }
     }
@@ -72,7 +71,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       if (!TextUtils.isEmpty(s)) {
         setting.title(s);
       } else {
-        Toast.makeText(this, "导航栏title输入为空", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏title输入为空");
         return null;
       }
     }
@@ -81,7 +80,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.titleColor(Long.valueOf(s, 16).intValue());
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "导航栏title字体颜色输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏title字体颜色输入不合法");
         return null;
       }
     }
@@ -90,7 +89,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.titleSize(Integer.valueOf(s));
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "导航栏title字体大小输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏title字体大小输入不合法");
         return null;
       }
     }
@@ -99,7 +98,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       if (!TextUtils.isEmpty(s)) {
         setting.backButtonImage(s);
       } else {
-        Toast.makeText(this, "导航栏back键icon资源名输入为空", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏back键icon资源名输入为空");
         return null;
       }
     }
@@ -108,7 +107,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       if (!TextUtils.isEmpty(s)) {
         setting.closeButtonImage(s);
       } else {
-        Toast.makeText(this, "导航栏close键icon资源名输入为空", Toast.LENGTH_LONG).show();
+        ToastUtil.l("导航栏close键icon资源名输入为空");
         return null;
       }
     }
@@ -117,7 +116,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.separatorColor(Long.valueOf(s, 16).intValue());
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "分割线色值输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("分割线色值输入不合法");
         return null;
       }
     }
@@ -126,7 +125,7 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
       try {
         setting.backSeparatorLength(Integer.valueOf(s));
       } catch (NumberFormatException e) {
-        Toast.makeText(this, "back键分割线高度输入不合法", Toast.LENGTH_LONG).show();
+        ToastUtil.l("back键分割线高度输入不合法");
         return null;
       }
     }
@@ -152,6 +151,6 @@ public class HybridADActivity extends Activity implements View.OnClickListener, 
   public void onError(AdError error) {
     String msg = String.format(Locale.getDefault(), "onError, error code: %d, error msg: %s",
         error.getErrorCode(), error.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
   }
 }

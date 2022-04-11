@@ -16,6 +16,7 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseRewardAd;
+import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ContextUtils;
@@ -27,15 +28,9 @@ import java.lang.ref.WeakReference;
  * 穿山甲激励视频适配器
  * 作用：封装穿山甲激励视频，适配优量汇激励视频
  */
-public class TTRewardAdAdapter extends BaseRewardAd {
+public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder.InitCallBack {
 
   private final String TAG = getClass().getSimpleName();
-
-  private static final String KEY_APPID = "appId";
-  private static final String KEY_REWARD_NAME = "rewardName";
-  private static final String KEY_REWARD_AMOUNT = "rewardAmount";
-  private static final String KEY_USER_ID = "userId";
-  private static final String KEY_SHOW_DOWNLOAD_BAR = "isShowDownloadBar";
 
   private WeakReference<Activity> activityReference;
   private String posId;
@@ -43,9 +38,6 @@ public class TTRewardAdAdapter extends BaseRewardAd {
   private TTRewardVideoAd rewardAd;
   private ADListener listener;
 
-  private String rewardName;
-  private int rewardAmount;
-  private String userId;
   private boolean isShownDownloadBar = true;
   private ServerSideVerificationOptions serverSideVerificationOptions;
   private int ecpm = Constant.VALUE_NO_ECPM;
@@ -76,6 +68,10 @@ public class TTRewardAdAdapter extends BaseRewardAd {
   @Override
   public void loadAD() {
     Log.d(TAG, "loadAD: ");
+    LoadAdUtil.load(this);
+  }
+
+  private void loadAdAfterInitSuccess() {
     if (mTTAdNative == null) {
       Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
       return;
@@ -88,7 +84,7 @@ public class TTRewardAdAdapter extends BaseRewardAd {
       @Override
       public void onError(int code, String message) {
         Log.d(TAG, "onError: code: " + code + "message: " + message);
-        onAdError(ErrorCode.NO_AD_FILL);
+        onAdError(ErrorCode.NO_AD_FILL, code, message);
       }
 
       //视频广告加载后，视频资源缓存到本地的回调，在此回调后，播放本地视频，流畅不阻塞。
@@ -182,7 +178,7 @@ public class TTRewardAdAdapter extends BaseRewardAd {
       @Override
       public void onVideoError() {
         Log.d(TAG, "onVideoError: ");
-        onAdError(ErrorCode.VIDEO_PLAY_ERROR);
+        onAdError(ErrorCode.VIDEO_PLAY_ERROR, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
       }
 
       //视频播放完成后，奖励验证回调，rewardVerify：是否有效，rewardAmount：奖励梳理，rewardName：奖励名称
@@ -268,9 +264,9 @@ public class TTRewardAdAdapter extends BaseRewardAd {
   /**
    * @param errorCode 错误码
    */
-  private void onAdError(int errorCode) {
+  private void onAdError(int errorCode, Integer onlineErrorCode, String errorMessage) {
     if (listener != null) {
-      listener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}));
+      listener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}, onlineErrorCode, errorMessage));
     }
   }
 
@@ -291,7 +287,7 @@ public class TTRewardAdAdapter extends BaseRewardAd {
     return builder
         .setCodeId(posId)
         .setImageAcceptedSize(1080, 1920)
-        .setUserID(userId)// 用户id,必传参数
+        .setUserID(serverSideVerificationOptions != null ? serverSideVerificationOptions.getUserId() : "")// 用户id,必传参数
         .setOrientation(getScreenOrientation()); //必填参数，期望视频的播放方向：TTAdConstant.HORIZONTAL 或 TTAdConstant.VERTICAL
   }
 
@@ -317,5 +313,16 @@ public class TTRewardAdAdapter extends BaseRewardAd {
     if (rewardAd != null) {
       rewardAd.setPrice((double) price);
     }
+  }
+
+  @Override
+  public void onInitSuccess() {
+    loadAdAfterInitSuccess();
+  }
+
+  @Override
+  public void onInitFail() {
+    Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
+    onAdError(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
   }
 }

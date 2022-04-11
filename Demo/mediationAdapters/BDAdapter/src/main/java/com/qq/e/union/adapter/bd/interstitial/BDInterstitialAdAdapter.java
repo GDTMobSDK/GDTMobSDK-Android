@@ -126,7 +126,8 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
           @Override
           public void run() {
             if (unifiedInterstitialADListener != null) {
-              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL));
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
+                  ErrorCode.DEFAULT_ERROR_CODE, reason));
             }
           }
         });
@@ -220,7 +221,8 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
           public void run() {
             Log.d(TAG, "onAdFailed: " + s);
             if (unifiedInterstitialADListener != null) {
-              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL));
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
+                  ErrorCode.DEFAULT_ERROR_CODE, s));
             }
           }
         });

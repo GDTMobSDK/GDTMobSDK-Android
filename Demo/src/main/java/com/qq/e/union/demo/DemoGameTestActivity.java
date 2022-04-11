@@ -1,21 +1,19 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.Editable;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.qq.e.ads.rewardvideo.RewardVideoAD;
 import com.qq.e.ads.rewardvideo.RewardVideoADListener;
 import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.util.AdError;
+import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -27,7 +25,7 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
  * 试玩广告测试Demo
  * 输入试玩广告地址，在正常激励视频广告中展示。
  */
-public class DemoGameTestActivity extends Activity implements RewardVideoADListener {
+public class DemoGameTestActivity extends BaseActivity implements RewardVideoADListener {
 
   private static final String TAG = DemoGameTestActivity.class.getSimpleName();
   private static final String POS_ID = "6040295592058680";
@@ -70,10 +68,10 @@ public class DemoGameTestActivity extends Activity implements RewardVideoADListe
   private boolean checkDemoGameUrl() {
     Editable urlEditable = demoGameUrlEdt.getText();
     if (urlEditable == null || urlEditable.length() == 0) {
-      Toast.makeText(this, "请输入试玩广告地址", Toast.LENGTH_SHORT).show();
+      ToastUtil.s("请输入试玩广告地址");
       return false;
     } else if (!Patterns.WEB_URL.matcher(urlEditable).matches()) {
-      Toast.makeText(this, "请输入有效的试玩广告地址", Toast.LENGTH_LONG).show();
+      ToastUtil.l("请输入有效的试玩广告地址");
       return false;
     }
     GDTAdSdk.getGDTAdManger().getDevTools().testDemoGame(DemoGameTestActivity.this, urlEditable.toString());
@@ -85,20 +83,7 @@ public class DemoGameTestActivity extends Activity implements RewardVideoADListe
    **/
   @Override
   public void onADLoad() {
-    if (rewardVideoAD != null) {
-      if (!rewardVideoAD.hasShown()) {
-        long delta = 1000;
-        if (SystemClock.elapsedRealtime() < (rewardVideoAD.getExpireTimestamp() - delta)) {
-          rewardVideoAD.showAD();
-        } else {
-          Toast.makeText(this, "激励视频广告已过期，请再次请求广告后进行广告展示！", Toast.LENGTH_LONG).show();
-        }
-      } else {
-        Toast.makeText(this, "此条广告已经展示过，请再次请求广告后进行广告展示！", Toast.LENGTH_LONG).show();
-      }
-    } else {
-      Toast.makeText(this, "成功加载广告后再进行广告展示！", Toast.LENGTH_LONG).show();
-    }
+    Log.i(TAG, "onADLoad");
   }
 
   /**
@@ -167,7 +152,7 @@ public class DemoGameTestActivity extends Activity implements RewardVideoADListe
     showing = false;
     String msg = String.format(Locale.getDefault(), "onError, error code: %d, error msg: %s",
             adError.getErrorCode(), adError.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    ToastUtil.l(msg);
     Log.i(TAG, "onError, adError=" + msg);
   }
 }

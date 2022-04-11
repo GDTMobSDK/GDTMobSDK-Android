@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class NativeADUnifiedFullScreenActivity extends Activity implements NativeADUnifiedListener {
+public class NativeADUnifiedFullScreenActivity extends BaseActivity implements NativeADUnifiedListener {
 
   private AQuery mAQuery;
   private RelativeLayout mADInfoContainer;
@@ -229,10 +229,6 @@ public class NativeADUnifiedFullScreenActivity extends Activity implements Nativ
   @Override
   protected void onResume() {
     super.onResume();
-    if (mAdData != null) {
-      // 必须要在Actiivty.onResume()时通知到广告数据，以便重置广告恢复状态
-      mAdData.resume();
-    }
   }
 
   private void renderAdUi(NativeUnifiedADData ad) {

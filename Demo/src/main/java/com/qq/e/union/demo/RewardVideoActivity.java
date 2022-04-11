@@ -1,9 +1,7 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.qq.e.ads.rewardvideo.RewardVideoAD;
 import com.qq.e.ads.rewardvideo.RewardVideoADListener;
@@ -21,9 +18,9 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -36,7 +33,7 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
  * Created by chaotao on 2018/10/8.
  */
 
-public class RewardVideoActivity extends Activity implements RewardVideoADListener,
+public class RewardVideoActivity extends BaseActivity implements RewardVideoADListener,
         AdapterView.OnItemSelectedListener {
 
   private static final String TAG = RewardVideoActivity.class.getSimpleName();
@@ -44,7 +41,6 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
   private EditText mPosIdEdt;
   private String mCurrentPosId;
   private boolean mCurrentVolumeOn;
-  private boolean mIsLoadSuccess;
   private String mS2SBiddingToken;
 
   private Spinner mSpinner;
@@ -52,7 +48,6 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_reward_video);
     mPosIdEdt = findViewById(R.id.position_id);
 
@@ -61,6 +56,19 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
     mArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     mSpinner.setAdapter(mArrayAdapter);
     mSpinner.setOnItemSelectedListener(this);
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  protected void loadAd(){
+    if(mIsLoadAndShow){
+      mPosIdEdt.setText(mBackupPosId);
+    }
+    // 1. 初始化激励视频广告
+    mRewardVideoAD = getRewardVideoAD();
+    mIsLoadSuccess = false;
+    // 2. 加载激励视频广告
+    mRewardVideoAD.loadAD();
   }
 
   public void onClick(View view) {
@@ -74,19 +82,15 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
         }
         break;
       case R.id.load_ad_button:
-        // 1. 初始化激励视频广告
-        mRewardVideoAD = getRewardVideoAD();
-        mIsLoadSuccess = false;
-        // 2. 加载激励视频广告
-        mRewardVideoAD.loadAD();
+        loadAd();
         break;
       case R.id.is_ad_valid_button:
-        DemoUtil.isAdValid(this, mIsLoadSuccess, mRewardVideoAD != null && mRewardVideoAD.isValid(), false);
+        DemoUtil.isAdValid(mIsLoadSuccess, mRewardVideoAD != null && mRewardVideoAD.isValid(), false);
         break;
       case R.id.show_ad_button:
       case R.id.show_ad_button_activity:
         // 3. 展示激励视频广告
-        if (DemoUtil.isAdValid(this, mIsLoadSuccess, mRewardVideoAD != null && mRewardVideoAD.isValid(), true)) {
+        if (DemoUtil.isAdValid(mIsLoadSuccess, mRewardVideoAD != null && mRewardVideoAD.isValid(), true)) {
           if (view.getId() == R.id.show_ad_button) {
             mRewardVideoAD.showAD();
           } else {
@@ -135,7 +139,7 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
   }
 
   public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(this, getPosId(), token -> mS2SBiddingToken = token);
+    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> mS2SBiddingToken = token);
   }
 
   /**
@@ -143,10 +147,7 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
    **/
   @Override
   public void onADLoad() {
-    String msg = "load ad success ! expireTime = " + new Date(System.currentTimeMillis() +
-        mRewardVideoAD.getExpireTimestamp() - SystemClock.elapsedRealtime());
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
+    ToastUtil.l("广告加载成功 ！ ");
     if (mRewardVideoAD.getRewardAdType() == RewardVideoAD.REWARD_TYPE_VIDEO) {
       Log.d(TAG, "eCPMLevel = " + mRewardVideoAD.getECPMLevel() + ", ECPM: " + mRewardVideoAD.getECPM()
           + " ,video duration = " + mRewardVideoAD.getVideoDuration()
@@ -163,6 +164,10 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
     }
     reportBiddingResult(mRewardVideoAD);
     mIsLoadSuccess = true;
+    if (mIsLoadAndShow && DemoUtil.isAdValid(true, mRewardVideoAD != null && mRewardVideoAD.isValid(), true)) {
+      mRewardVideoAD.showAD();
+      mIsLoadAndShow = false;
+    }
   }
 
   /**
@@ -244,7 +249,7 @@ public class RewardVideoActivity extends Activity implements RewardVideoADListen
   public void onError(AdError adError) {
     String msg = String.format(Locale.getDefault(), "onError, error code: %d, error msg: %s",
         adError.getErrorCode(), adError.getErrorMsg());
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    ToastUtil.s(msg);
     Log.i(TAG, "onError, adError=" + msg);
   }
 
