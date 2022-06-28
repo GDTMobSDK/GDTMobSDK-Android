@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.baidu.mobads.sdk.api.RequestParameters;
 import com.baidu.mobads.sdk.api.SplashAd;
 import com.baidu.mobads.sdk.api.SplashInteractionListener;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -24,6 +25,9 @@ import com.qq.e.union.adapter.util.ErrorCode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 百度开屏广告适配器
@@ -227,6 +231,11 @@ public class BDSplashAdAdapter extends BaseSplashAd {
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
+  }
+
+  @Override
   public void setSupportZoomOut(boolean isSupport) {
     /* 百度暂不支持 */
   }
@@ -261,6 +270,11 @@ public class BDSplashAdAdapter extends BaseSplashAd {
 
   @Override
   public void setDeveloperLogo(byte[] logoData) {
+    /* 百度暂不支持 */
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
     /* 百度暂不支持 */
   }
 }

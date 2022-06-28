@@ -27,9 +27,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.ads.splash.SplashADZoomOutListener;
+import com.qq.e.comm.listeners.ADRewardListener;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.comm.util.AdError;
@@ -38,6 +40,7 @@ import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 这是demo工程的入口Activity，在这里会首次调用优量汇的SDK。
@@ -46,7 +49,8 @@ import java.util.List;
  *
  * 这里为了示例开屏V+广告使用了SplashADZoomOutListener，如不需要使用开屏V+广告可以继续使用之前的SplashADListener
  */
-public class SplashActivity extends BaseActivity implements SplashADZoomOutListener,View.OnClickListener {
+public class SplashActivity extends BaseActivity implements SplashADZoomOutListener,
+        ADRewardListener, View.OnClickListener {
 
   private static final String TAG = "SplashActivity";
 
@@ -265,7 +269,13 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     if (isFullScreen) {
       splashAD.setDeveloperLogo(getIntent().getIntExtra("developer_logo", 0));
     }
+    ServerSideVerificationOptions options = new ServerSideVerificationOptions.Builder()
+        .setCustomData("APP's custom data") // 设置插屏全屏视频服务端验证的自定义信息
+        .setUserId("APP's user id for server verify") // 设置服务端验证的用户信息
+        .build();
+    splashAD.setServerSideVerificationOptions(options);
     splashAD.setLoadAdParams(DemoUtil.getLoadAdParams("splash"));
+    splashAD.setRewardListener(this);
     return splashAD;
   }
 
@@ -374,6 +384,12 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
         SplashActivity.this.finish();
       }
     }, shouldDelayMills);
+  }
+
+  @Override
+  public void onReward(Map<String, Object> map) {
+    // TRANS_ID 获取服务端验证的唯一 ID
+    Log.i("AD_DEMO", "onReward " + map.get(ServerSideVerificationOptions.TRANS_ID));
   }
 
   /**

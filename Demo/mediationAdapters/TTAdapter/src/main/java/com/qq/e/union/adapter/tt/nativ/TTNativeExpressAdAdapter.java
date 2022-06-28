@@ -9,6 +9,7 @@ import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -20,7 +21,9 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTAdManagerHolder.InitCallBack {
 
@@ -157,6 +160,13 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
     super.sendLossNotification(price, reason, adnId);
     if (mTTNativeExpressAdDataAdapters == null || mTTNativeExpressAdDataAdapters.size() == 0) {
@@ -213,6 +223,11 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
 
   @Override
   public void setMaxVideoDuration(int maxVideoDuration) {
+
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
 
   }
 

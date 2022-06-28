@@ -8,6 +8,7 @@ import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdDislike;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -18,7 +19,9 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 import com.qq.e.union.adapter.util.PxUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 穿山甲 Banner Adapter
@@ -148,6 +151,13 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
     return reqId;
   }
 
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
+  }
+
   /**
    * 设置广告的不喜欢, 注意：强烈建议设置该逻辑，如果不设置dislike处理逻辑，则模板广告中的 dislike区域不响应dislike事件。
    */
@@ -203,6 +213,11 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
   }
 
   @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
+    /* 穿山甲暂不支持 */
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
     super.sendLossNotification(price, reason, adnId);
     if (mTTAd != null) {
@@ -221,9 +236,6 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
   @Override
   public void setBidECPM(int price) {
     super.setBidECPM(price);
-    if (mTTAd != null) {
-      mTTAd.setPrice((double) price);
-    }
   }
 
   @Override

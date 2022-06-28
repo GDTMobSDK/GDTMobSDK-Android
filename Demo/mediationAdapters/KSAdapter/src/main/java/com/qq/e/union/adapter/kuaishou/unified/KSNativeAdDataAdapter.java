@@ -236,6 +236,14 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
     }
     mKsNativeAd.setVideoPlayListener(new KsNativeAd.VideoPlayListener() {
       @Override
+      public void onVideoPlayReady() {
+        Log.d(TAG, "onVideoPlayReady");
+        if (mADListener != null) {
+          mADListener.onADEvent(new ADEvent(AdEventType.VIDEO_READY, new Object[]{getVideoDuration()}));
+        }
+      }
+
+      @Override
       public void onVideoPlayStart() {
         Log.d(TAG, "onVideoPlayStart");
         if (mADListener != null) {
@@ -257,6 +265,22 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
         Log.d(TAG, "onVideoPlayError");
         if (mADListener != null) {
           mADListener.onADEvent(new ADEvent(AdEventType.VIDEO_ERROR));
+        }
+      }
+
+      @Override
+      public void onVideoPlayPause() {
+        Log.d(TAG, "onVideoPlayPause");
+        if (mADListener != null) {
+          mADListener.onADEvent(new ADEvent(AdEventType.VIDEO_PAUSE));
+        }
+      }
+
+      @Override
+      public void onVideoPlayResume() {
+        Log.d(TAG, "onVideoPlayResume");
+        if (mADListener != null) {
+          mADListener.onADEvent(new ADEvent(AdEventType.VIDEO_RESUME));
         }
       }
     });

@@ -21,8 +21,4 @@
     <color name="mediation_tool_layer">#7093DB</color>
     <color name="mediation_tool_network">#6B238E</color>
 
-    <!--  tt  -->
-    <color name="tt_white">#ffffff</color>
-    <color name="tt_transparent">#00000000</color>
-
 </resources>

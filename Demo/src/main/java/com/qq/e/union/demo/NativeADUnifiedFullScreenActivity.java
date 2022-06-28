@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +22,7 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
-import com.qq.e.union.demo.util.PxUtil;
+import com.qq.e.union.demo.util.PxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,11 +118,11 @@ public class NativeADUnifiedFullScreenActivity extends BaseActivity implements N
       imageViews.add(findViewById(R.id.img_2));
       imageViews.add(findViewById(R.id.img_3));
     }
-    FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtil.dpToPx(this, 46),
-        PxUtil.dpToPx(this, 14));
+    FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtils.dpToPx(this, 46),
+        PxUtils.dpToPx(this, 14));
     adLogoParams.gravity = Gravity.END | Gravity.BOTTOM;
-    adLogoParams.rightMargin = PxUtil.dpToPx(this, 10);
-    adLogoParams.bottomMargin = PxUtil.dpToPx(this, 10);
+    adLogoParams.rightMargin = PxUtils.dpToPx(this, 10);
+    adLogoParams.bottomMargin = PxUtils.dpToPx(this, 10);
     //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效，
     ad.bindAdToView(this, mContainer, adLogoParams, clickableViews, customClickableViews);
     //如果需要获得点击view的信息使用NativeADEventListenerWithClickInfo代替NativeADEventListener

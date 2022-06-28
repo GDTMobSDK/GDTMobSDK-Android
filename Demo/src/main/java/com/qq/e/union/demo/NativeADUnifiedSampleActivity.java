@@ -38,8 +38,10 @@ import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class NativeADUnifiedSampleActivity extends BaseActivity implements NativeADUnifiedListener {
 
@@ -590,13 +592,15 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
                   .getPictureWidth(),
               ad.getPictureHeight()));
           initAd(ad);
-          Object mp = ad.getExtraInfo() == null ? null : ad.getExtraInfo().get("mp");
-          Object requestId = ad.getExtraInfo() == null ? null : ad.getExtraInfo().get("request_id");
+          Map<String, Object> extraInfo = ad.getExtraInfo();
+          Object mp = extraInfo.get("mp");
+          Object requestId = extraInfo.get("request_id");
           Log.d(TAG,
               "eCPMLevel = " + ad.getECPMLevel() + "， ECPM: " + ad.getECPM()
                   + " ,videoDuration = " + ad.getVideoDuration()
                   + ", testExtraInfo:" + mp
                   + ", request_id:" + requestId);
+          Log.e(TAG, "widget_info:" + extraInfo.get("widget_info"));
           break;
         case MSG_VIDEO_START:
           mImagePoster.setVisibility(View.GONE);

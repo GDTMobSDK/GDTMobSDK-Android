@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.qq.e.ads.cfg.VideoOption;
-import com.qq.e.ads.interstitial2.ADRewardListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
 import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
+import com.qq.e.comm.listeners.ADRewardListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
@@ -61,14 +61,16 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
 
     this.findViewById(R.id.loadIADFullScreen).setOnClickListener(this);
     this.findViewById(R.id.showIADFullScreen).setOnClickListener(this);
+    this.findViewById(R.id.loadAndShowAd).setOnClickListener(this);
     this.findViewById(R.id.isAdValid).setOnClickListener(this);
     super.onCreate(savedInstanceState);
   }
 
   @Override
   protected void loadAd() {
-    if (mIsLoadAndShow) {
+    if (!TextUtils.isEmpty(mBackupPosId)) {
       posIdEdt.setText(mBackupPosId);
+      mBackupPosId = null;
     }
     mLoadSuccess = false;
     iad = getIAD();
@@ -80,6 +82,10 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.loadIADFullScreen:
+        loadAd();
+        break;
+      case R.id.loadAndShowAd:
+        mIsLoadAndShow = true;
         loadAd();
         break;
       case R.id.showIADFullScreen:

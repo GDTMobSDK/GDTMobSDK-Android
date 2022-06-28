@@ -3,6 +3,7 @@ package com.qq.e.union.adapter.tt.reward;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -23,6 +24,8 @@ import com.qq.e.union.adapter.util.ContextUtils;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 穿山甲激励视频适配器
@@ -42,6 +45,9 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
   private ServerSideVerificationOptions serverSideVerificationOptions;
   private int ecpm = Constant.VALUE_NO_ECPM;
   private String requestId;
+
+  private boolean mIsEnableAdvancedReward = true; // 开发者自行决定是否开放进阶奖励功能，此处仅为示例
+  private RewardAdvancedInfo mRewardAdvancedInfo;
 
   /**
    * 激励视频过期时间，开发者可自定义
@@ -106,6 +112,7 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
       public void onRewardVideoAdLoad(TTRewardVideoAd ad) {
         Log.d(TAG, "onRewardVideoAdLoad: " + getAdType(ad.getRewardVideoAdType()));
         rewardAd = ad;
+        mRewardAdvancedInfo = new RewardAdvancedInfo();
         try {
           ecpm = (int) ad.getMediaExtraInfo().get("price");
         } catch (Exception e) {
@@ -161,6 +168,9 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
 
       public void onAdClose() {
         Log.d(TAG, "onAdClose: ");
+        if (mIsEnableAdvancedReward && mRewardAdvancedInfo != null) {
+          Log.d(TAG, "本次奖励共发放：" + mRewardAdvancedInfo.getRewardAdvancedAmount());
+        }
         if (listener != null) {
           listener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
         }
@@ -181,12 +191,50 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
         onAdError(ErrorCode.VIDEO_PLAY_ERROR, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
       }
 
-      //视频播放完成后，奖励验证回调，rewardVerify：是否有效，rewardAmount：奖励梳理，rewardName：奖励名称
+      // 视频播放完成后，奖励验证回调，rewardVerify：是否有效，rewardAmount：奖励梳理，rewardName：奖励名称
+      // 此接口仅支持基础奖励
       @Override
       public void onRewardVerify(boolean rewardVerify, int rewardAmount, String rewardName, int errorCode, String errorMsg) {
         Log.d(TAG, "onRewardVerify: ");
         if (rewardVerify && listener != null) {
           listener.onADEvent(new ADEvent(AdEventType.AD_REWARD, new Object[]{""}));
+        }
+      }
+
+      /**
+       * 激励视频播放完毕，验证是否有效发放奖励的回调 4400版本新增
+       *
+       * @param isRewardValid 奖励有效
+       * @param rewardType 奖励类型，0:基础奖励 >0:进阶奖励
+       * @param extraInfo 奖励的额外参数
+       */
+      @Override
+      public void onRewardArrived(boolean isRewardValid, int rewardType, Bundle extraInfo) {
+        Log.d(TAG, "onRewardArrived: ");
+        RewardBundleModel rewardBundleModel = new RewardBundleModel(extraInfo);
+        Log.e(TAG, "Callback --> rewardVideoAd has onRewardArrived " +
+            "\n奖励是否有效：" + isRewardValid +
+            "\n奖励类型：" + rewardType +
+            "\n奖励名称：" + rewardBundleModel.getRewardName() +
+            "\n奖励数量：" + rewardBundleModel.getRewardAmount() +
+            "\n建议奖励百分比：" + rewardBundleModel.getRewardPropose());
+        if (!isRewardValid) {
+          Log.d(TAG, "发送奖励失败 code：" + rewardBundleModel.getServerErrorCode() +
+              "\n msg：" + rewardBundleModel.getServerErrorMsg());
+          return;
+        }
+
+        if (!mIsEnableAdvancedReward) {
+          // 未使用进阶奖励功能
+          if (rewardType == TTRewardVideoAd.REWARD_TYPE_DEFAULT) {
+            Log.d(TAG, "普通奖励发放，name:" + rewardBundleModel.getRewardName() +
+                "\namount:" + rewardBundleModel.getRewardAmount());
+          }
+        } else {
+          // 使用了进阶奖励功能
+          if (mRewardAdvancedInfo != null) {
+            mRewardAdvancedInfo.proxyRewardModel(rewardBundleModel, false);
+          }
         }
       }
 
@@ -228,6 +276,13 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
   @Override
   public String getReqId() {
     return requestId;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
   }
 
   @Override
@@ -307,12 +362,10 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
     }
   }
 
+
   @Override
   public void setBidECPM(int price) {
     super.setBidECPM(price);
-    if (rewardAd != null) {
-      rewardAd.setPrice((double) price);
-    }
   }
 
   @Override

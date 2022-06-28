@@ -24,7 +24,9 @@ import com.qq.e.union.adapter.kuaishou.util.KSSDKInitUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快手插屏适配器
@@ -203,8 +205,13 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public String getReqId() {
-    /* 快手不支持此接口 */
     return null;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    /* 快手不支持此接口 */
+    return new HashMap<>();
   }
 
   @Override
@@ -377,4 +384,5 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
       mFullScreenVideoAd.setBidEcpm(price);
     }
   }
+
 }

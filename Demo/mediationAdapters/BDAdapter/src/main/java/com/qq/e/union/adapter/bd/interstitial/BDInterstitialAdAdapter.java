@@ -5,9 +5,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.baidu.mobads.sdk.api.ExpressInterstitialAd;
+import com.baidu.mobads.sdk.api.ExpressInterstitialListener;
 import com.baidu.mobads.sdk.api.FullScreenVideoAd;
-import com.baidu.mobads.sdk.api.InterstitialAd;
-import com.baidu.mobads.sdk.api.InterstitialAdListener;
 import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
@@ -20,6 +20,9 @@ import com.qq.e.union.adapter.util.CallbackUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 //百度插屏广告
 public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
@@ -29,7 +32,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   // 插屏全屏广告
   private FullScreenVideoAd fullScreenVideoAd;
   // 插屏半屏广告
-  private InterstitialAd interstitialAd;
+  private ExpressInterstitialAd interstitialAd;
   private ADListener unifiedInterstitialADListener;
   private Activity activity;
   private String posId; // 广告位id
@@ -48,25 +51,25 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   @Override
   public void show() {
     if (interstitialAd != null) {
-      interstitialAd.showAd();
+      interstitialAd.show();
     }
   }
 
   @Override
   public void showAsPopupWindow() {
     if (interstitialAd != null) {
-      interstitialAd.showAd();
+      interstitialAd.show();
     }
   }
 
   @Override
   public void loadAd() {
-    interstitialAd = new InterstitialAd(activity, posId);
-    interstitialAd.setListener(new InterstitialAdListener() {
+    interstitialAd = new ExpressInterstitialAd(activity, posId);
+    interstitialAd.setLoadListener(new ExpressInterstitialListener() {
 
       @Override
-      public void onAdReady() {//插屏广告加载完毕
-        Log.i(TAG, "onAdReady.");
+      public void onADLoaded() {
+        Log.e(TAG, "onADLoaded");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -81,21 +84,8 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       }
 
       @Override
-      public void onAdPresent() {//插屏广告展开时回调
-        Log.i(TAG, "onAdPresent.");
-        mainHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            if (unifiedInterstitialADListener != null) {
-              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));;
-            }
-          }
-        });
-      }
-
-      @Override
-      public void onAdClick(InterstitialAd interstitialAd) {//插屏广告点击时回调
-        Log.i(TAG, "onAdClick.");
+      public void onAdClick() {
+        Log.e(TAG, "onAdClick");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -107,8 +97,8 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       }
 
       @Override
-      public void onAdDismissed() {//插屏广告关闭时回调
-        Log.i(TAG, "onAdDismissed.");
+      public void onAdClose() {
+        Log.e(TAG, "onAdClose");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -120,33 +110,98 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       }
 
       @Override
-      public void onAdFailed(String reason) {//广告加载失败
-        Log.i(TAG, "onAdFailed." + reason);
+      public void onAdFailed(int errorCode, String message) {
+        Log.e(TAG, "onLoadFail reason:" + message + "errorCode:" + errorCode);
+        mainHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_ERROR, ErrorCode.NO_AD_FILL,
+                  errorCode, message));
+            }
+          }
+        });
+      }
+
+      @Override
+      public void onNoAd(int errorCode, String message) {
+        Log.e(TAG, "onNoAd reason:" + message + "errorCode:" + errorCode);
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
             if (unifiedInterstitialADListener != null) {
               unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
-                  ErrorCode.DEFAULT_ERROR_CODE, reason));
+                  errorCode, message));
             }
           }
         });
       }
+
+      @Override
+      public void onADExposed() {
+        Log.e(TAG, "onADExposed");
+        mainHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));;
+            }
+          }
+        });
+      }
+
+      @Override
+      public void onADExposureFailed() {
+        Log.e(TAG, "onADExposureFailed");
+      }
+
+      @Override
+      public void onAdCacheSuccess() {
+        Log.e(TAG, "onAdCacheSuccess");
+      }
+
+      @Override
+      public void onAdCacheFailed() {
+        Log.e(TAG, "onAdCacheFailed");
+      }
+
+      @Override
+      public void onVideoDownloadSuccess() {
+        Log.e(TAG, "onVideoDownloadSuccess");
+        mainHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));;
+            }
+          }
+        });
+      }
+
+      @Override
+      public void onVideoDownloadFailed() {
+      }
+
+      // 落地页关闭
+      @Override
+      public void onLpClosed() {
+        Log.e(TAG, "onLpClosed");
+      }
     });
-    interstitialAd.loadAd();
+    interstitialAd.load();
   }
 
   @Override
   public void showAsPopupWindow(Activity act) {
-    if (interstitialAd != null && interstitialAd.isAdReady()) {
-      interstitialAd.showAd();
+    if (interstitialAd != null && interstitialAd.isReady()) {
+      interstitialAd.show(act);
     }
   }
 
   @Override
   public void show(Activity act) {
-    if (interstitialAd != null && interstitialAd.isAdReady()) {
-      interstitialAd.showAd();
+    if (interstitialAd != null && interstitialAd.isReady()) {
+      interstitialAd.show(act);
     }
   }
 
@@ -164,7 +219,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public boolean isValid() {
-    return (interstitialAd != null && interstitialAd.isAdReady())
+    return (interstitialAd != null && interstitialAd.isReady())
         || (fullScreenVideoAd != null && fullScreenVideoAd.isReady());
   }
 
@@ -301,6 +356,18 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
     }
   }
 
+  @Override
+  public String getECPMLevel() {
+    if (interstitialAd != null) {
+      return interstitialAd.getECPMLevel();
+    }
+
+    if (fullScreenVideoAd != null) {
+      return fullScreenVideoAd.getECPMLevel();
+    }
+    return null;
+  }
+
   /******************************以下方法暂不支持*****************************/
 
   @Override
@@ -319,15 +386,15 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   }
 
   @Override
-  public String getECPMLevel() {
+  public String getReqId() {
     /* 百度不支持此接口 */
     return null;
   }
 
   @Override
-  public String getReqId() {
+  public Map<String, Object> getExtraInfo() {
     /* 百度不支持此接口 */
-    return null;
+    return new HashMap<>();
   }
 
   @Override

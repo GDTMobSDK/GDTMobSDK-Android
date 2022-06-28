@@ -301,11 +301,7 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
-  public void setBidECPM(int price) {
-    if (mTTNativeExpressAd != null) {
-      mTTNativeExpressAd.setPrice((double) price);
-    }
-  }
+  public void setBidECPM(int price) { }
 
   /**
    * ======================================================================

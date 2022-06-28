@@ -76,8 +76,9 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
 
   @Override
   protected void loadAd() {
-    if (mIsLoadAndShow) {
+    if (!TextUtils.isEmpty(mBackupPosId)) {
       posIdEdt.setText(mBackupPosId);
+      mBackupPosId = null;
     }
     mLoadSuccess = false;
     iad = getIAD();

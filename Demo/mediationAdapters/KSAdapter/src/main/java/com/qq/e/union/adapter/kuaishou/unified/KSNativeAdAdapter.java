@@ -18,7 +18,9 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快手原生广告管理者适配器
@@ -128,6 +130,11 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
   @Override
   public String getReqId() {
     return null;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
   }
 
 

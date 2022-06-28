@@ -34,7 +34,7 @@ import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
-import com.qq.e.union.demo.util.PxUtil;
+import com.qq.e.union.demo.util.PxUtils;
 import com.qq.e.union.demo.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -281,12 +281,12 @@ public class NativeADUnifiedFullScreenFeedActivity extends BaseActivity implemen
         clickableViews.add(holder.poster);
         imageViews.add(holder.poster);
       }
-      FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtil.dpToPx(mContext
+      FrameLayout.LayoutParams adLogoParams = new FrameLayout.LayoutParams(PxUtils.dpToPx(mContext
           , 46),
-          PxUtil.dpToPx(mContext, 14));
+          PxUtils.dpToPx(mContext, 14));
       adLogoParams.gravity = Gravity.END | Gravity.BOTTOM;
-      adLogoParams.rightMargin = PxUtil.dpToPx(mContext, 10);
-      adLogoParams.bottomMargin = PxUtil.dpToPx(mContext, 10);
+      adLogoParams.rightMargin = PxUtils.dpToPx(mContext, 10);
+      adLogoParams.bottomMargin = PxUtils.dpToPx(mContext, 10);
       //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
       ad.bindAdToView(NativeADUnifiedFullScreenFeedActivity.this, holder.container, adLogoParams,
           clickableViews, customClickableViews);

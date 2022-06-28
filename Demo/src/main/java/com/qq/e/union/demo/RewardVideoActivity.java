@@ -61,8 +61,9 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
 
   @Override
   protected void loadAd(){
-    if(mIsLoadAndShow){
+    if (!TextUtils.isEmpty(mBackupPosId)) {
       mPosIdEdt.setText(mBackupPosId);
+      mBackupPosId = null;
     }
     // 1. 初始化激励视频广告
     mRewardVideoAD = getRewardVideoAD();
@@ -82,6 +83,10 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
         }
         break;
       case R.id.load_ad_button:
+        loadAd();
+        break;
+      case R.id.load_ad_and_show_ad_button:
+        mIsLoadAndShow = true;
         loadAd();
         break;
       case R.id.is_ad_valid_button:

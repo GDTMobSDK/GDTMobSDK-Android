@@ -83,6 +83,9 @@ public class MediationTestActivity extends AppCompatActivity {
     try {
       JSONObject originalJson = new JSONObject(originalData);
       JSONArray layerConfigs = originalJson.optJSONArray("layerConfigs");
+      if (layerConfigs == null) {
+        return;
+      }
       for (int i = 0; i < layerConfigs.length(); i++) {
         JSONObject layer = layerConfigs.getJSONObject(i);
         mConfigs.add(new LayerConfig(layer));

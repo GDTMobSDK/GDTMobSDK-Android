@@ -23,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.qq.e.comm.adevent.AdEventType.AD_CLICKED;
 import static com.qq.e.comm.adevent.AdEventType.VIDEO_ERROR;
@@ -168,6 +170,11 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
   @Override
   public String getReqId() {
     return null;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
   }
 
   private void fireAdEvent(int eventId, Object... params) {

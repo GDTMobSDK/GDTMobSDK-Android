@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class InnerDemoApplication extends MultiDexApplication {
 
-  private static Application appContext;
+  protected static Application appContext;
 
   @Override
   public void onCreate() {

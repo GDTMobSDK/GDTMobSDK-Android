@@ -24,7 +24,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.comm.constants.AdPatternType;
-import com.qq.e.union.demo.util.PxUtil;
+import com.qq.e.union.demo.util.PxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +126,7 @@ public class NativeADUnifiedAdInfoView extends ConstraintLayout {
     // 2s后
     // 按钮背景颜色：从 #FFFFFF-10% 变为 #3185FC，300ms
     if (mAnimatorSet == null) {
-      int yValue = PxUtil.dpToPx(getContext(), 42);
+      int yValue = PxUtils.dpToPx(getContext(), 42);
       ObjectAnimator titleAnim =
           ObjectAnimator.ofFloat(mAdTitle, "translationY", 0, -yValue).setDuration(300);
       ObjectAnimator descAnim =
@@ -232,7 +232,7 @@ public class NativeADUnifiedAdInfoView extends ConstraintLayout {
     // 留出2dp的间距显示progressbar
     // progressbar的高度为2dp，且在下一视图层级
     // 视频需要显示progressbar，图文不需要
-    setPadding(0, 0, 0, PxUtil.dpToPx(getContext(), 2));
+    setPadding(0, 0, 0, PxUtils.dpToPx(getContext(), 2));
   }
 
   private void hideProgressBar() {

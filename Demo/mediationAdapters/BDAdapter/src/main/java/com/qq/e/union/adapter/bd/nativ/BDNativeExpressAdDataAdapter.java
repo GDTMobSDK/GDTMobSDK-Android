@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.baidu.mobads.sdk.api.FeedNativeView;
-import com.baidu.mobads.sdk.api.NativeResponse;
-import com.baidu.mobads.sdk.api.XAdNativeResponse;
+import com.baidu.mobads.sdk.api.ExpressResponse;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressADView;
 import com.qq.e.ads.nativ.NativeExpressMediaListener;
@@ -23,26 +20,37 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.pi.AdData;
 import com.qq.e.union.adapter.util.Constant;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements ADEventListener {
   private static final String TAG = BDNativeExpressAdDataAdapter.class.getSimpleName();
 
-  private NativeResponse mNativeResponse;
+  private static final int TOP_IMAGE_TEXT = 28; // 上图下文
+  private static final int TOP_TEXT_IMAGE = 29; // 上文下图
+  private static final int LOGO_IMAGE = 30; // 大图logo
+  private static final int LEFT_IMAGE_TEXT = 33; //左图右文
+  private static final int RIGHT_IMAGE_TEXT = 34; // 右图左文
+  private static final int THREE_IMAGE = 35; // 三图图文
+  private static final int THREE_IMAGE_WITH_LOGO = 36; //三图图文+logo
+  private static final int VIDEO = 37; // 视频
+
+
+  private ExpressResponse mExpressResponse;
   private final AdData mAdData;
   private ADListener mListener;
-  private final Context mContext;
+  private WeakReference<Context> mWeakReference;
   private String mEcpmLevel;
 
-  public BDNativeExpressAdDataAdapter(Context context, NativeResponse data) {
+  public BDNativeExpressAdDataAdapter(Context context, ExpressResponse data) {
     super(context);
-    this.mNativeResponse = data;
-    mContext = context;
+    this.mExpressResponse = data;
+    mWeakReference = new WeakReference(context);
     mAdData = new AdData() {
       @Override
       public String getTitle() {
-        return data.getTitle();
+        return null;
       }
 
       @Override
@@ -51,11 +59,25 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
       }
 
       /**
-       *  穿山甲样式无法与优量汇样式完全匹配，需要开发者注意样式的适配。
+       *  百青藤样式无法与优量汇样式完全匹配，需要开发者注意样式的适配。
        */
       @Override
       public int getAdPatternType() {
-        return AdPatternType.NATIVE_1IMAGE_2TEXT;
+        switch (mExpressResponse.getStyleType()) {
+          case TOP_IMAGE_TEXT:
+          case TOP_TEXT_IMAGE:
+          case LOGO_IMAGE:
+          case LEFT_IMAGE_TEXT:
+          case RIGHT_IMAGE_TEXT:
+            return AdPatternType.NATIVE_2IMAGE_2TEXT;
+          case THREE_IMAGE:
+          case THREE_IMAGE_WITH_LOGO:
+            return AdPatternType.NATIVE_3IMAGE;
+          case VIDEO:
+            return AdPatternType.NATIVE_VIDEO;
+          default:
+            return AdPatternType.NATIVE_1IMAGE_2TEXT;
+        }
       }
 
       @Override
@@ -65,7 +87,7 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
 
       @Override
       public String getECPMLevel() {
-        return mEcpmLevel;
+        return mExpressResponse.getECPMLevel();
       }
 
       @Override
@@ -98,51 +120,51 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
         return 0;
       }
     };
-    tryBindInteractionListener();
+    bindDislike();
+    tryBindInteractionAdListener();
+    tryBindAdPrivacyListener();
   }
 
-  @Override
-  public void render() {
-    post(() -> addView(getView()));
-    Log.d(TAG, "onRender");
-    if (mListener == null) {
+  private void tryBindAdPrivacyListener() {
+    if (mExpressResponse == null) {
       return;
     }
-    mListener.onADEvent(new ADEvent(AdEventType.AD_RENDER_SUCCESS, new Object[]{this}));
+    mExpressResponse.setAdPrivacyListener(new ExpressResponse.ExpressAdDownloadWindowListener() {
+      @Override
+      public void onADPrivacyClick() {
+        Log.i(TAG, "onADPrivacyClick");
+      }
+
+      @Override
+      public void onADPermissionShow() {
+        Log.i(TAG, "onADPermissionShow");
+      }
+
+      @Override
+      public void onADPermissionClose() {
+        Log.i(TAG, "onADPermissionClose");
+      }
+
+      @Override
+      public void adDownloadWindowShow() {
+        Log.i(TAG, "AdDownloadWindowShow");
+      }
+
+      @Override
+      public void adDownloadWindowClose() {
+        Log.i(TAG, "adDownloadWindowClose");
+      }
+    });
   }
 
-  @Override
-  public void destroy() {
-    if (mNativeResponse != null) {
-      mNativeResponse = null;
+  private void tryBindInteractionAdListener() {
+    if (mExpressResponse == null) {
+      return;
     }
-  }
-
-  @Override
-  public AdData getBoundData() {
-    return mAdData;
-  }
-
-  private View getView() {
-    // 信息流智能优选
-    FeedNativeView newAdView = new FeedNativeView(mContext);
-    if (newAdView.getParent() != null) {
-      ((ViewGroup) newAdView.getParent()).removeView(newAdView);
-    }
-    XAdNativeResponse response = (XAdNativeResponse) mNativeResponse;
-    // 点击了负反馈渠道的回调
-    response.setAdDislikeListener(this::removeAllViews);
-
-    newAdView.setAdData((XAdNativeResponse) mNativeResponse);
-    // 智能优选支持自定义视图样式，可以通过StyleParams来配置相关UI参数，开发者可自行参考百度接入文档进行设置
-    return newAdView;
-  }
-
-  private void tryBindInteractionListener() {
-    mNativeResponse.registerViewForInteraction(this, new NativeResponse.AdInteractionListener() {
+    mExpressResponse.setInteractionListener(new ExpressResponse.ExpressInteractionListener() {
       @Override
       public void onAdClick() {
-        Log.d(TAG, "onADClicked");
+        Log.d(TAG, "onAdClicked");
         if (mListener == null) {
           return;
         }
@@ -151,8 +173,8 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
       }
 
       @Override
-      public void onADExposed() {
-        Log.d(TAG, "onADExposed");
+      public void onAdExposed() {
+        Log.d(TAG, "onAdExposed");
         if (mListener == null) {
           return;
         }
@@ -161,24 +183,87 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
       }
 
       @Override
-      public void onADExposureFailed(int reason) {
-
+      public void onAdRenderFail(View view, String s, int i) {
+        Log.i(TAG, "onAdRenderFail");
+        if (mListener == null) {
+          return;
+        }
+        mListener.onADEvent(new ADEvent(AdEventType.AD_RENDER_FAILED,
+            new Object[]{BDNativeExpressAdDataAdapter.this}));
       }
 
       @Override
-      public void onADStatusChanged() {
-
+      public void onAdRenderSuccess(View view, float width, float height) {
+        Log.i(TAG, "onAdRenderSuccess");
+        if (mListener == null) {
+          return;
+        }
+        mListener.onADEvent(new ADEvent(AdEventType.AD_RENDER_SUCCESS,
+            new Object[]{BDNativeExpressAdDataAdapter.this}));
+        post(() -> {
+          /**
+           * ===【 注意 】===
+           * 1. 展示前需要绑定当前activity，否则负反馈弹框无法弹出（负反馈无响应）
+           * 2. 如果你配置了{@link com.baidu.mobads.sdk.api.BDAdConfig.Builder#useActivityDialog(Boolean)}为 false
+           *    那么请务必在展现前调用该方法绑定activity，否则会使下载弹框无法弹出（下载类无响应）
+           */
+          if (mWeakReference.get() != null && mWeakReference.get() instanceof Activity) {
+            mExpressResponse.bindInteractionActivity((Activity) mWeakReference.get());
+          }
+          addView(mExpressResponse.getExpressAdView());
+        });
       }
 
       @Override
       public void onAdUnionClick() {
-        Log.d(TAG, "onADUnionClicked");
+        Log.d(TAG, "onAdUnionClicked");
         if (mListener == null) {
           return;
         }
         mListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED, new Object[]{this}));
       }
     });
+  }
+
+  private void bindDislike() {
+    if (mExpressResponse == null) {
+      return;
+    }
+    mExpressResponse.setAdDislikeListener(new ExpressResponse.ExpressDislikeListener() {
+      @Override
+      public void onDislikeWindowShow() {
+        Log.i(TAG, "onDislikeWindowShow");
+      }
+
+      @Override
+      public void onDislikeItemClick() {
+        Log.i(TAG, "onDislikeItemClick");
+      }
+
+      @Override
+      public void onDislikeWindowClose() {
+        Log.i(TAG, "onDislikeWindowClose");
+      }
+    });
+
+  }
+
+  @Override
+  public void render() {
+    mExpressResponse.render();
+    Log.d(TAG, "onRender");
+  }
+
+  @Override
+  public void destroy() {
+    if (mExpressResponse != null) {
+      mExpressResponse = null;
+    }
+  }
+
+  @Override
+  public AdData getBoundData() {
+    return mAdData;
   }
 
   @Override

@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.baidu.mobads.sdk.api.AdView;
 import com.baidu.mobads.sdk.api.AdViewListener;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -18,6 +19,9 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 百度 Banner Adapter
@@ -127,6 +131,11 @@ public class BDBannerAdAdapter extends BaseBannerAd {
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
+  }
+
+  @Override
   public void setAdListener(ADListener adListener) {
     mBannerADListener = adListener;
   }
@@ -139,5 +148,10 @@ public class BDBannerAdAdapter extends BaseBannerAd {
   @Override
   public View getAdView() {
     return mAdView;
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
+    /* 百度暂不支持 */
   }
 }

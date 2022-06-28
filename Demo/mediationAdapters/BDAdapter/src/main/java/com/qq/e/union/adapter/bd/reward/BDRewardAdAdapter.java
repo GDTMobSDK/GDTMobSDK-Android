@@ -18,6 +18,8 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 百度激励视频适配器
@@ -219,6 +221,11 @@ public class BDRewardAdAdapter extends BaseRewardAd {
   @Override
   public String getReqId() {
     return null;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
   }
 
   @Override

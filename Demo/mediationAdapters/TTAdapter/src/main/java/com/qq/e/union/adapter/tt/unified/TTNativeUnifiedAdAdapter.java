@@ -18,7 +18,9 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 穿山甲数据流广告适配器
@@ -190,6 +192,13 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
         adapter.setEcpmLevel(level);
       }
     }
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
   }
 
   @Override

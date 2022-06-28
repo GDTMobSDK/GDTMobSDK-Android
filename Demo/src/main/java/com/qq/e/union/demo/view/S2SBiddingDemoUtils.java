@@ -48,7 +48,7 @@ public class S2SBiddingDemoUtils {
 
   public static void requestBiddingToken(String posId, RequestTokenCallBack callBack) {
     Map<String, Object> map = new HashMap<>();
-    map.put("staIn", "abcdefg"); // 开发者自定义参数，默认不传
+    map.put("staIn", "com.qq.e.union.demo.view.S2SBiddingDemoUtils"); // 开发者自定义参数，默认不传
     String buyerId = GDTAdSdk.getGDTAdManger().getBuyerId(map);
     String sdkInfo = GDTAdSdk.getGDTAdManger().getSDKInfo(posId);
     Log.d(TAG, "sdk_info: " + sdkInfo);

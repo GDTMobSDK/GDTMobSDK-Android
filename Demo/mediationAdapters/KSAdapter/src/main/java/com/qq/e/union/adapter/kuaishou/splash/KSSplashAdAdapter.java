@@ -13,6 +13,7 @@ import com.kwad.sdk.api.KsAdSDK;
 import com.kwad.sdk.api.KsLoadManager;
 import com.kwad.sdk.api.KsScene;
 import com.kwad.sdk.api.KsSplashScreenAd;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -21,6 +22,9 @@ import com.qq.e.mediation.interfaces.BaseSplashAd;
 import com.qq.e.union.adapter.kuaishou.util.KSSDKInitUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 快手联盟开屏广告适配器
@@ -190,6 +194,11 @@ public class KSSplashAdAdapter extends BaseSplashAd {
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
+  }
+
+  @Override
   public void setSupportZoomOut(boolean isSupport) {
     /* 快手暂不支持 */
   }
@@ -223,6 +232,11 @@ public class KSSplashAdAdapter extends BaseSplashAd {
 
   @Override
   public void setDeveloperLogo(byte[] logoData) {
+    /* 快手暂不支持 */
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
     /* 快手暂不支持 */
   }
 }

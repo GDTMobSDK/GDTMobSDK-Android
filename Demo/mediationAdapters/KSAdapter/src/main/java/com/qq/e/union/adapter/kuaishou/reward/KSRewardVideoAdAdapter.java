@@ -27,7 +27,9 @@ import com.qq.e.union.adapter.util.ContextUtils;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快手激励视频Adapter实现demo
@@ -100,6 +102,11 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
   @Override
   public String getReqId() {
     return null;
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
   }
 
   @Override

@@ -34,7 +34,9 @@ import com.qq.e.union.tt.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 穿山甲插屏全屏和插屏半屏广告视频适配器
@@ -58,7 +60,7 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
   private ViewGroup mRootView;
   private boolean mHasVideoCached;
   private final AdapterImageLoader mAdImageLoader;
-  private boolean mIsFullScreen;
+  protected boolean mIsFullScreen;
   protected Activity mContext;
   protected boolean mIsValid = false;
   protected int ecpm = Constant.VALUE_NO_ECPM;
@@ -314,7 +316,7 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
     LoadAdUtil.load(this);
   }
 
-  private void loadFullScreenADAfterInitSuccess() {
+  protected void loadFullScreenADAfterInitSuccess() {
     AdSlot adSlot = setFullScreenAdSlotParams(new AdSlot.Builder()).build();
     mIsValid = false;
     ttAdNative.loadFullScreenVideoAd(adSlot, new TTAdNative.FullScreenVideoAdListener() {
@@ -540,12 +542,13 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
   @Override
   public void setBidECPM(int price) {
     super.setBidECPM(price);
-    if (ttFullVideoAd != null) {
-      ttFullVideoAd.setPrice((double) price);
-    }
-    if (ttNativeInteraction != null) {
-      ttNativeInteraction.setPrice((double) price);
-    }
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
   }
 
   /******************************以下方法暂未使用*****************************/

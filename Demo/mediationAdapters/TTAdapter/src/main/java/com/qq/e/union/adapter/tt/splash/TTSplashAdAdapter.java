@@ -14,6 +14,7 @@ import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTSplashAd;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -24,6 +25,9 @@ import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 import com.qq.e.union.adapter.util.PxUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 穿山甲开屏广告适配器
@@ -299,9 +303,13 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
   @Override
   public void setBidECPM(int price) {
     super.setBidECPM(price);
-    if (mTTSplashAd != null) {
-      mTTSplashAd.setPrice((double) price);
-    }
+  }
+
+  @Override
+  public Map<String, Object> getExtraInfo() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("request_id", getReqId());
+    return map;
   }
 
   @Override
@@ -338,6 +346,11 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
 
   @Override
   public void setDeveloperLogo(byte[] logoData) {
+    /* 穿山甲暂不支持 */
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
     /* 穿山甲暂不支持 */
   }
 

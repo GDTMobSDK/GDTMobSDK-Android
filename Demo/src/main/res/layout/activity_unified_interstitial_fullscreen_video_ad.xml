@@ -36,6 +36,12 @@
         android:onClick="requestS2SBiddingToken"
         android:text="获取 S2S token" />
 
+    <Button
+        android:id="@+id/loadAndShowAd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="加载并展示广告" />
+
     <LinearLayout
         android:id="@+id/posIdContainer"
         android:layout_width="match_parent"

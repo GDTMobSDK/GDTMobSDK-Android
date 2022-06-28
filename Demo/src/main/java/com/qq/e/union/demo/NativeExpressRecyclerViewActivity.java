@@ -303,7 +303,7 @@ public class NativeExpressRecyclerViewActivity extends BaseActivity implements
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
       int layoutId = (viewType == TYPE_AD) ? R.layout.item_express_ad : R.layout.item_data;
-      View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, null);
+      View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
       CustomViewHolder viewHolder = new CustomViewHolder(view);
       return viewHolder;
     }

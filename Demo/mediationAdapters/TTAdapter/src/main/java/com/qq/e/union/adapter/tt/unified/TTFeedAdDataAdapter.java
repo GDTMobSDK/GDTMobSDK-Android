@@ -498,11 +498,7 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   }
 
   @Override
-  public void setBidECPM(int price) {
-    if (data != null) {
-      data.setPrice((double) price);
-    }
-  }
+  public void setBidECPM(int price) { }
 
   /* ================================以下方法暂不支持=========================================== */
 

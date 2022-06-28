@@ -11,6 +11,7 @@ import com.kwad.sdk.api.KsLoadManager;
 import com.kwad.sdk.api.KsScene;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -22,7 +23,9 @@ import com.qq.e.union.adapter.util.ErrorCode;
 import com.qq.e.union.adapter.util.PxUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快手模板信息流广告
@@ -156,11 +159,21 @@ public class KSNativeExpressAdAdapter extends BaseNativeExpressAd {
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
+  }
+
+  @Override
   public void setECPMLevel(String ecpmLevel) {
     if (mKSNativeExpressAdDataAdapters != null) {
       for (KSNativeExpressAdDataAdapter adapter : mKSNativeExpressAdDataAdapters) {
         adapter.getBoundData().setECPMLevel(ecpmLevel);
       }
     }
+  }
+
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
+
   }
 }

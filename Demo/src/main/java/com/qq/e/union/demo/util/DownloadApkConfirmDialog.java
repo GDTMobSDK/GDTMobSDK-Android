@@ -21,7 +21,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
-import com.qq.e.union.adapter.util.PxUtils;
 import com.qq.e.union.demo.R;
 
 import java.text.DecimalFormat;

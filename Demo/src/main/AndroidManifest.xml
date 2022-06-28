@@ -8,15 +8,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--mintegral 简称mtg，此处配置作用于流量分配功能，关于流量分配功能，详情请咨询运营-->
-    <!--mtg所需要的权限，此处因为优量汇SDK已经有相关权限了，此处注释以做提醒-->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!-- 如果国内流量版本SDK ，以下两条权限必须加上 -->
-    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
-    <!--<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />-->
-    <!--mtg需要权限结束-->
-
     <queries tools:node="removeAll"/>
 
     <application
@@ -28,11 +19,7 @@
         android:allowBackup="false"
         tools:replace="android:allowBackup"
         android:theme="@style/AppTheme">
-        <!--mtg所需要依赖，此处配置作用于流量分配功能，关于流量分配功能，详情请咨询运营-->
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-        <!--mtg所需要依赖结束-->
+
         <!-- targetSDKVersion >= 24时才需要添加这个provider。provider的authorities属性的值为${applicationId}.fileprovider，请开发者根据自己的${applicationId}来设置这个值，例如本例中applicationId为"com.qq.e.union.demo"。 -->
         <provider
             android:name="com.qq.e.comm.GDTFileProvider"
@@ -43,12 +30,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/gdt_file_path" />
         </provider>
-
-        <!-- 此处配置作用于流量分配功能. 如果接入 Google 广告(使用 Admob 包下的任何一个 Adapter ,即接入 Google 广告)，请务必添加 meta-data ，否则不能正常初始化  异常:java.lang.IllegalStateException -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
-        <!-- Admob SDK Manifest相关配置到此结束 -->
 
         <!-- 声明该Demo中的组件 -->
         <activity
@@ -326,47 +307,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
-        <!--MTG所需的组件开始，此处配置作用于流量分配功能，关于流量分配功能，详情请咨询运营-->
-        <activity
-            android:name="com.mintegral.msdk.reward.player.MTGRewardVideoActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="com.mintegral.msdk.activity.MTGCommonActivity"
-            android:configChanges="keyboard|orientation"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
-        <!--国内流量版本必需，海外版本可以不添加-->
-        <receiver
-            android:name="com.mintegral.msdk.click.AppReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        <!--国内流量必需，海外版本可以不添加-->
-        <service
-            android:name="com.mintegral.msdk.shell.MTGService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.mintegral.msdk.download.action" />
-            </intent-filter>
-        </service>
-        <!--国内流量版本必需，海外版本可以不添加。-->
-        <provider
-            android:name="com.mintegral.msdk.base.utils.MTGFileProvider"
-            android:authorities="${applicationId}.mtgFileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/mtg_provider_paths" />
-        </provider>
-        <!--MTG所需的组件结束-->
 
     </application>
 

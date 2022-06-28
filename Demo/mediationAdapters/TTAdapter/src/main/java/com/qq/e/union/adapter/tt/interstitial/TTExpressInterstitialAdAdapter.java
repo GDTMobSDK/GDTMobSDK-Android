@@ -233,14 +233,15 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter impl
   @Override
   public void setBidECPM(int price) {
     super.setBidECPM(price);
-    if (ttInteractionExpressAd != null) {
-      ttInteractionExpressAd.setPrice((double) price);
-    }
   }
 
   @Override
   public void onInitSuccess() {
-    loadAdAfterInitSuccess();
+    if (mIsFullScreen) {
+      loadFullScreenADAfterInitSuccess();
+    } else {
+      loadAdAfterInitSuccess();
+    }
   }
 
   @Override

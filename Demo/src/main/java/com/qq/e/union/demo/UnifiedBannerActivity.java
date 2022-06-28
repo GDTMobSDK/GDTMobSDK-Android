@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.PxUtils;
 import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
@@ -37,11 +39,15 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
   private boolean mLoadSuccess;
   private PosIdArrayAdapter mArrayAdapter;
   private EditText mPosIdEdit;
+  private CheckBox cbCustomWidth;
+  private EditText etCustomWidth;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_unified_banner);
+    cbCustomWidth = findViewById(R.id.cbCustomWidth);
+    etCustomWidth = findViewById(R.id.etCustomWidth);
     mBannerContainer = (ViewGroup) this.findViewById(R.id.bannerContainer);
     mPosIdEdit = findViewById(R.id.posId);
     mPosIdEdit.setText(PositionId.UNIFIED_BANNER_POS_ID);
@@ -88,6 +94,8 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
       mCurrentPosId = editPosId;
       mBannerContainer.removeAllViews();
       mBannerContainer.addView(mBannerView, getUnifiedBannerLayoutParams());
+    } else {
+      mBannerView.setLayoutParams(getUnifiedBannerLayoutParams());
     }
     if (((CheckBox) findViewById(R.id.cbRefreshInterval)).isChecked()) {
       try {
@@ -116,6 +124,10 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
    * @return
    */
   private FrameLayout.LayoutParams getUnifiedBannerLayoutParams() {
+    if (cbCustomWidth.isChecked()) {
+      int width = PxUtils.dpToPx(this, Integer.parseInt(etCustomWidth.getText().toString()));
+      return new FrameLayout.LayoutParams(width, Math.round(width / 6.4F), Gravity.CENTER_HORIZONTAL);
+    }
     Point screenSize = new Point();
     getWindowManager().getDefaultDisplay().getSize(screenSize);
     return new FrameLayout.LayoutParams(screenSize.x,  Math.round(screenSize.x / 6.4F));

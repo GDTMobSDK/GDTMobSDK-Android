@@ -9,7 +9,6 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import com.qq.e.ads.splash.SplashAD;
-import com.qq.e.union.adapter.util.PxUtils;
 import com.qq.e.union.demo.DemoApplication;
 import com.qq.e.union.demo.view.ViewUtils;
 

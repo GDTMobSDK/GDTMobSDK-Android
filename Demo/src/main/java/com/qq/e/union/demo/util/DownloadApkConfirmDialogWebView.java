@@ -22,7 +22,6 @@ import android.widget.ProgressBar;
 
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
 import com.qq.e.union.demo.R;
-import com.qq.e.union.adapter.util.PxUtils;
 
 
 /*

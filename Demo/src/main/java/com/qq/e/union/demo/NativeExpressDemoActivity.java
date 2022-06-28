@@ -48,7 +48,6 @@ public class NativeExpressDemoActivity extends BaseActivity implements View.OnCl
   private boolean isAdFullWidth, isAdAutoHeight; // 是否采用了ADSize.FULL_WIDTH，ADSize.AUTO_HEIGHT
   private boolean isPreloadVideo;
   private boolean mLoadSuccess;
-  private boolean mIsLoadAndShow;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -284,6 +283,7 @@ public class NativeExpressDemoActivity extends BaseActivity implements View.OnCl
     }
 
     nativeExpressADView = adList.get(0);
+    nativeExpressADView.sendLossNotification(1, 1, null);
     nativeExpressADView.setNegativeFeedbackListener(new NegativeFeedbackListener() {
       @Override
       public void onComplainSuccess() {

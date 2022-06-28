@@ -6,10 +6,11 @@ import android.util.Log;
 
 import com.baidu.mobads.sdk.api.ArticleInfo;
 import com.baidu.mobads.sdk.api.BaiduNativeManager;
-import com.baidu.mobads.sdk.api.NativeResponse;
+import com.baidu.mobads.sdk.api.ExpressResponse;
 import com.baidu.mobads.sdk.api.RequestParameters;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.ADSize;
+import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -20,11 +21,13 @@ import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 百度 模板信息流 Adapter
- * 测试广告位为 6481012
+ * 测试广告位为 8035132
  */
 public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
 
@@ -99,12 +102,12 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
         .build();
 
     // 请求广告
-    mBaiduNativeManager.loadFeedAd(requestParameters, new BaiduNativeManager.FeedAdListener() {
+    mBaiduNativeManager.loadExpressAd(requestParameters, new BaiduNativeManager.ExpressAdListener() {
       @Override
-      public void onNativeLoad(List<NativeResponse> nativeResponses) {
-        onAdDataSuccess(nativeResponses);
+      public void onNativeLoad(List<ExpressResponse> expressResponses) {
+        onAdDataSuccess(expressResponses);
         Log.i(TAG, "onNativeLoad:" +
-            (nativeResponses != null ? nativeResponses.size() : null));
+            (expressResponses != null ? expressResponses.size() : null));
       }
 
       @Override
@@ -122,12 +125,15 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
         if (mListener == null) {
           return;
         }
-        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+        mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}, errorCode, message));
       }
 
       @Override
       public void onVideoDownloadSuccess() {
-
+        if (mListener == null) {
+          return;
+        }
+        mListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
       }
 
       @Override
@@ -147,7 +153,7 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
    *
    * @param ads 传入参数要非空且 notEmpty
    */
-  private void onAdDataSuccess(@NonNull List<NativeResponse> ads) {
+  private void onAdDataSuccess(@NonNull List<ExpressResponse> ads) {
     if (mListener == null) {
       return;
     }
@@ -156,7 +162,7 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
     }
     mBDNativeExpressAdDataAdapters = new ArrayList<>();
     int index = 0;
-    for (NativeResponse ad : ads) {
+    for (ExpressResponse ad : ads) {
       BDNativeExpressAdDataAdapter adDataAdapter = new BDNativeExpressAdDataAdapter(mContext, ad);
       adDataAdapter.setAdListener(mListener);
       mBDNativeExpressAdDataAdapters.add(adDataAdapter);
@@ -198,6 +204,11 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
   }
 
   @Override
+  public Map<String, Object> getExtraInfo() {
+    return new HashMap<>();
+  }
+
+  @Override
   public void setVideoOption(VideoOption videoOption) {
 
   }
@@ -212,5 +223,8 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
 
   }
 
+  @Override
+  public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
 
+  }
 }
