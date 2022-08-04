@@ -29,6 +29,7 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.compliance.DownloadConfirmListener;
 import com.qq.e.comm.constants.AdPatternType;
+import com.qq.e.comm.pi.IBidding;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.AdnLogoUtils;
 import com.qq.e.union.adapter.util.Constant;
@@ -67,6 +68,9 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   private int apkStatus;
   private String ecpmLevel;
   private boolean hasExposed;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
+  private TTNativeUnifiedAdAdapter mTTNativeUnifiedAdAdapter;
   /**
    * 要持有一下下载 listener，否则会被回收
    */
@@ -75,8 +79,9 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   private IImageLoader imageLoader;
 
 
-  public TTFeedAdDataAdapter(TTFeedAd data) {
+  public TTFeedAdDataAdapter(TTFeedAd data, TTNativeUnifiedAdAdapter ttNativeUnifiedAdAdapter) {
     this.data = data;
+    mTTNativeUnifiedAdAdapter = ttNativeUnifiedAdAdapter;
     imgList = new ArrayList<>();
     List<TTImage> list = data.getImageList();
     if (list != null && !list.isEmpty()) {
@@ -387,6 +392,9 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
       private void onClick() {
         if (listener != null) {
           listener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+          if (isAppAd()) {
+            listener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+          }
         }
       }
     };
@@ -404,6 +412,7 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
         @Override
         public void onIdle() {
           Log.d(TAG, "onIdle: ");
+          mIsStartDownload = false;
           onAdStatusChanged(STATUS_UNKNOWN);
         }
 
@@ -416,12 +425,23 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
             downloadProgress = (int) (currBytes * 100 / totalBytes);
           }
           onAdStatusChanged(STATUS_DOWNLOADING);
+          if (!mIsStartDownload) {
+            mIsStartDownload = true;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+          }
+
+          if (mIsPaused) {
+            mIsPaused = false;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+          }
         }
 
         @Override
         public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
           Log.d(TAG, "onDownloadPaused: ");
           onAdStatusChanged(STATUS_DOWNLOAD_PAUSED);
+          mIsPaused = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
         }
 
 
@@ -430,6 +450,7 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
           Log.d(TAG, "onDownloadFailed: ");
           downloadProgress = 0;
           onAdStatusChanged(STATUS_DOWNLOAD_FAILED);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
         }
 
         @Override
@@ -437,12 +458,14 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
           Log.d(TAG, "onDownloadFinished: ");
           downloadProgress = 100;
           onAdStatusChanged(STATUS_DOWNLOAD_FINISHED);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
         }
 
         @Override
         public void onInstalled(String fileName, String appName) {
           Log.d(TAG, "onInstalled: ");
           onAdStatusChanged(STATUS_INSTALLED);
+          fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
         }
 
         private void onAdStatusChanged(int status) {
@@ -455,6 +478,13 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
       };
     }
     data.setDownloadListener(appDownloadListener);
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (listener != null) {
+      listener.onADEvent(new ADEvent(adEventType, mTTNativeUnifiedAdAdapter.mPosId,
+          mTTNativeUnifiedAdAdapter.mAppId, mTTNativeUnifiedAdAdapter.getReqId(), appName));
+    }
   }
 
   private boolean isVideo() {
@@ -491,9 +521,37 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   }
 
   @Override
+  public void sendLossNotification(Map<String, Object> map) {
+    if (map == null) {
+      return;
+    }
+    Object price = map.get(IBidding.WIN_PRICE);
+    Object reason = map.get(IBidding.LOSS_REASON);
+    Object adnId = map.get(IBidding.ADN_ID);
+    if (data != null) {
+      data.loss(price instanceof Integer ? ((Integer) price).doubleValue() : -1,
+          reason instanceof Integer ? String.valueOf(reason) : "",
+          adnId instanceof String ? (String) adnId : "");
+    }
+  }
+
+  @Override
   public void sendWinNotification(int price) {
     if (data != null) {
       data.win((double) price);
+    }
+  }
+
+  @Override
+  public void sendWinNotification(Map<String, Object> map) {
+    if (map == null) {
+      return;
+    }
+    if (data != null) {
+      Object o = map.get(IBidding.EXPECT_COST_PRICE);
+      if (o instanceof Integer) {
+        data.win(((Integer) o).doubleValue());
+      }
     }
   }
 

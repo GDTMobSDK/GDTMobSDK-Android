@@ -507,8 +507,18 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   }
 
   @Override
+  public void sendWinNotification(Map<String, Object> map) {
+
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
     // 快手不支持
+  }
+
+  @Override
+  public void sendLossNotification(Map<String, Object> map) {
+
   }
 
   @Override

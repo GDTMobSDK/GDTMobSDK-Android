@@ -11,6 +11,7 @@ import android.util.Log;
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
+import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -45,6 +46,9 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
   private ServerSideVerificationOptions serverSideVerificationOptions;
   private int ecpm = Constant.VALUE_NO_ECPM;
   private String requestId;
+  private String mAppId;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
 
   private boolean mIsEnableAdvancedReward = true; // 开发者自行决定是否开放进阶奖励功能，此处仅为示例
   private RewardAdvancedInfo mRewardAdvancedInfo;
@@ -64,6 +68,7 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
     mTTAdNative = TTAdManagerHolder.get().createAdNative(context);
     this.activityReference = new WeakReference<>(ContextUtils.getActivity(context));
     this.posId = posID;
+    mAppId = appID;
   }
 
   @Override
@@ -161,6 +166,9 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
         Log.d(TAG, "onAdVideoBarClick: ");
         if (listener != null) {
           listener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+          if (isAppAd()) {
+            listener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+          }
         }
       }
 
@@ -243,6 +251,62 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
         Log.d(TAG, "onSkippedVideo: ");
       }
     });
+    if (isAppAd()) {
+      rewardAd.setDownloadListener(new TTAppDownloadListener() {
+        @Override
+        public void onIdle() {
+          mIsStartDownload = false;
+        }
+
+        @Override
+        public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
+
+          if (!mIsStartDownload) {
+            mIsStartDownload = true;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+          }
+
+          if (mIsPaused) {
+            mIsPaused = false;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+          }
+        }
+
+        @Override
+        public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
+          mIsPaused = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+        }
+
+        @Override
+        public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+        }
+
+        @Override
+        public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+          Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+              ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+        }
+
+        @Override
+        public void onInstalled(String fileName, String appName) {
+          Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+        }
+      });
+
+    }
     // step5：展示广告
     rewardAd.showRewardVideoAd(activityReference.get());
     rewardAd = null;
@@ -377,5 +441,18 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
   public void onInitFail() {
     Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
     onAdError(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (listener != null) {
+      listener.onADEvent(new ADEvent(adEventType, posId, mAppId, getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd() {
+    if (rewardAd != null && rewardAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
   }
 }

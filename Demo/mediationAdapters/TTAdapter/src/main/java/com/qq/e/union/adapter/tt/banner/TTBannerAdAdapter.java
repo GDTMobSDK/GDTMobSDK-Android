@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
+import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdDislike;
 import com.bytedance.sdk.openadsdk.TTAdNative;
+import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -40,6 +42,9 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
   private int mWidth = 50;
   private ADListener mBannerADListener;
   private int mEcpm = Constant.VALUE_NO_ECPM;
+  private String mAppId;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
 
   public TTBannerAdAdapter(Activity context, String appId, String posId, String ext) {
     super(context, appId, posId, ext);
@@ -47,6 +52,7 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
     // 创建TTAdNative对象，createAdNative(Context context) banner广告context需要传入Activity对象
     mTTAdNative = TTAdManagerHolder.get().createAdNative(context);
     mPosId = posId;
+    mAppId = appId;
     mContext = context;
   }
 
@@ -106,6 +112,9 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
         Log.d(TAG, "onAdClicked: ");
         if (mBannerADListener != null) {
           mBannerADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+          if (isAppAd(ad)) {
+            mBannerADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+          }
         }
       }
 
@@ -134,6 +143,7 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
     });
     //dislike设置
     bindDislike(ad);
+    bindDownloadListener(ad);
   }
   @Override
   public int getECPM() {
@@ -185,6 +195,64 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
         Log.d(TAG, "dislike onCancel: ");
       }
 
+    });
+  }
+
+  private void bindDownloadListener(TTNativeExpressAd ad) {
+    if (!isAppAd(ad)) {
+      return;
+    }
+    ad.setDownloadListener(new TTAppDownloadListener() {
+      @Override
+      public void onIdle() {
+        mIsStartDownload = false;
+      }
+
+      @Override
+      public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+
+        if (!mIsStartDownload) {
+          mIsStartDownload = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+        }
+        if (mIsPaused) {
+          mIsPaused = false;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+        }
+      }
+
+      @Override
+      public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+        mIsPaused = true;
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+      }
+
+      @Override
+      public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+      }
+
+      @Override
+      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+        Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+            ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+      }
+
+      @Override
+      public void onInstalled(String fileName, String appName) {
+        Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+      }
     });
   }
 
@@ -250,5 +318,18 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
       mBannerADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
           ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (mBannerADListener != null) {
+      mBannerADListener.onADEvent(new ADEvent(adEventType, mPosId, mAppId, getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd(TTNativeExpressAd ad) {
+    if (ad != null && ad.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
   }
 }

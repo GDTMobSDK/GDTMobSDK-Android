@@ -283,7 +283,7 @@ public class NativeExpressDemoActivity extends BaseActivity implements View.OnCl
     }
 
     nativeExpressADView = adList.get(0);
-    nativeExpressADView.sendLossNotification(1, 1, null);
+//    nativeExpressADView.sendLossNotification(1, 1, null);
     nativeExpressADView.setNegativeFeedbackListener(new NegativeFeedbackListener() {
       @Override
       public void onComplainSuccess() {

@@ -78,7 +78,7 @@ public class BDSplashAdAdapter extends BaseSplashAd {
    * 回调曝光和关闭
    */
   private void onADFinished() {
-    synchronized (this) {
+    synchronized (BDSplashAdAdapter.this) {
       if (finished) {
         return;
       }
@@ -88,7 +88,7 @@ public class BDSplashAdAdapter extends BaseSplashAd {
   }
 
   private void onADFailed(int errorCode, String errorMessage) {
-    synchronized (this) {
+    synchronized (BDSplashAdAdapter.this) {
       if (finished) {
         return;
       }
@@ -98,7 +98,7 @@ public class BDSplashAdAdapter extends BaseSplashAd {
   }
 
   private void onADLoaded() {
-    synchronized (this) {
+    synchronized (BDSplashAdAdapter.this) {
       if (finished) {
         return;
       }
@@ -136,19 +136,13 @@ public class BDSplashAdAdapter extends BaseSplashAd {
       @Override
       public void onAdPresent() {
         Log.d(TAG, "onAdPresent");
-        if (!finished) {
-          fireAdEvent(AdEventType.AD_EXPOSED);
-          fireAdEvent(AdEventType.AD_SHOW);
-        }
+        BDSplashAdAdapter.this.onAdPresent();
       }
 
       @Override
       public void onAdClick() {
         Log.d(TAG, "onAdClick");
-        if (!finished) {
-          fireAdEvent(AdEventType.AD_CLICKED);
-        }
-        onADFinished();
+        BDSplashAdAdapter.this.onAdClick();
       }
 
       @Override
@@ -168,6 +162,24 @@ public class BDSplashAdAdapter extends BaseSplashAd {
         .build();
     splashAd = new SplashAd(context, posId, parameters, listener);
     splashAd.load();
+  }
+
+  private void onAdClick() {
+    synchronized (BDSplashAdAdapter.this) {
+      if (!finished) {
+        fireAdEvent(AdEventType.AD_CLICKED);
+      }
+      onADFinished();
+    }
+  }
+
+  private void onAdPresent() {
+    synchronized (BDSplashAdAdapter.this) {
+      if (!finished) {
+        fireAdEvent(AdEventType.AD_EXPOSED);
+        fireAdEvent(AdEventType.AD_SHOW);
+      }
+    }
   }
 
   @Override

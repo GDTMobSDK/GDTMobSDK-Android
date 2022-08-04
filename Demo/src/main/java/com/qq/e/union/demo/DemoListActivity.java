@@ -52,6 +52,8 @@ public class DemoListActivity extends AppCompatActivity {
   private static Map<String, Pair<String, String>> launcherMap = new HashMap<>();
   private View zoomOutView;
 
+  protected Class mediationTargetActivity = MediationTestActivity.class;
+
   @SuppressLint("NewApi")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,7 @@ public class DemoListActivity extends AppCompatActivity {
       ToastUtil.l("优量汇，结盟而赢");
       return true;
     } else if (id == R.id.action_mediation_tool) {
-      Intent intent = new Intent(this, MediationTestActivity.class);
+      Intent intent = new Intent(this, mediationTargetActivity);
       startActivity(intent);
     } else if (id == R.id.action_download_confirm) {
       boolean isCheck = item.isChecked();

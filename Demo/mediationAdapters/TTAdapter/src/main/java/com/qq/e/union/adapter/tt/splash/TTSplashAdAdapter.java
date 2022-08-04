@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
+import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTSplashAd;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -55,6 +56,7 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
   private int exposureAdDelay = 5000;
 
   private final String posId;
+  private final String mAppId;
   private TTAdNative mTTAdNative;
   private TTSplashAd mTTSplashAd;
   private ADListener adListener;
@@ -69,6 +71,8 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
   private View splashView; // 开屏广告View
   private int ecpm = Constant.VALUE_NO_ECPM;
   private String requestId;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
 
   private Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -78,6 +82,7 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
     mTTAdNative = TTAdManagerHolder.get().createAdNative(context);
     this.context = context;
     this.posId = posId;
+    mAppId = appId;
   }
 
   @Override
@@ -161,16 +166,74 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
           ad.setNotAllowSdkCountdown();
         }
         // 设置SplashView的交互监听器
-        ad.setSplashInteractionListener(getInteractionListener());
+        ad.setSplashInteractionListener(getInteractionListener(ad));
+        if (isAppAd(ad)) {
+          ad.setDownloadListener(new TTAppDownloadListener() {
+            @Override
+            public void onIdle() {
+              mIsStartDownload = false;
+            }
+
+            @Override
+            public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
+
+              if (!mIsStartDownload) {
+                mIsStartDownload = true;
+                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+              }
+
+              if (mIsPaused) {
+                mIsPaused = false;
+                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+              }
+            }
+
+            @Override
+            public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
+              mIsPaused = true;
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+            }
+
+            @Override
+            public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+            }
+
+            @Override
+            public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+              Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+                  ",appName=" + appName);
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+            }
+
+            @Override
+            public void onInstalled(String fileName, String appName) {
+              Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+              fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+            }
+          });
+        }
       }
 
-      private TTSplashAd.AdInteractionListener getInteractionListener() {
+      private TTSplashAd.AdInteractionListener getInteractionListener(TTSplashAd ad) {
         return new TTSplashAd.AdInteractionListener() {
           @Override
           public void onAdClicked(View view, int type) {
             Log.d(TAG, "onAdClicked: type: " + type);
             if (!finished && adListener != null) {
               adListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+              if (isAppAd(ad)) {
+                adListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+              }
             }
             if (type == TTAdConstant.INTERACTION_TYPE_BROWSER || type == TTAdConstant.INTERACTION_TYPE_LANDING_PAGE || type == TTAdConstant.INTERACTION_TYPE_DIAL) {
               mainHandler.postDelayed(TTSplashAdAdapter.this::onADFinished, 1000);
@@ -363,5 +426,18 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
   public void onInitFail() {
     Log.i(TAG, "穿山甲 SDK 初始化失败，无法加载广告");
     onADFailed(ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE);
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (adListener != null) {
+      adListener.onADEvent(new ADEvent(adEventType, posId, mAppId, getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd(TTSplashAd ad){
+    if (ad != null && ad.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
   }
 }

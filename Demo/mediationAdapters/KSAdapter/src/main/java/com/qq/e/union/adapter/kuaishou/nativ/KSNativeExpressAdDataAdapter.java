@@ -220,7 +220,17 @@ public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
+  public void sendWinNotification(Map<String, Object> map) {
+
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
+
+  }
+
+  @Override
+  public void sendLossNotification(Map<String, Object> map) {
 
   }
 

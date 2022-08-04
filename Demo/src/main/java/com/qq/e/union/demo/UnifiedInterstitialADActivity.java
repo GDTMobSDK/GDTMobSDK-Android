@@ -117,6 +117,10 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
       case R.id.isAdValid:
         DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), false);
         break;
+      case R.id.load_ad_and_show_ad_button:
+        loadAd();
+        mIsLoadAndShow = true;
+        break;
       default:
         break;
     }

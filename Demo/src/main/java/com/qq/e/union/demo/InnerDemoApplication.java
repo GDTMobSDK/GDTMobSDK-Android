@@ -43,6 +43,8 @@ public class InnerDemoApplication extends MultiDexApplication {
   void config(Context context) {
     try {
       CrashReport.initCrashReport(this, Constants.BuglyAppID, true);
+      // 建议在初始化 SDK 前进行此设置
+      GlobalSetting.setEnableCollectAppInstallStatus(true);
       // 通过调用此方法初始化 SDK。如果需要在多个进程拉取广告，每个进程都需要初始化 SDK。
       GDTAdSdk.init(context, Constants.APPID);
       GlobalSetting.setChannel(1);

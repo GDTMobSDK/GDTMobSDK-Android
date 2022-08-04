@@ -67,7 +67,13 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
 
   @Override
   public void showAD() {
-    showRewardVideoAd(buildConfigHPShowScene());
+    showRewardVideoAd(mActivityReference.get(), buildConfigHPShowScene());
+    mIsShown = true;
+  }
+
+  @Override
+  public void showAD(Activity activity) {
+    showRewardVideoAd(activity, buildConfigHPShowScene());
     mIsShown = true;
   }
 
@@ -166,8 +172,8 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
   }
 
   // 2.展示激励视频广告，通过步骤1获取的KsRewardVideoAd对象，判断缓存有效，则设置监听并展示
-  private void showRewardVideoAd(KsVideoPlayConfig videoPlayConfig) {
-    if (mRewardVideoAd != null && mActivityReference.get() != null) {
+  private void showRewardVideoAd(Activity activity, KsVideoPlayConfig videoPlayConfig) {
+    if (mRewardVideoAd != null && activity != null) {
       mRewardVideoAd
           .setRewardAdInteractionListener(new KsRewardVideoAd.RewardAdInteractionListener() {
             @Override
@@ -219,11 +225,21 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
             }
 
             @Override
-            public void onRewardStepVerify(int i, int i1) {
-              Log.d(TAG, "onRewardStepVerify:  i = " + i + "  i1 = " + i1);
+            public void onRewardStepVerify(int taskType, int currentTaskStatus) {
+              Log.d(TAG, "onRewardStepVerify:  当前任务类型为" + taskType + " 当前完成任务类型为 = " + currentTaskStatus);
+            }
+
+            /**
+             * 额外奖励的回调，在触发激励视频的额外奖励的时候进⾏通知
+             * AD_3.3.25 新增
+             * @param extraRewardType 额外奖励的类型，定义在 KsExtraRewardType 中
+             */
+            @Override
+            public void onExtraRewardVerify(int extraRewardType) {
+              Log.d(TAG, "onExtraRewardVerify激励视频广告获取额外奖励：" + extraRewardType);
             }
           });
-      mRewardVideoAd.showRewardVideoAd(mActivityReference.get(), videoPlayConfig);
+      mRewardVideoAd.showRewardVideoAd(activity, videoPlayConfig);
     } else {
       Log.d(TAG, "showRewardVideoAd: 暂无可用激励视频广告，请等待缓存加载或者重新刷新");
     }

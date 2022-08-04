@@ -29,7 +29,8 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
 
   private static final String TAG = TTNativeUnifiedAdAdapter.class.getSimpleName();
 
-  private String posId;
+  String mAppId;
+  String mPosId;
   private TTAdNative mTTAdNative;
   private ADListener listener;
   private int width;
@@ -51,7 +52,8 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
     TTAdManagerHolder.init(context, appId);
     // step2：创建 TTAdNative 对象
     mTTAdNative = TTAdManagerHolder.get().createAdNative(context);
-    this.posId = posId;
+    this.mPosId = posId;
+    this.mAppId = appId;
   }
 
   @Override
@@ -69,7 +71,7 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
     data = null;
     // step3：创建广告请求参数AdSlot
     final AdSlot adSlot = new AdSlot.Builder()
-            .setCodeId(posId)
+            .setCodeId(mPosId)
             .setSupportDeepLink(isSupportDeepLink)
             .setImageAcceptedSize(width, height)
             .setAdCount(count)
@@ -112,7 +114,7 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
     int index = 0;
     List<TTFeedAdDataAdapter> result = new ArrayList<>();
     for (TTFeedAd ad : ads) {
-      result.add(new TTFeedAdDataAdapter(ad));
+      result.add(new TTFeedAdDataAdapter(ad, this));
     }
     data = result;
     listener.onADEvent(new ADEvent(AdEventType.AD_LOADED, new Object[]{result}));

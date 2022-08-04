@@ -66,7 +66,7 @@ dependencies {
 //    implementation project(path:':mediationAdapters:BDAdapter')
 //    implementation project(path:':mediationAdapters:KSAdapter')
 //    implementation project(path:':mediationAdapters:Util')
-    implementation 'com.qq.e.union:union:4.471.1341'
+    implementation 'com.qq.e.union:union:4.482.1352'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'

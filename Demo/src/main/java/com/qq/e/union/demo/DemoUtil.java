@@ -48,6 +48,8 @@ public class DemoUtil {
   static LoadAdParams getLoadAdParams(String value) {
     Map<String, String> info = new HashMap<>();
     info.put("custom_key", value);
+    info.put("staIn", "com.qq.e.demo");
+    info.put("thrmei", "29232329");
     LoadAdParams loadAdParams = new LoadAdParams();
     loadAdParams.setDevExtra(info);
     return loadAdParams;
@@ -63,4 +65,17 @@ public class DemoUtil {
     }
     return isValid;
   }
+
+  public static int getOrientation(int orientation) {
+    switch (orientation) {
+      case 0:
+      case 2:
+        return 1;
+      case 1:
+      case 3:
+        return 0;
+    }
+    return 1;
+  }
+
 }

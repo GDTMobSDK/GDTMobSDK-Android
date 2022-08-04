@@ -33,6 +33,14 @@
         <item name="android:windowActionBar">false</item>
     </style>
 
+    <style name="AppTheme.ActionBar">
+<!--        <item name="android:textColorPrimary">@color/colorWhite</item>-->
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowActionBar">true</item>
+    </style>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

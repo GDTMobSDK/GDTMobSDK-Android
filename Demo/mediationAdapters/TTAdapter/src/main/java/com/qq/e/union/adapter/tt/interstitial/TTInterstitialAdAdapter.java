@@ -22,7 +22,6 @@ import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
-import com.qq.e.comm.util.AdError;
 import com.qq.e.mediation.interfaces.BaseInterstitialAd;
 import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
@@ -46,13 +45,15 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
 
   private final String TAG = getClass().getSimpleName();
   protected final String posId;
+  protected String mAppId;
 
   protected TTAdNative ttAdNative;
   private TTNativeAd ttNativeInteraction;
   private TTFullScreenVideoAd ttFullVideoAd;
   protected ADListener unifiedInterstitialADListener;
   protected WeakReference<Activity> activityReference;
-  private boolean mHasShowDownloadActive = false;
+  private boolean mIsStartDownload = false;
+  private boolean mIsPaused;
   private Dialog mAdDialog;
   private ImageView mAdImageView;
   private ImageView mCloseImageView;
@@ -73,6 +74,7 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
     mAdImageLoader = new AdapterImageLoader(context);
     mContext = context;
     this.posId = posId;
+    mAppId = appId;
     this.activityReference = new WeakReference<>(ContextUtils.getActivity(context));
   }
 
@@ -157,6 +159,9 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
         if (ad != null && unifiedInterstitialADListener != null) {
           Log.d(TAG, "Ad: " + ad.getTitle() + " was clicked");
           unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+          if (isAppAd()) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+          }
         }
       }
 
@@ -178,41 +183,61 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
       }
     });
 
-    ttNativeInteraction.setDownloadListener(new TTAppDownloadListener() {
-      @Override
-      public void onIdle() {
-        mHasShowDownloadActive = false;
-      }
-
-      @Override
-      public void onDownloadActive(long totalBytes, long currBytes, String fileName, String appName) {
-        Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes + ",fileName=" + fileName + ",appName=" + appName);
-
-        if (!mHasShowDownloadActive) {
-          mHasShowDownloadActive = true;
+    if (isAppAd()) {
+      ttNativeInteraction.setDownloadListener(new TTAppDownloadListener() {
+        @Override
+        public void onIdle() {
+          mIsStartDownload = false;
         }
-      }
 
-      @Override
-      public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
-        Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes + ",fileName=" + fileName + ",appName=" + appName);
-      }
+        @Override
+        public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
 
-      @Override
-      public void onDownloadFailed(long totalBytes, long currBytes, String fileName, String appName) {
-        Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes + ",fileName=" + fileName + ",appName=" + appName);
-      }
+          if (!mIsStartDownload) {
+            mIsStartDownload = true;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+          }
 
-      @Override
-      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
-        Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName + ",appName=" + appName);
-      }
+          if (mIsPaused) {
+            mIsPaused = false;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+          }
+        }
 
-      @Override
-      public void onInstalled(String fileName, String appName) {
-        Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
-      }
-    });
+        @Override
+        public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
+          mIsPaused = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+        }
+
+        @Override
+        public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                     String appName) {
+          Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+              ",fileName=" + fileName + ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+        }
+
+        @Override
+        public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+          Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+              ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+        }
+
+        @Override
+        public void onInstalled(String fileName, String appName) {
+          Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+          fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+        }
+      });
+    }
   }
 
   private void showAd() {
@@ -365,6 +390,9 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
               public void onAdVideoBarClick() {
                 if (unifiedInterstitialADListener != null) {
                   unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+                  if (isAppAd()) {
+                    unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+                  }
                 }
                 Log.d(TAG, "Callback --> FullVideoAd bar click");
               }
@@ -389,53 +417,66 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
 
             });
 
-        ad.setDownloadListener(new TTAppDownloadListener() {
-          @Override
-          public void onIdle() {
-            mHasShowDownloadActive = false;
-          }
-
-          @Override
-          public void onDownloadActive(long totalBytes, long currBytes, String fileName,
-                                       String appName) {
-            Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                ",fileName=" + fileName + ",appName=" + appName);
-
-            if (!mHasShowDownloadActive) {
-              mHasShowDownloadActive = true;
-              Log.d(TAG, "下载中，点击下载区域暂停");
+        if (isAppAd()) {
+          ttFullVideoAd.setDownloadListener(new TTAppDownloadListener() {
+            @Override
+            public void onIdle() {
+              mIsStartDownload = false;
             }
-          }
 
-          @Override
-          public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
-                                       String appName) {
-            Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                ",fileName=" + fileName + ",appName=" + appName);
-            Log.d(TAG, "下载暂停，点击下载区域继续");
-          }
+            @Override
+            public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
 
-          @Override
-          public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
-                                       String appName) {
-            Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                ",fileName=" + fileName + ",appName=" + appName);
-            Log.d(TAG, "下载失败，点击下载区域重新下载");
-          }
+              if (!mIsStartDownload) {
+                mIsStartDownload = true;
+                Log.d(TAG, "下载中，点击下载区域暂停");
+                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+              }
 
-          @Override
-          public void onDownloadFinished(long totalBytes, String fileName, String appName) {
-            Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
-                ",appName=" + appName);
-            Log.d(TAG, "下载完成，点击下载区域重新下载");
-          }
+              if (mIsPaused) {
+                mIsPaused = false;
+                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+              }
+            }
 
-          @Override
-          public void onInstalled(String fileName, String appName) {
-            Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
-            Log.d(TAG, "安装完成，点击下载区域打开");
-          }
-        });
+            @Override
+            public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
+              Log.d(TAG, "下载暂停，点击下载区域继续");
+              mIsPaused = true;
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+            }
+
+            @Override
+            public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                         String appName) {
+              Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+                  ",fileName=" + fileName + ",appName=" + appName);
+              Log.d(TAG, "下载失败，点击下载区域重新下载");
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+            }
+
+            @Override
+            public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+              Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+                  ",appName=" + appName);
+              Log.d(TAG, "下载完成，点击下载区域重新下载");
+              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+            }
+
+            @Override
+            public void onInstalled(String fileName, String appName) {
+              Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+              Log.d(TAG, "安装完成，点击下载区域打开");
+              fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+            }
+          });
+        }
         Log.d(TAG, "Callback --> loadFullScreenAD");
         if (unifiedInterstitialADListener != null) {
           unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_LOADED));
@@ -601,5 +642,22 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
       unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
           ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (unifiedInterstitialADListener != null) {
+      unifiedInterstitialADListener.onADEvent(new ADEvent(adEventType, posId, mAppId, getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd() {
+    if (ttNativeInteraction != null && ttNativeInteraction.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+
+    if (ttFullVideoAd != null && ttFullVideoAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
   }
 }

@@ -236,8 +236,8 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
       }
 
       @Override
-      public void onDislikeItemClick() {
-        Log.i(TAG, "onDislikeItemClick");
+      public void onDislikeItemClick(String reason) {
+        Log.i(TAG, "onDislikeItemClick reason:" + reason);
       }
 
       @Override
@@ -302,7 +302,17 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
+  public void sendWinNotification(Map<String, Object> map) {
+
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
+
+  }
+
+  @Override
+  public void sendLossNotification(Map<String, Object> map) {
 
   }
 

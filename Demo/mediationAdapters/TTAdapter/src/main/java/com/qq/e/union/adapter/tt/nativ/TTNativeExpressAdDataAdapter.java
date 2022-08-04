@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdDislike;
+import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
 import com.qq.e.ads.nativ.ADSize;
 import com.qq.e.ads.nativ.NativeExpressADView;
@@ -32,20 +33,25 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
 
   private TTNativeExpressAd mTTNativeExpressAd;
   private NativeExpressMediaListener mNativeExpressMediaListener;
+  private TTNativeExpressAdAdapter mAdapter;
   private final AdData mAdData;
   private ADListener mListener;
   private final Context mContext;
   private String mEcpmLevel;
   private boolean mIsExposed;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
 
-  public TTNativeExpressAdDataAdapter(Context context, TTNativeExpressAd data) {
+  public TTNativeExpressAdDataAdapter(Context context, TTNativeExpressAd data, TTNativeExpressAdAdapter adapter) {
     super(context);
     this.mTTNativeExpressAd = data;
     mContext = context;
+    mAdapter = adapter;
     // 穿山甲 close 逻辑在 dislike 回调中实现
     bindDislike(data);
     tryBindInteractionAdListener();
     tryBindVideoAdListener();
+    tryBingDownloadApkListener();
     mAdData = new AdData() {
       @Override
       public String getTitle() {
@@ -156,6 +162,9 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
         }
         mListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED,
             new Object[]{TTNativeExpressAdDataAdapter.this}));
+        if (isAppAd()) {
+          mListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+        }
       }
 
       @Override
@@ -241,6 +250,65 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
     });
   }
 
+  private void tryBingDownloadApkListener() {
+    if (!isAppAd()) {
+      return;
+    }
+    mTTNativeExpressAd.setDownloadListener(new TTAppDownloadListener() {
+      @Override
+      public void onIdle() {
+        mIsStartDownload = false;
+      }
+
+      @Override
+      public void onDownloadActive(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+
+        if (!mIsStartDownload) {
+          mIsStartDownload = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+        }
+
+        if (mIsPaused) {
+          mIsPaused = false;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
+        }
+      }
+
+      @Override
+      public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+        mIsPaused = true;
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
+      }
+
+      @Override
+      public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
+                                   String appName) {
+        Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
+            ",fileName=" + fileName + ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
+      }
+
+      @Override
+      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+        Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
+            ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
+      }
+
+      @Override
+      public void onInstalled(String fileName, String appName) {
+        Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
+        fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
+      }
+    });
+  }
+
   private void bindDislike(TTNativeExpressAd ad) {
     //使用默认模板中默认dislike弹出样式
     ad.setDislikeCallback((Activity) mContext, new TTAdDislike.DislikeInteractionCallback() {
@@ -271,6 +339,19 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
     });
   }
 
+  private void fireAdEvent(int adEventType, String appName) {
+    if (mListener != null) {
+      mListener.onADEvent(new ADEvent(adEventType, mAdapter.mPosId, mAdapter.mAppId, mAdapter.getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd() {
+    if (mTTNativeExpressAd != null && mTTNativeExpressAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public void setAdListener(ADListener listener) {
     mListener = listener;
@@ -294,10 +375,20 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
   }
 
   @Override
+  public void sendLossNotification(Map<String, Object> map) {
+
+  }
+
+  @Override
   public void sendWinNotification(int price) {
     if (mTTNativeExpressAd != null) {
       mTTNativeExpressAd.win((double) price);
     }
+  }
+
+  @Override
+  public void sendWinNotification(Map<String, Object> map) {
+
   }
 
   @Override

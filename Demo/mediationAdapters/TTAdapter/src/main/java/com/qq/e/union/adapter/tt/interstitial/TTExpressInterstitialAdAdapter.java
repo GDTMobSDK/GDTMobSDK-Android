@@ -27,7 +27,8 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter impl
   private TTNativeExpressAd ttInteractionExpressAd;
   private float expressViewWidth = 500f;// 具体根据穿山甲广告位申请数值设置
   private float expressViewHeight = 500f; // 具体根据穿山甲广告位申请数值设置
-  private boolean hasShowDownloadActive = false;
+  private boolean mIsStartDownload;
+  private boolean mIsPaused;
 
   public TTExpressInterstitialAdAdapter(Activity context, String appId, String posId, String ext) {
     super(context, appId, posId, ext);
@@ -87,6 +88,9 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter impl
             Log.d(TAG, "onAdClicked");
             if (unifiedInterstitialADListener != null) {
               unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+              if (isAppAd()) {
+                unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
+              }
             }
           }
 
@@ -134,39 +138,50 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter impl
   }
 
   private void bindAdDownloadListener() {
-    if (ttInteractionExpressAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+    if (isAppAd()) {
       ttInteractionExpressAd.setDownloadListener(new TTAppDownloadListener() {
         @Override
         public void onIdle() {
+          mIsStartDownload = false;
           Log.d(TAG, "点击开始下载");
         }
 
         @Override
         public void onDownloadActive(long totalBytes, long currBytes, String fileName, String appName) {
-          if (!hasShowDownloadActive) {
-            hasShowDownloadActive = true;
+          if (!mIsStartDownload) {
+            mIsStartDownload = true;
             Log.d(TAG, "下载中，点击暂停");
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
+          }
+          if (mIsPaused) {
+            mIsPaused = false;
+            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
           }
         }
 
         @Override
         public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
           Log.d(TAG, "下载暂停，点击继续");
+          mIsPaused = true;
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
         }
 
         @Override
         public void onDownloadFailed(long totalBytes, long currBytes, String fileName, String appName) {
           Log.d(TAG, "下载失败，点击重新下载");
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
         }
 
         @Override
         public void onDownloadFinished(long totalBytes, String fileName, String appName) {
           Log.d(TAG, "点击安装");
+          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
         }
 
         @Override
         public void onInstalled(String fileName, String appName) {
           Log.d(TAG, "安装完成，点击图片打开");
+          fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
         }
       });
     }
@@ -251,5 +266,18 @@ public class TTExpressInterstitialAdAdapter extends TTInterstitialAdAdapter impl
       unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD, ErrorCode.NO_AD_FILL,
           ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
+  }
+
+  private void fireAdEvent(int adEventType, String appName) {
+    if (unifiedInterstitialADListener != null) {
+      unifiedInterstitialADListener.onADEvent(new ADEvent(adEventType, posId, mAppId, getReqId(), appName));
+    }
+  }
+
+  private boolean isAppAd() {
+    if (ttInteractionExpressAd != null && ttInteractionExpressAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return true;
+    }
+    return false;
   }
 }

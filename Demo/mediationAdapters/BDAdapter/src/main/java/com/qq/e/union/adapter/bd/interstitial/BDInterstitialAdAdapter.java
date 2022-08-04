@@ -69,7 +69,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onADLoaded() {
-        Log.e(TAG, "onADLoaded");
+        Log.d(TAG, "onADLoaded");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -85,7 +85,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onAdClick() {
-        Log.e(TAG, "onAdClick");
+        Log.d(TAG, "onAdClick");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -98,7 +98,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onAdClose() {
-        Log.e(TAG, "onAdClose");
+        Log.d(TAG, "onAdClose");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -111,7 +111,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onAdFailed(int errorCode, String message) {
-        Log.e(TAG, "onLoadFail reason:" + message + "errorCode:" + errorCode);
+        Log.d(TAG, "onLoadFail reason:" + message + "errorCode:" + errorCode);
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -125,7 +125,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onNoAd(int errorCode, String message) {
-        Log.e(TAG, "onNoAd reason:" + message + "errorCode:" + errorCode);
+        Log.d(TAG, "onNoAd reason:" + message + "errorCode:" + errorCode);
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -139,7 +139,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onADExposed() {
-        Log.e(TAG, "onADExposed");
+        Log.d(TAG, "onADExposed");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -152,22 +152,12 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
       @Override
       public void onADExposureFailed() {
-        Log.e(TAG, "onADExposureFailed");
+        Log.d(TAG, "onADExposureFailed");
       }
 
       @Override
       public void onAdCacheSuccess() {
-        Log.e(TAG, "onAdCacheSuccess");
-      }
-
-      @Override
-      public void onAdCacheFailed() {
-        Log.e(TAG, "onAdCacheFailed");
-      }
-
-      @Override
-      public void onVideoDownloadSuccess() {
-        Log.e(TAG, "onVideoDownloadSuccess");
+        Log.d(TAG, "onAdCacheSuccess");
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -179,13 +169,25 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       }
 
       @Override
+      public void onAdCacheFailed() {
+        Log.d(TAG, "onAdCacheFailed");
+      }
+
+      @Deprecated
+      @Override
+      public void onVideoDownloadSuccess() {
+        Log.d(TAG, "onVideoDownloadSuccess");
+      }
+
+      @Deprecated
+      @Override
       public void onVideoDownloadFailed() {
       }
 
       // 落地页关闭
       @Override
       public void onLpClosed() {
-        Log.e(TAG, "onLpClosed");
+        Log.d(TAG, "onLpClosed");
       }
     });
     interstitialAd.load();

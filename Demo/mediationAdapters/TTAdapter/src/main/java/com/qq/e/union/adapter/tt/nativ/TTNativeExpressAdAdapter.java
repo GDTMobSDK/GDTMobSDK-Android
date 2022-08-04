@@ -31,7 +31,8 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
 
   private ADListener mListener;
   private final TTAdNative mTTAdNative;
-  private final String mPosId;
+  final String mPosId;
+  final String mAppId;
   private final Context mContext;
   private final int mAdWidth;
   private final int mAdHeight;
@@ -46,6 +47,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
     TTAdManagerHolder.init(context, appId);
     mTTAdNative = TTAdManagerHolder.get().createAdNative(context);
     mPosId = posId;
+    mAppId = appId;
     mContext = context;
     mAdWidth = adSize.getWidth();
     mAdHeight = Math.max(adSize.getHeight(), 0);
@@ -115,7 +117,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
     mTTNativeExpressAdDataAdapters = new ArrayList<>();
     int index = 0;
     for (TTNativeExpressAd ad : ads) {
-      TTNativeExpressAdDataAdapter adDataAdapter = new TTNativeExpressAdDataAdapter(mContext, ad);
+      TTNativeExpressAdDataAdapter adDataAdapter = new TTNativeExpressAdDataAdapter(mContext, ad, this);
       adDataAdapter.setAdListener(mListener);
       mTTNativeExpressAdDataAdapters.add(adDataAdapter);
       if (index == 0) {

@@ -383,7 +383,17 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   }
 
   @Override
+  public void sendWinNotification(Map<String, Object> map) {
+
+  }
+
+  @Override
   public void sendLossNotification(int price, int reason, String adnId) {
+
+  }
+
+  @Override
+  public void sendLossNotification(Map<String, Object> map) {
 
   }
 
