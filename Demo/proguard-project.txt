@@ -137,4 +137,7 @@
 -dontwarn com.tencent.qapmsdk.**
 -dontnote com.tencent.qapmsdk.**
 
+# 海外版本 pangle 增加混淆配置
+-keep class com.bytedance.sdk.** { *; }
+
 -ignorewarnings

@@ -18,8 +18,8 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseRewardAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ContextUtils;
 import com.qq.e.union.adapter.util.ErrorCode;
@@ -79,7 +79,7 @@ public class TTRewardAdAdapter extends BaseRewardAd implements TTAdManagerHolder
   @Override
   public void loadAD() {
     Log.d(TAG, "loadAD: ");
-    LoadAdUtil.load(this);
+    TTLoadAdUtil.load(this);
   }
 
   private void loadAdAfterInitSuccess() {

@@ -169,7 +169,7 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
 
       @Override
       public void onAdShow(View view, int type) {
-        if (mListener == null && !mIsExposed) {
+        if (mListener == null || mIsExposed) {
           return;
         }
         mIsExposed = true;
@@ -190,7 +190,11 @@ public class TTNativeExpressAdDataAdapter extends NativeExpressADView implements
       public void onRenderSuccess(View view, float width, float height) {
         mListener.onADEvent(new ADEvent(AdEventType.AD_RENDER_SUCCESS,
             new Object[]{TTNativeExpressAdDataAdapter.this}));
-        post(() -> addView(mTTNativeExpressAd.getExpressAdView()));
+        post(() -> {
+          if (mTTNativeExpressAd != null) {
+            addView(mTTNativeExpressAd.getExpressAdView());
+          }
+        });
       }
     });
   }

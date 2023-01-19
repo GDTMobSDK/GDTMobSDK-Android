@@ -7,11 +7,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.baidu.mobads.sdk.api.NativeResponse;
 import com.baidu.mobads.sdk.api.XNativeView;
+import com.qq.e.ads.nativ.CustomizeVideo;
 import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
@@ -20,7 +22,6 @@ import com.qq.e.ads.nativ.NativeADEventListener;
 import com.qq.e.ads.nativ.NativeADMediaListener;
 import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.ads.nativ.NativeUnifiedADAppMiitInfo;
-import com.qq.e.ads.nativ.VideoPreloadListener;
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADEventListener;
@@ -184,6 +185,12 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
 
       }
     });
+  }
+
+  @Override
+  public void bindAdToCustomVideo(ViewGroup container, Context context, List<View> clickViews,
+                                  List<View> customClickViews) {
+
   }
 
   @Override
@@ -375,11 +382,11 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
     AdnLogoUtils.clearPreviousLogoView(container);
   }
 
-  /* ==================================以下方法暂不支持==========================================*/
-
   @Override
   public void sendWinNotification(int price) {
-
+    if (data != null) {
+      data.biddingSuccess(String.valueOf(price));
+    }
   }
 
   @Override
@@ -389,7 +396,9 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
 
   @Override
   public void sendLossNotification(int price, int reason, String adnId) {
-
+    if (data != null) {
+      data.biddingFail(String.valueOf(reason));
+    }
   }
 
   @Override
@@ -397,6 +406,7 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
 
   }
 
+  /* ==================================以下方法暂不支持==========================================*/
   @Override
   public void setBidECPM(int price) {
 
@@ -465,10 +475,6 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   @Override
   public void bindCTAViews(List<View> CTAViews) { }
 
-  @Override
-  public void preloadVideo(VideoPreloadListener listener) {
-
-  }
 
 
   @Override
@@ -501,6 +507,12 @@ public class BDNativeResponseAdapter implements NativeUnifiedADData, ADEventList
   @Override
   public String getButtonText() {
     return getBtnText(data);
+  }
+
+  @Override
+  public CustomizeVideo getCustomizeVideo() {
+    //工信部需求，百度不支持
+    return null;
   }
 
   @Override

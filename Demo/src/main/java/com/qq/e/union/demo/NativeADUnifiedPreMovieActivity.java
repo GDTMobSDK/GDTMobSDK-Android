@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -290,8 +290,14 @@ public class NativeADUnifiedPreMovieActivity extends BaseActivity implements Nat
   }
 
   private void setVisibilityFor3Img(boolean is3img) {
-    findViewById(R.id.img_logo).setVisibility(is3img ? View.INVISIBLE : View.VISIBLE);
-    findViewById(R.id.native_3img_ad_container).setVisibility(is3img ? View.VISIBLE : View.GONE);
+    ImageView logo = findViewById(R.id.img_logo);
+    if (logo != null) {
+      logo.setVisibility(is3img ? View.INVISIBLE : View.VISIBLE);
+    }
+    LinearLayout container = findViewById(R.id.native_3img_ad_container);
+    if (container != null) {
+      container.setVisibility(is3img ? View.VISIBLE : View.GONE);
+    }
   }
 
   @Override

@@ -2,7 +2,7 @@ package com.qq.e.union.demo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -45,7 +45,7 @@ public class DemoUtil {
   }
 
   @NonNull
-  static LoadAdParams getLoadAdParams(String value) {
+  public static LoadAdParams getLoadAdParams(String value) {
     Map<String, String> info = new HashMap<>();
     info.put("custom_key", value);
     info.put("staIn", "com.qq.e.demo");

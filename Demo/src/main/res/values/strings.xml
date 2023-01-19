@@ -36,6 +36,7 @@
     <string name="title_activity_interstitial_full_screen_improve_ad">模板插屏全屏</string>
     <string name="title_activity_interstitial_half_screen_improve_ad">模板插屏半屏</string>
     <string name="title_activity_qqgame">QQ小游戏测试</string>
+    <string name="title_activity_oversea_test">海外功能测试</string>
 
 
     <string name="title_mute_video">静音</string>
@@ -78,6 +79,7 @@
     <string name="express_interstitial_half_screen" />
     <string name="dataDetect" />
     <string name="HopeService" />
+    <string name="OverseaTest" />
 
 
     <string name="N_A">N/A</string>

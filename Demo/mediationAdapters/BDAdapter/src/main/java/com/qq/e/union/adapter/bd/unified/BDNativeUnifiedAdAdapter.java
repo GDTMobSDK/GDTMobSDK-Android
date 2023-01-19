@@ -3,7 +3,7 @@ package com.qq.e.union.adapter.bd.unified;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 
@@ -165,6 +165,32 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
       return Constant.VALUE_NO_ECPM;
     }
     return data.get(0).getECPM();
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (data == null || data.size() == 0) {
+      return;
+    }
+    for (BDNativeResponseAdapter adapter: data) {
+      if (adapter != null) {
+        adapter.sendLossNotification(price, reason, adnId);
+      }
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (data == null || data.size() == 0) {
+      return;
+    }
+    for (BDNativeResponseAdapter adapter: data) {
+      if (adapter != null) {
+        adapter.sendWinNotification(price);
+      }
+    }
   }
 
   @Override

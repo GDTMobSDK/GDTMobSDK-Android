@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId 'com.qq.e.union.demo'
-        minSdkVersion 16// 联盟Demo如果需要要接入快手sdk，快手最低支持16，需将此处改为16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName '1.0'
@@ -66,19 +66,19 @@ dependencies {
 //    implementation project(path:':mediationAdapters:BDAdapter')
 //    implementation project(path:':mediationAdapters:KSAdapter')
 //    implementation project(path:':mediationAdapters:Util')
-    implementation 'com.qq.e.union:union:4.482.1352'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.qq.e.union:union:4.510.1380'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation "com.google.android.material:material:1.0.0"
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.tencent.bugly:crashreport:latest.release'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     implementation fileTree(dir: 'aars', include: ['*.aar'])
-    // 广告助手
+    // 广告助手，接入详见：https://doc.weixin.qq.com/doc/w3_AI8ARgaEACc6NnpZ1i0T4ey9BsUuD?scode=AJEAIQdfAAoPvOyDr2AI8ARgaEACc
     implementation 'com.qq.e.union:tools:+'
 }

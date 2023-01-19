@@ -3,7 +3,7 @@ package com.qq.e.union.adapter.kuaishou.splash;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -196,6 +196,13 @@ public class KSSplashAdAdapter extends BaseSplashAd {
   @Override
   public Map<String, Object> getExtraInfo() {
     return new HashMap<>();
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    if (mSplashScreenAd != null) {
+      mSplashScreenAd.setBidEcpm(price);
+    }
   }
 
   @Override

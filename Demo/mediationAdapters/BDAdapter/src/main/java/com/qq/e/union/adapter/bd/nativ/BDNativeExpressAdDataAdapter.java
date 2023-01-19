@@ -210,7 +210,9 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
           if (mWeakReference.get() != null && mWeakReference.get() instanceof Activity) {
             mExpressResponse.bindInteractionActivity((Activity) mWeakReference.get());
           }
-          addView(mExpressResponse.getExpressAdView());
+          if (mExpressResponse.getExpressAdView().getParent() == null) {
+            addView(mExpressResponse.getExpressAdView());
+          }
         });
       }
 
@@ -284,6 +286,13 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
 
   @Override
   public int getECPM() {
+    try {
+      if (mExpressResponse != null) {
+        return Integer.parseInt(mExpressResponse.getECPMLevel());
+      }
+    } catch (NumberFormatException e) {
+      Log.d(TAG, "get ecpm error ", e);
+    }
     return Constant.VALUE_NO_ECPM;
   }
 
@@ -299,21 +308,24 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
 
   @Override
   public void sendWinNotification(int price) {
+    if (mExpressResponse != null) {
+      mExpressResponse.biddingSuccess(String.valueOf(price));
+    }
   }
 
   @Override
   public void sendWinNotification(Map<String, Object> map) {
-
   }
 
   @Override
   public void sendLossNotification(int price, int reason, String adnId) {
-
+    if (mExpressResponse != null) {
+      mExpressResponse.biddingFail(String.valueOf(reason));
+    }
   }
 
   @Override
   public void sendLossNotification(Map<String, Object> map) {
-
   }
 
   @Override

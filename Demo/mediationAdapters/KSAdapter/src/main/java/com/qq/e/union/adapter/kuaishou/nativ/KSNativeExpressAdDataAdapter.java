@@ -217,6 +217,7 @@ public class KSNativeExpressAdDataAdapter extends NativeExpressADView implements
 
   @Override
   public void sendWinNotification(int price) {
+    mKsFeedAd.setBidEcpm(price);
   }
 
   @Override

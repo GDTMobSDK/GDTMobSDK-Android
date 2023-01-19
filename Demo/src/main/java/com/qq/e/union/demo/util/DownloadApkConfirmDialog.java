@@ -150,9 +150,10 @@ public class DownloadApkConfirmDialog extends Dialog implements View.OnClickList
         textView.append(apkInfo.privacyAgreementUrl);
 
         textView.append("\n权限信息:\n");
-
-        for (String i : apkInfo.permissions) {
-          textView.append("\t" + i + "\n");
+        if (apkInfo.permissions != null && apkInfo.permissions.size() > 0) {
+          for (String i : apkInfo.permissions) {
+            textView.append("\t" + i + "\n");
+          }
         }
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
           public final String transformUrl(final Matcher match, String url) {

@@ -1,7 +1,7 @@
 package com.qq.e.union.adapter.bd.nativ;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.baidu.mobads.sdk.api.ArticleInfo;
@@ -159,6 +159,7 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
     }
     if (ads == null || ads.size() == 0) {
       mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL}));
+      return;
     }
     mBDNativeExpressAdDataAdapters = new ArrayList<>();
     int index = 0;
@@ -188,16 +189,41 @@ public class BDNativeExpressAdAdapter extends BaseNativeExpressAd {
     }
   }
 
-  /**
-   * ======================================================================
-   * 以下方法暂不支持
-   */
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (mBDNativeExpressAdDataAdapters == null || mBDNativeExpressAdDataAdapters.size() == 0) {
+      return;
+    }
+    for (BDNativeExpressAdDataAdapter adapter: mBDNativeExpressAdDataAdapters) {
+      if (adapter != null) {
+        adapter.sendLossNotification(price, reason, adnId);
+      }
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (mBDNativeExpressAdDataAdapters == null || mBDNativeExpressAdDataAdapters.size() == 0) {
+      return;
+    }
+    for (BDNativeExpressAdDataAdapter adapter: mBDNativeExpressAdDataAdapters) {
+      if (adapter != null) {
+        adapter.sendWinNotification(price);
+      }
+    }
+  }
 
   @Override
   public int getECPM() {
     return mEcpm;
   }
 
+  /**
+   * ======================================================================
+   * 以下方法暂不支持
+   */
   @Override
   public String getReqId() {
     return null;

@@ -3,8 +3,9 @@ package com.qq.e.union.demo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class BaseActivity extends FragmentActivity {
 

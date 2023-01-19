@@ -42,6 +42,7 @@ public class BDSplashAdAdapter extends BaseSplashAd {
   // 广告位id
   private final String posId;
   private SplashAd splashAd;
+  private int mEcpm = Constant.VALUE_NO_ECPM;
   private ADListener adListener;
   // 实例化开屏广告对象,建议为true，否则影响填充
   private boolean canSplashClick = true;
@@ -104,6 +105,13 @@ public class BDSplashAdAdapter extends BaseSplashAd {
       }
     }
     mExpireTimestamp = SystemClock.elapsedRealtime() + 30 * DateUtils.MINUTE_IN_MILLIS;
+    try {
+      if (splashAd != null) {
+        mEcpm = Integer.parseInt(splashAd.getECPMLevel());
+      }
+    } catch (NumberFormatException e) {
+      Log.d(TAG, "get ecpm error ", e);
+    }
     fireAdEvent(AdEventType.AD_LOADED, new Object[]{mExpireTimestamp});
   }
 
@@ -227,8 +235,23 @@ public class BDSplashAdAdapter extends BaseSplashAd {
 
   @Override
   public int getECPM() {
-    /* 百度暂不支持 */
-    return Constant.VALUE_NO_ECPM;
+    return mEcpm;
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (splashAd != null) {
+      splashAd.biddingFail(String.valueOf(reason));
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (splashAd != null) {
+      splashAd.biddingSuccess(String.valueOf(price));
+    }
   }
 
   @Override

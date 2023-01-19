@@ -1,14 +1,16 @@
 package com.qq.e.union.demo.util;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.OrientationHelper;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.OrientationHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,16 +88,15 @@ public class CustomParamsDialog extends Dialog {
       return mData;
     }
 
-    @android.support.annotation.NonNull
     @Override
-    public VH onCreateViewHolder(@android.support.annotation.NonNull ViewGroup viewGroup, int i) {
+    public VH onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
       View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_custom_params
           , viewGroup, false);
       return new VH(view);
     }
 
     @Override
-    public void onBindViewHolder(@android.support.annotation.NonNull VH vh, int i) {
+    public void onBindViewHolder(@NonNull VH vh, int i) {
       String key = mData.keyAt(i);
       vh.tvValue.setText(mData.get(key));
       vh.tvKey.setText(key);
@@ -116,7 +117,7 @@ public class CustomParamsDialog extends Dialog {
     TextView tvValue;
     Button btnDelete;
 
-    VH(@android.support.annotation.NonNull View itemView) {
+    VH(@NonNull View itemView) {
       super(itemView);
       tvKey = itemView.findViewById(R.id.item_key);
       tvValue = itemView.findViewById(R.id.item_value);

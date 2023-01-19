@@ -21,8 +21,8 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.mediation.interfaces.BaseSplashAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 import com.qq.e.union.adapter.util.PxUtils;
@@ -307,7 +307,7 @@ public class TTSplashAdAdapter extends BaseSplashAd implements TTAdManagerHolder
    */
   @Override
   public void fetchAdOnly() {
-    LoadAdUtil.load(this);
+    TTLoadAdUtil.load(this);
   }
 
   private void fetchAdAfterInitSuccess(){

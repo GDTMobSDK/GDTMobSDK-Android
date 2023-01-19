@@ -123,14 +123,22 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
    * @return
    */
   private FrameLayout.LayoutParams getUnifiedBannerLayoutParams() {
+    CheckBox checkBox = findViewById(R.id.cbCustomScale);
+    float scale = 6.4F;
+    if (checkBox.isChecked()) {
+      try {
+        scale = Float.parseFloat(((EditText) findViewById(R.id.etCustomScale)).getText().toString());
+      } catch (Exception e) {
+      }
+    }
     String customWidth;
     if (cbCustomWidth.isChecked() && !TextUtils.isEmpty(customWidth = etCustomWidth.getText().toString())) {
       int width = PxUtils.dpToPx(this, Integer.parseInt(customWidth));
-      return new FrameLayout.LayoutParams(width, Math.round(width / 6.4F), Gravity.CENTER_HORIZONTAL);
+      return new FrameLayout.LayoutParams(width, Math.round(width / scale), Gravity.CENTER_HORIZONTAL);
     }
     Point screenSize = new Point();
     getWindowManager().getDefaultDisplay().getSize(screenSize);
-    return new FrameLayout.LayoutParams(screenSize.x,  Math.round(screenSize.x / 6.4F));
+    return new FrameLayout.LayoutParams(screenSize.x,  Math.round(screenSize.x / scale));
   }
 
   @Override
@@ -200,7 +208,7 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
    * 上报给优量汇服务端在开发者客户端竞价中优量汇的竞价结果，以便于优量汇服务端调整策略提供给开发者更合理的报价
    *
    * 优量汇竞价失败调用 sendLossNotification，并填入优量汇竞败原因（必填）、竞胜ADN ID（选填）、竞胜ADN报价（选填）
-   * 优量汇竞价胜出调用 sendWinNotification，并填入开发者期望扣费价格（单位分）
+   * 优量汇竞价胜出调用 sendWinNotification
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(UnifiedBannerView unifiedBannerView) {

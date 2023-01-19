@@ -65,9 +65,7 @@ public class BDRewardAdAdapter extends BaseRewardAd {
       @Override
       public void onVideoDownloadSuccess() {
         Log.d(TAG, "onVideoDownloadSuccess");
-        // 由于百度没有广告加载成功回调，所以只能在视频缓存成功时回调广告加载成功，同时回调视频缓存成功
         fireAdEvent(AdEventType.VIDEO_CACHE);
-        expireTime = SystemClock.elapsedRealtime() + 30 * DateUtils.MINUTE_IN_MILLIS;
       }
 
       @Override
@@ -93,6 +91,7 @@ public class BDRewardAdAdapter extends BaseRewardAd {
             Log.d(TAG, "get ecpm error ", e);
           }
           Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
+          expireTime = SystemClock.elapsedRealtime() + 30 * DateUtils.MINUTE_IN_MILLIS;
           fireAdEvent(AdEventType.AD_LOADED);
         }
 
@@ -210,6 +209,22 @@ public class BDRewardAdAdapter extends BaseRewardAd {
   @Override
   public int getECPM() {
     return ecpm;
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (rewardAd != null) {
+      rewardAd.biddingFail(String.valueOf(reason));
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (rewardAd != null) {
+      rewardAd.biddingSuccess(String.valueOf(price));
+    }
   }
 
   @Override

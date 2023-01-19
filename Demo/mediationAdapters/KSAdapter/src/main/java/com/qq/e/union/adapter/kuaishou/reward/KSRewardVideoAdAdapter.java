@@ -6,7 +6,7 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -270,6 +270,13 @@ public class KSRewardVideoAdAdapter extends BaseRewardAd {
   private void onAdError(int errorCode, Integer onlineErrorCode, String errorMessage) {
     if (mListener != null) {
       mListener.onADEvent(new ADEvent(AdEventType.AD_ERROR, new Object[]{errorCode}, onlineErrorCode, errorMessage));
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    if (mRewardVideoAd != null) {
+      mRewardVideoAd.setBidEcpm(price);
     }
   }
 }

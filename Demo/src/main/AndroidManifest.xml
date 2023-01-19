@@ -186,6 +186,10 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_native_unified_demo" />
         <activity
+            android:name=".NativeADUnifiedCustomVideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_native_unified_demo" />
+        <activity
             android:name=".NativeADUnifiedFullScreenActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_native_unified_demo"

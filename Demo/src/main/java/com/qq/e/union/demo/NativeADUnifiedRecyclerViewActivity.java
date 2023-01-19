@@ -1,15 +1,17 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +21,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.androidquery.AQuery;
 import com.qq.e.ads.cfg.VideoOption;
+import com.qq.e.ads.nativ.CustomizeVideo;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListenerWithClickInfo;
 import com.qq.e.ads.nativ.NativeADMediaListener;
@@ -40,7 +44,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
     implements NativeADUnifiedListener {
@@ -70,6 +74,7 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
 
   private WeakHashMap<NativeUnifiedADData, Boolean> mMuteMap = new WeakHashMap<>();
   private boolean mBindToCustomView;
+  private boolean mBindToCustomVideo;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +88,7 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
     }
 
     mBindToCustomView = getIntent().getBooleanExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIEW, false);
+    mBindToCustomVideo = getIntent().getBooleanExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIDEO, false);
 
     String token = getToken();
     Log.d(TAG, "onCreate: BiddingToken = " + token);
@@ -292,9 +298,11 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
         imageViews.add(holder.container.findViewById(R.id.img_2));
         imageViews.add(holder.container.findViewById(R.id.img_3));
       }
-      //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
-      ad.bindAdToView(NativeADUnifiedRecyclerViewActivity.this, holder.container, null,
-          clickableViews, customClickableViews);
+      if (!isCustomizeVideo(ad)) {
+        //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
+        ad.bindAdToView(NativeADUnifiedRecyclerViewActivity.this, holder.container, null,
+            clickableViews, customClickableViews);
+      }
       if (!imageViews.isEmpty()) {
         ad.bindImageViews(imageViews, 0);
       }
@@ -366,62 +374,120 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
             NativeADUnifiedSampleActivity.getVideoOption(getIntent());
         holder.mediaView.setVisibility(View.VISIBLE);
         holder.btnsContainer.setVisibility(View.VISIBLE);
-        ad.bindMediaView(holder.mediaView, videoOption, new NativeADMediaListener() {
-              @Override
-              public void onVideoInit() {
-                Log.d(TAG, "onVideoInit: ");
-              }
+        if (isCustomizeVideo(ad)) {
+          CustomizeVideo customizeVideo = ad.getCustomizeVideo();
+          VideoView videoView;
+          View view = holder.mediaView.getChildAt(0);
+          if (view instanceof VideoView) {
+            videoView = (VideoView) view;
+          } else {
+            videoView = new VideoView(holder.mediaView.getContext());
+            int height = 200;
+            int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+            int pictureWidth = ad.getPictureWidth();
+            int pictureHeight = ad.getPictureHeight();
+            if (pictureHeight != 0 && pictureWidth != 0) {
+              height = widthPixels * pictureHeight / pictureWidth;
+            }
+            holder.mediaView.addView(videoView, ViewGroup.LayoutParams.MATCH_PARENT, height);
+          }
+          Uri uri = Uri.parse(customizeVideo.getVideoUrl());
+          videoView.setVideoURI(uri);
+          videoView.start();
+          videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+              customizeVideo.reportVideoCompleted();
+            }
+          });
+          videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+              customizeVideo.reportVideoError(videoView.getCurrentPosition(), what, extra);
+              return false;
+            }
+          });
+          videoView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+              Log.d(TAG, "videoView onViewAttachedToWindow: onViewAttachedToWindow");
+              videoView.start();
+            }
 
-              @Override
-              public void onVideoLoading() {
-                Log.d(TAG, "onVideoLoading: ");
-              }
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+              Log.d(TAG, "videoView onViewDetachedFromWindow: onViewAttachedToWindow");
+              videoView.pause();
+            }
+          });
+          List<View> clickableViews = new ArrayList<>();
+          List<View> customClickableViews = new ArrayList<>();
+          clickableViews.add(videoView);
+          if (mBindToCustomView) {
+            customClickableViews.add(holder.download);
+          } else {
+            clickableViews.add(holder.download);
+          }
+          ad.bindAdToCustomVideo(holder.container,NativeADUnifiedRecyclerViewActivity.this,
+              clickableViews, customClickableViews);
+        } else {
+          ad.bindMediaView(holder.mediaView, videoOption, new NativeADMediaListener() {
+            @Override
+            public void onVideoInit() {
+              Log.d(TAG, "onVideoInit: ");
+            }
 
-              @Override
-              public void onVideoReady() {
-                Log.d(TAG, "onVideoReady");
-              }
+            @Override
+            public void onVideoLoading() {
+              Log.d(TAG, "onVideoLoading: ");
+            }
 
-              @Override
-              public void onVideoLoaded(int videoDuration) {
-                Log.d(TAG, "onVideoLoaded: ");
-              }
+            @Override
+            public void onVideoReady() {
+              Log.d(TAG, "onVideoReady");
+            }
 
-              @Override
-              public void onVideoStart() {
-                Log.d(TAG, "onVideoStart");
-              }
+            @Override
+            public void onVideoLoaded(int videoDuration) {
+              Log.d(TAG, "onVideoLoaded: ");
+            }
 
-              @Override
-              public void onVideoPause() {
-                Log.d(TAG, "onVideoPause: ");
-              }
+            @Override
+            public void onVideoStart() {
+              Log.d(TAG, "onVideoStart");
+            }
 
-              @Override
-              public void onVideoResume() {
-                Log.d(TAG, "onVideoResume: ");
-              }
+            @Override
+            public void onVideoPause() {
+              Log.d(TAG, "onVideoPause: ");
+            }
 
-              @Override
-              public void onVideoCompleted() {
-                Log.d(TAG, "onVideoCompleted: ");
-              }
+            @Override
+            public void onVideoResume() {
+              Log.d(TAG, "onVideoResume: ");
+            }
 
-              @Override
-              public void onVideoError(AdError error) {
-                Log.d(TAG, "onVideoError: ");
-              }
+            @Override
+            public void onVideoCompleted() {
+              Log.d(TAG, "onVideoCompleted: ");
+            }
 
-              @Override
-              public void onVideoStop() {
-                Log.d(TAG, "onVideoStop");
-              }
+            @Override
+            public void onVideoError(AdError error) {
+              Log.d(TAG, "onVideoError: ");
+            }
 
-              @Override
-              public void onVideoClicked() {
-                Log.d(TAG, "onVideoClicked");
-              }
-            });
+            @Override
+            public void onVideoStop() {
+              Log.d(TAG, "onVideoStop");
+            }
+
+            @Override
+            public void onVideoClicked() {
+              Log.d(TAG, "onVideoClicked");
+            }
+          });
+        }
 
         View.OnClickListener listener = new View.OnClickListener(){
           @Override
@@ -459,6 +525,10 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
     public int getItemCount() {
       return mData.size();
     }
+  }
+
+  private boolean isCustomizeVideo(NativeUnifiedADData customizeVideo) {
+    return mBindToCustomVideo && customizeVideo.getCustomizeVideo() != null;
   }
 
   class CustomHolder extends RecyclerView.ViewHolder {

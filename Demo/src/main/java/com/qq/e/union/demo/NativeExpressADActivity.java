@@ -26,6 +26,7 @@ import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MIN;
 public class NativeExpressADActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
   private static final String TAG = "NativeExpressADActivity";
+  public static final int DEFAULT_ITEMS_PER_AD = 10;     // 每间隔10个条目插入一条广告
 
   private CheckBox btnNoOption;
   private CheckBox btnMute;
@@ -65,6 +66,11 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
   private String getPosID() {
     String posId = ((EditText) findViewById(R.id.posId)).getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.NATIVE_EXPRESS_POS_ID : posId;
+  }
+
+  private int getItemsPerAd() {
+    String itemsPerAd = ((EditText) findViewById(R.id.items_per_ad)).getText().toString();
+    return TextUtils.isEmpty(itemsPerAd) ? DEFAULT_ITEMS_PER_AD : Integer.parseInt(itemsPerAd);
   }
 
   public void requestS2SBiddingToken(View view) {
@@ -132,6 +138,7 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
       intent.putExtra(Constants.PLAY_NETWORK, networkSpinner.getSelectedItemPosition());
       intent.putExtra(Constants.DETAIL_PAGE_MUTED, btnDetailMute.isChecked());
     }
+    intent.putExtra(Constants.ITEMS_PER_AD, getItemsPerAd());
   }
 
   @Override

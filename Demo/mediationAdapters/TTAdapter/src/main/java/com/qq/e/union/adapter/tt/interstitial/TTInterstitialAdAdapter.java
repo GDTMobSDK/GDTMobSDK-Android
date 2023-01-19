@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
+import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFullScreenVideoAd;
 import com.bytedance.sdk.openadsdk.TTImage;
@@ -23,8 +24,8 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseInterstitialAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.AdapterImageLoader;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ContextUtils;
@@ -38,222 +39,140 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 穿山甲插屏全屏和插屏半屏广告视频适配器
+ * 穿山甲新插屏适配器
  * 作用：封装穿山甲，适配优量汇插屏全屏和插屏半屏广告
  */
 public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdManagerHolder.InitCallBack {
 
   private final String TAG = getClass().getSimpleName();
   protected final String posId;
-  protected String mAppId;
-
-  protected TTAdNative ttAdNative;
-  private TTNativeAd ttNativeInteraction;
-  private TTFullScreenVideoAd ttFullVideoAd;
-  protected ADListener unifiedInterstitialADListener;
-  protected WeakReference<Activity> activityReference;
-  private boolean mIsStartDownload = false;
-  private boolean mIsPaused;
-  private Dialog mAdDialog;
-  private ImageView mAdImageView;
-  private ImageView mCloseImageView;
-  private TextView mDislikeView;
-  private ViewGroup mRootView;
-  private boolean mHasVideoCached;
-  private final AdapterImageLoader mAdImageLoader;
-  protected boolean mIsFullScreen;
-  protected Activity mContext;
-  protected boolean mIsValid = false;
-  protected int ecpm = Constant.VALUE_NO_ECPM;
-  protected String mRequestId;
+  private final TTAdNative mTTAdNative;
+  private TTFullScreenVideoAd mTTFullVideoAd;
+  private ADListener unifiedInterstitialADListener;
+  private final WeakReference<Activity> activityReference;
+  private boolean mIsValid = false;
+  private int mEcpm = Constant.VALUE_NO_ECPM;
+  private String mRequestId;
 
   public TTInterstitialAdAdapter(Activity context, String appId, String posId, String ext) {
     super(context, appId, posId, ext);
     TTAdManagerHolder.init(context, appId);
-    ttAdNative = TTAdManagerHolder.get().createAdNative(context);
-    mAdImageLoader = new AdapterImageLoader(context);
-    mContext = context;
-    this.posId = posId;
-    mAppId = appId;
+    this.posId = posId; // 半屏测试id "947793385" 全屏测试id 947747681
     this.activityReference = new WeakReference<>(ContextUtils.getActivity(context));
+    mTTAdNative = TTAdSdk.getAdManager().createAdNative(context);
   }
 
-  // show() 有遮罩, showAsPopupWindow() 无遮罩，在这里，一样的调用是为了兼容 demo 中 有无遮罩样式的展示
+  @Override
+  public void loadAd() {
+    TTLoadAdUtil.load(this);
+  }
+
+  private void loadAdAfterInitSuccess() {
+    mIsValid = false;
+    mTTAdNative.loadFullScreenVideoAd(getAdSlot(), new TTAdNative.FullScreenVideoAdListener() {
+          //请求广告失败
+          @Override
+          public void onError(int code, String message) {
+            Log.d(TAG, "onError");
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
+                  ErrorCode.NO_AD_FILL, code, message));
+            }
+          }
+
+          @Override
+          public void onFullScreenVideoAdLoad(TTFullScreenVideoAd ad) {
+            Log.d(TAG, "onFullScreenVideoAdLoad");
+            mIsValid = true;
+            mTTFullVideoAd = ad;
+            try {
+              Map<String, Object> extraInfo;
+              if ((extraInfo = ad.getMediaExtraInfo()) != null) {
+                mRequestId = extraInfo.get("request_id").toString();
+                mEcpm = Integer.parseInt(extraInfo.get("price").toString());
+              }
+            } catch (Exception e) {
+              Log.e(TAG, e.toString());
+            }
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_LOADED));
+            }
+          }
+
+          @Override
+          public void onFullScreenVideoCached() {
+            Log.d(TAG, "onFullScreenVideoCached");
+          }
+
+          // 广告物料加载完成的回调
+          @Override
+          public void onFullScreenVideoCached(TTFullScreenVideoAd ttFullScreenVideoAd) {
+            Log.d(TAG, "onFullScreenVideoCached");
+            if (unifiedInterstitialADListener != null) {
+              unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
+            }
+          }
+        }
+    );
+  }
+
+  @Override
+  public void loadFullScreenAD() {
+    loadAd();
+  }
+
   @Override
   public void show() {
-    // 自行原生渲染并展示
-    if (mContext == null) {
-      Log.d(TAG, "show Ad : no context passed in");
-      return;
-    }
-
-    mAdDialog = new Dialog(mContext, R.style.native_insert_dialog);
-    mAdDialog.setCancelable(false);
-    mAdDialog.setContentView(R.layout.tt_native_insert_ad_layout);
-    mRootView = mAdDialog.findViewById(R.id.tt_native_insert_ad_root);
-    mAdImageView = (ImageView) mAdDialog.findViewById(R.id.tt_native_insert_ad_img);
-    // 限制dialog 的最大宽度不能超过屏幕，宽高最小为屏幕宽的 1/3
-    DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-    int maxWidth = (dm == null) ? 0 : dm.widthPixels;
-    int minWidth = maxWidth / 3;
-    mAdImageView.setMaxWidth(maxWidth);
-    mAdImageView.setMinimumWidth(minWidth);
-    // noinspection SuspiciousNameCombination
-    mAdImageView.setMinimumHeight(minWidth);
-    mCloseImageView = (ImageView) mAdDialog.findViewById(R.id.tt_native_insert_close_icon_img);
-    // 暂未绑定网盟dislike逻辑
-    mDislikeView = null;
-
-    ImageView iv = mAdDialog.findViewById(R.id.tt_native_insert_ad_logo);
-
-    // 绑定关闭按钮
-    iv.setImageBitmap(ttNativeInteraction.getAdLogo());
-
-    bindCloseAction();
-    // 绑定广告view事件交互
-    bindViewInteraction();
-    // 加载Ad 图片资源
-    loadAdImage();
-  }
-
-  private void loadAdImage() {
-    if (ttNativeInteraction.getImageList() != null && !ttNativeInteraction.getImageList().isEmpty()) {
-      TTImage image = ttNativeInteraction.getImageList().get(0);
-      if (image != null && image.isValid()) {
-        String url = image.getImageUrl();
-        if (mAdImageLoader != null)
-        {
-          mAdImageLoader.displayImage(mAdImageView, url);
-        }
-      }
-    }
-
-    showAd();
-  }
-
-  private void bindCloseAction() {
-    mCloseImageView.setOnClickListener(new View.OnClickListener(){
-      @Override
-      public void onClick(View v) {
-        close();
-      }
-    });
-  }
-
-  private void bindViewInteraction() {
-    // 可以被点击的view, 比如标题、icon等,点击后尝试打开落地页，也可以把nativeView放进来意味整个广告区域可被点击
-    List<View> clickViewList = new ArrayList<>();
-    clickViewList.add(mAdImageView);
-
-    // 触发创意广告的view（点击下载或拨打电话），比如可以设置为一个按钮，按钮上文案根据广告类型设定提示信息
-    List<View> creativeViewList = new ArrayList<>();
-    // 如果需要点击图文区域也能进行下载或者拨打电话动作，请将图文区域的view传入
-    // creativeViewList.add(nativeView);
-    creativeViewList.add(mAdImageView);
-    List<View> imageViewList = new ArrayList<>();
-    imageViewList.add(mAdImageView);
-    // 重要! 这个涉及到广告计费，必须正确调用。convertView必须使用ViewGroup。
-    ttNativeInteraction.registerViewForInteraction(mRootView, imageViewList, clickViewList, creativeViewList, mDislikeView, new TTNativeAd.AdInteractionListener() {
-      @Override
-      public void onAdClicked(View view, TTNativeAd ad) {
-        if (ad != null && unifiedInterstitialADListener != null) {
-          Log.d(TAG, "Ad: " + ad.getTitle() + " was clicked");
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
-          if (isAppAd()) {
-            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
-          }
-        }
-      }
-
-      @Override
-      public void onAdCreativeClick(View view, TTNativeAd ad) {
-        if (ad != null && unifiedInterstitialADListener != null) {
-          Log.d(TAG, "Creative Ad: " + ad.getTitle() + " was clicked");
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));;
-        }
-      }
-
-      @Override
-      public void onAdShow(TTNativeAd ad) {
-        if (ad != null && unifiedInterstitialADListener != null) {
-          Log.d(TAG, "Ad: " + ad.getTitle() + " showed");
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_SHOW));
-        }
-      }
-    });
-
-    if (isAppAd()) {
-      ttNativeInteraction.setDownloadListener(new TTAppDownloadListener() {
-        @Override
-        public void onIdle() {
-          mIsStartDownload = false;
-        }
-
-        @Override
-        public void onDownloadActive(long totalBytes, long currBytes, String fileName,
-                                     String appName) {
-          Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-              ",fileName=" + fileName + ",appName=" + appName);
-
-          if (!mIsStartDownload) {
-            mIsStartDownload = true;
-            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
-          }
-
-          if (mIsPaused) {
-            mIsPaused = false;
-            fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
-          }
-        }
-
-        @Override
-        public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
-                                     String appName) {
-          Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-              ",fileName=" + fileName + ",appName=" + appName);
-          mIsPaused = true;
-          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
-        }
-
-        @Override
-        public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
-                                     String appName) {
-          Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-              ",fileName=" + fileName + ",appName=" + appName);
-          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
-        }
-
-        @Override
-        public void onDownloadFinished(long totalBytes, String fileName, String appName) {
-          Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
-              ",appName=" + appName);
-          fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
-        }
-
-        @Override
-        public void onInstalled(String fileName, String appName) {
-          Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
-          fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
-        }
-      });
-    }
-  }
-
-  private void showAd() {
-    if (mContext.isFinishing()) {
-      return;
-    }
-    if (mAdDialog != null && !mAdDialog.isShowing()) {
-      mAdDialog.show();
-    }
-    mIsValid = false;
+    show(activityReference.get());
   }
 
   @Override
   public void show(Activity act) {
-    mContext = act;
-    show();
+    if (act == null) {
+      return;
+    }
+    if (mTTFullVideoAd != null) {
+      mTTFullVideoAd.setFullScreenVideoAdInteractionListener(new TTFullScreenVideoAd.FullScreenVideoAdInteractionListener() {
+        @Override
+        public void onAdShow() {
+          Log.d(TAG, "onAdShow");
+          if (unifiedInterstitialADListener != null) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_SHOW));
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
+          }
+        }
+
+        @Override
+        public void onAdVideoBarClick() {
+          Log.d(TAG, "onAdVideoBarClick");
+          if (unifiedInterstitialADListener != null) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
+          }
+        }
+
+        @Override
+        public void onAdClose() {
+          Log.d(TAG, "onAdClose");
+          if (unifiedInterstitialADListener != null) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
+          }
+        }
+
+        @Override
+        public void onVideoComplete() {
+          Log.d(TAG, "onVideoComplete");
+          if (unifiedInterstitialADListener != null) {
+            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_COMPLETE));
+          }
+        }
+
+        @Override
+        public void onSkippedVideo() {
+          Log.d(TAG, "onSkippedVideo");
+        }
+      });
+      mTTFullVideoAd.showFullScreenVideoAd(act, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
+    }
   }
 
   @Override
@@ -277,306 +196,47 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
   }
 
   @Override
-  public void loadAd() {
-    mIsFullScreen = false;
-    LoadAdUtil.load(this);
-  }
-
-  private void loadAdAfterInitSuccess() {
-    mIsValid = false;
-    if (ttAdNative == null) {
-      Log.i(TAG, "穿山甲 SDK 初始化错误，无法加载广告");
-      return;
-    }
-    // 设置广告参数
-    AdSlot adSlot = setAdSlotParams(new AdSlot.Builder()).build();
-
-    ttAdNative.loadNativeAd(adSlot, new TTAdNative.NativeAdListener() {
-      @Override
-      public void onError(int code, String message) {
-        Log.d(TAG, "loadAd error : " + code + ", " + message);
-        if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
-              ErrorCode.NO_AD_FILL, code, message));
-        }
-      }
-
-      @Override
-      public void onNativeAdLoad(List<TTNativeAd> ads){
-        if (ads.get(0) == null) {
-          Log.d(TAG, "loadAd onNativeAdLoad FAILED : no ads");
-          if (unifiedInterstitialADListener != null) {
-            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,ErrorCode.NO_AD_FILL));
-          }
-          return ;
-        }
-        ttNativeInteraction = ads.get(0);
-        try {
-          ecpm = (int) ttNativeInteraction.getMediaExtraInfo().get("price");
-        } catch (Exception e) {
-          Log.d(TAG, "get ecpm error ", e);
-        }
-        try {
-          Object o = ttNativeInteraction.getMediaExtraInfo().get("request_id");
-          if (o != null) {
-            mRequestId = o.toString();
-          }
-        } catch (Exception e) {
-          Log.d(TAG, "get request_id error ", e);
-        }
-        Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
-        Log.d(TAG, "onAdDataSuccess: mRequestId = " + mRequestId);
-        Log.d(TAG, "loadAd onNativeAdLoad SUCCESS : ");
-        if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_LOADED));
-        }
-        mIsValid = true;
-      }
-    });
-  }
-
-  @Override
-  public void loadFullScreenAD() {
-    mIsFullScreen = true;
-    LoadAdUtil.load(this);
-  }
-
-  protected void loadFullScreenADAfterInitSuccess() {
-    AdSlot adSlot = setFullScreenAdSlotParams(new AdSlot.Builder()).build();
-    mIsValid = false;
-    ttAdNative.loadFullScreenVideoAd(adSlot, new TTAdNative.FullScreenVideoAdListener() {
-      @Override
-      public void onError(int code, String message) {
-        Log.e(TAG, "Callback --> onError: " + code + ", " + message);
-        if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
-              ErrorCode.NO_AD_FILL, code, message));
-        }
-      }
-
-      @Override
-      public void onFullScreenVideoAdLoad(TTFullScreenVideoAd ad) {
-        Log.d(TAG, "Callback --> onFullScreenVideoAdLoad");
-        mIsValid = true;
-        ttFullVideoAd = ad;
-        try {
-          ecpm = (int) ad.getMediaExtraInfo().get("price");
-        } catch (Exception e) {
-          Log.d(TAG, "get ecpm error ", e);
-        }
-        try {
-          Object o = ad.getMediaExtraInfo().get("request_id");
-          if (o != null) {
-            mRequestId = o.toString();
-          }
-        } catch (Exception e) {
-          Log.d(TAG, "get request_id error ", e);
-        }
-        Log.d(TAG, "onAdDataSuccess: ecpm = " + ecpm);
-        Log.d(TAG, "onAdDataSuccess: mRequestId = " + mRequestId);
-        ttFullVideoAd.setFullScreenVideoAdInteractionListener(
-            new TTFullScreenVideoAd.FullScreenVideoAdInteractionListener() {
-
-              @Override
-              public void onAdShow() {
-                if (unifiedInterstitialADListener != null) {
-                  unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_EXPOSED));
-                  unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_SHOW));
-                }
-                Log.d(TAG, "Callback --> FullVideoAd show");
-              }
-
-              @Override
-              public void onAdVideoBarClick() {
-                if (unifiedInterstitialADListener != null) {
-                  unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLICKED));
-                  if (isAppAd()) {
-                    unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.APP_AD_CLICKED));
-                  }
-                }
-                Log.d(TAG, "Callback --> FullVideoAd bar click");
-              }
-
-              @Override
-              public void onAdClose() {
-                if (unifiedInterstitialADListener != null) {
-                  unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
-                }
-                Log.d(TAG, "Callback --> FullVideoAd close");
-              }
-
-              @Override
-              public void onVideoComplete() {
-                Log.d(TAG, "Callback --> FullVideoAd complete");
-              }
-
-              @Override
-              public void onSkippedVideo() {
-                Log.d(TAG, "Callback --> FullVideoAd skipped");
-              }
-
-            });
-
-        if (isAppAd()) {
-          ttFullVideoAd.setDownloadListener(new TTAppDownloadListener() {
-            @Override
-            public void onIdle() {
-              mIsStartDownload = false;
-            }
-
-            @Override
-            public void onDownloadActive(long totalBytes, long currBytes, String fileName,
-                                         String appName) {
-              Log.d(TAG, "onDownloadActive==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                  ",fileName=" + fileName + ",appName=" + appName);
-
-              if (!mIsStartDownload) {
-                mIsStartDownload = true;
-                Log.d(TAG, "下载中，点击下载区域暂停");
-                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_START, appName);
-              }
-
-              if (mIsPaused) {
-                mIsPaused = false;
-                fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_RESUME, appName);
-              }
-            }
-
-            @Override
-            public void onDownloadPaused(long totalBytes, long currBytes, String fileName,
-                                         String appName) {
-              Log.d(TAG, "onDownloadPaused===totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                  ",fileName=" + fileName + ",appName=" + appName);
-              Log.d(TAG, "下载暂停，点击下载区域继续");
-              mIsPaused = true;
-              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_PAUSE, appName);
-            }
-
-            @Override
-            public void onDownloadFailed(long totalBytes, long currBytes, String fileName,
-                                         String appName) {
-              Log.d(TAG, "onDownloadFailed==totalBytes=" + totalBytes + ",currBytes=" + currBytes +
-                  ",fileName=" + fileName + ",appName=" + appName);
-              Log.d(TAG, "下载失败，点击下载区域重新下载");
-              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FAIL, appName);
-            }
-
-            @Override
-            public void onDownloadFinished(long totalBytes, String fileName, String appName) {
-              Log.d(TAG, "onDownloadFinished==totalBytes=" + totalBytes + ",fileName=" + fileName +
-                  ",appName=" + appName);
-              Log.d(TAG, "下载完成，点击下载区域重新下载");
-              fireAdEvent(AdEventType.ADAPTER_APK_DOWNLOAD_FINISH, appName);
-            }
-
-            @Override
-            public void onInstalled(String fileName, String appName) {
-              Log.d(TAG, "onInstalled==" + ",fileName=" + fileName + ",appName=" + appName);
-              Log.d(TAG, "安装完成，点击下载区域打开");
-              fireAdEvent(AdEventType.ADAPTER_APK_INSTALLED, appName);
-            }
-          });
-        }
-        Log.d(TAG, "Callback --> loadFullScreenAD");
-        if (unifiedInterstitialADListener != null) {
-          unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_LOADED));
-        }
-      }
-
-      @Override
-      public void onFullScreenVideoCached() {
-        if (!mHasVideoCached) {
-          mHasVideoCached = true;
-          Log.d(TAG, "Callback --> onFullScreenVideoCached");
-          // 视频缓存
-          // mIsLoaded = true;
-          if (unifiedInterstitialADListener != null) {
-            unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.VIDEO_CACHE));
-          }
-        }
-      }
-
-      @Override
-      public void onFullScreenVideoCached(TTFullScreenVideoAd ttFullScreenVideoAd) {
-        onFullScreenVideoCached();
-      }
-    });
-
-  }
-
-  @Override
   public void showFullScreenAD(Activity activity) {
-    if (ttFullVideoAd != null/*&&mIsLoaded*/) {
-      Log.d(TAG, "ttFullVideoAd not null");
-      // 直接展示广告
-      // ttFullVideoAd.showFullScreenVideoAd(FullScreenVideoActivity.this);
-      // 展示广告，并传入广告展示的场景
-      ttFullVideoAd.showFullScreenVideoAd(activity, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
-      ttFullVideoAd = null;
-    } else {
-      Log.e(TAG, "FullScreenVideo 请先加载广告");
-    }
-    mIsValid = false;
+    show(activity);
   }
 
-  protected AdSlot.Builder setAdSlotParams(AdSlot.Builder builder) {
-    return builder
+  private AdSlot getAdSlot() {
+    return new AdSlot.Builder()
         .setCodeId(posId)
-        .setImageAcceptedSize(1080, 1920)
-        // 请求原生广告时候，请务必调用该方法，设置参数为TYPE_BANNER或TYPE_INTERACTION_AD
-        .setNativeAdType(AdSlot.TYPE_INTERACTION_AD);
-  }
-
-  protected AdSlot.Builder setFullScreenAdSlotParams(AdSlot.Builder builder) {
-    return builder
-        .setCodeId(posId)
-        .setOrientation(TTAdConstant.VERTICAL); // 全屏广告默认设置为竖屏播放，可根据需要修改
+        .setSupportDeepLink(true)
+        // .setAdLoadType(PRELOAD)//推荐使用，用于标注此次的广告请求用途为预加载（当做缓存）还是实时加载，方便后续为开发者优化相关策略
+        .build();
   }
 
   @Override
   public void destory() {
     Log.d(TAG, "Callback --> destory");
+    mTTFullVideoAd = null;
   }
 
   @Override
-  public void close() {
-    Log.d(TAG, "Callback --> close");
-    if (mAdDialog != null && mAdDialog.isShowing()) {
-      mAdDialog.dismiss();
-      if (unifiedInterstitialADListener != null) {
-        unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.AD_CLOSED));
-      }
-    }
-  }
-  @Override
   public int getECPM() {
-    return ecpm;
+    return mEcpm;
   }
 
   @Override
   public String getReqId() {
-   return mRequestId;
+    return mRequestId;
   }
 
   @Override
   public void sendLossNotification(int price, int reason, String adnId) {
     super.sendLossNotification(price, reason, adnId);
-    if (ttFullVideoAd != null) {
-      ttFullVideoAd.loss((double) price, String.valueOf(reason), adnId);
-    }
-    if (ttNativeInteraction != null) {
-      ttNativeInteraction.loss((double) price, String.valueOf(reason), adnId);
+    if (mTTFullVideoAd != null) {
+      mTTFullVideoAd.loss((double) price, String.valueOf(reason), adnId);
     }
   }
 
   @Override
   public void sendWinNotification(int price) {
     super.sendWinNotification(price);
-    if (ttFullVideoAd != null) {
-      ttFullVideoAd.win((double) price);
-    }
-    if (ttNativeInteraction != null) {
-      ttNativeInteraction.win((double) price);
+    if (mTTFullVideoAd != null) {
+      mTTFullVideoAd.win((double) price);
     }
   }
 
@@ -594,6 +254,10 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
 
   /******************************以下方法暂未使用*****************************/
 
+  @Override
+  public void close() {
+
+  }
 
   @Override
   public String getECPMLevel() {
@@ -628,11 +292,7 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
 
   @Override
   public void onInitSuccess() {
-    if (mIsFullScreen) {
-      loadFullScreenADAfterInitSuccess();
-    } else {
-      loadAdAfterInitSuccess();
-    }
+    loadAdAfterInitSuccess();
   }
 
   @Override
@@ -642,22 +302,5 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
       unifiedInterstitialADListener.onADEvent(new ADEvent(AdEventType.NO_AD,
           ErrorCode.NO_AD_FILL, ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
     }
-  }
-
-  private void fireAdEvent(int adEventType, String appName) {
-    if (unifiedInterstitialADListener != null) {
-      unifiedInterstitialADListener.onADEvent(new ADEvent(adEventType, posId, mAppId, getReqId(), appName));
-    }
-  }
-
-  private boolean isAppAd() {
-    if (ttNativeInteraction != null && ttNativeInteraction.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
-      return true;
-    }
-
-    if (ttFullVideoAd != null && ttFullVideoAd.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
-      return true;
-    }
-    return false;
   }
 }

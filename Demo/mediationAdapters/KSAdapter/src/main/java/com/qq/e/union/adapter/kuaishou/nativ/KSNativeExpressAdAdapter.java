@@ -1,7 +1,7 @@
 package com.qq.e.union.adapter.kuaishou.nativ;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.kwad.sdk.api.KsAdSDK;
@@ -175,5 +175,14 @@ public class KSNativeExpressAdAdapter extends BaseNativeExpressAd {
   @Override
   public void setServerSideVerificationOptions(ServerSideVerificationOptions options) {
 
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    if (mKSNativeExpressAdDataAdapters != null) {
+      for (KSNativeExpressAdDataAdapter adapter : mKSNativeExpressAdDataAdapters) {
+        adapter.sendWinNotification(price);
+      }
+    }
   }
 }

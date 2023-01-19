@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="android.support.constraint.ConstraintLayout">
+    tools:parentTag="androidx.constraintlayout.ConstraintLayout">
 
     <View
         android:id="@+id/ad_info_background"
@@ -13,7 +13,7 @@
         android:background="@drawable/background_bottom_immersive_content"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/img_logo_card"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toTopOf="@id/ad_info_background"
             app:layout_constraintEnd_toEndOf="parent" />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/img_logo_download"
@@ -78,7 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="腾讯广告是国内领先的营销平台,汇聚腾讯公司全量的应用场景。" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/btn_download"
         android:layout_width="255dp"
         android:layout_height="35dp"

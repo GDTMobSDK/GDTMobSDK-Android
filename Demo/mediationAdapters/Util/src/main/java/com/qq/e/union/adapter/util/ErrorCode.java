@@ -57,4 +57,24 @@ public class ErrorCode {
    */
   public static final String DEFAULT_ERROR_MESSAGE = "no_reason";
 
+  /**
+   * 第三方ADN请求广告时context为空的错误码
+   */
+  public static final int CONTEXT_ERROR_CODE = -2;
+
+
+  /**
+   * 第三方ADN请求广告时context为空的错误信息
+   */
+  public static final String CONTEXT_ERROR_MESSAGE = "context_error";
+
+  /**
+   * 第三方ADN请求广告时初始化错误
+   */
+  public static final int INIT_ERROR_CODE = 555555;
+
+  /**
+   * 第三方ADN请求广告时初始化错误
+   */
+  public static final String INIT_ERROR_MESSAGE = "SDK init error";
 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -13,6 +14,7 @@ import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFeedAd;
 import com.bytedance.sdk.openadsdk.TTImage;
 import com.bytedance.sdk.openadsdk.TTNativeAd;
+import com.qq.e.ads.nativ.CustomizeVideo;
 import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
@@ -21,7 +23,6 @@ import com.qq.e.ads.nativ.NativeADEventListener;
 import com.qq.e.ads.nativ.NativeADMediaListener;
 import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.ads.nativ.NativeUnifiedADAppMiitInfo;
-import com.qq.e.ads.nativ.VideoPreloadListener;
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADEventListener;
@@ -258,6 +259,12 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
 
       }
     });
+  }
+
+  @Override
+  public void bindAdToCustomVideo(ViewGroup container, Context context, List<View> clickViews,
+                                  List<View> customClickViews) {
+
   }
 
   @Override
@@ -642,12 +649,6 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   public void negativeFeedback() {}
 
   @Override
-  public void preloadVideo(VideoPreloadListener listener) {
-
-  }
-
-
-  @Override
   public void pauseAppDownload() {
     //如果为下载中则暂停下载
     if (data.getDownloadStatusController() != null) {
@@ -683,6 +684,50 @@ public class TTFeedAdDataAdapter implements NativeUnifiedADData, ADEventListener
   @Override
   public String getButtonText() {
     return data.getButtonText();
+  }
+
+  @Override
+  public CustomizeVideo getCustomizeVideo() {
+    TTFeedAd.CustomizeVideo customVideo = data.getCustomVideo();
+    if (customVideo == null) {
+      return null;
+    }
+    return new CustomizeVideo() {
+      @Override
+      public String getVideoUrl() {
+        return customVideo.getVideoUrl();
+      }
+
+      @Override
+      public void reportVideoPreload() {
+
+      }
+
+      @Override
+      public void reportVideoStart() {
+        customVideo.reportVideoStart();
+      }
+
+      @Override
+      public void reportVideoPause(long position) {
+        customVideo.reportVideoPause(position);
+      }
+
+      @Override
+      public void reportVideoResume(long position) {
+        customVideo.reportVideoContinue(position);
+      }
+
+      @Override
+      public void reportVideoCompleted() {
+        customVideo.reportVideoFinish();
+      }
+
+      @Override
+      public void reportVideoError(long position, int errorWhat, int errorExtra) {
+        customVideo.reportVideoError(position, errorExtra, errorExtra);
+      }
+    };
   }
 
   @Override

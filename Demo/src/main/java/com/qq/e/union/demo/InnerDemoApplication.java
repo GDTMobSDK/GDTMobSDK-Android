@@ -7,19 +7,16 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import android.webkit.WebView;
 
 import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.managers.setting.GlobalSetting;
-import com.qq.e.union.adapter.bd.util.BDAdManager;
-import com.qq.e.union.adapter.kuaishou.util.KSSDKInitUtil;
-import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import androidx.multidex.MultiDexApplication;
 
 public class InnerDemoApplication extends MultiDexApplication {
 
@@ -40,7 +37,7 @@ public class InnerDemoApplication extends MultiDexApplication {
     DemoUtil.setAQueryImageUserAgent();
   }
 
-  void config(Context context) {
+  protected void config(Context context) {
     try {
       CrashReport.initCrashReport(this, Constants.BuglyAppID, true);
       // 建议在初始化 SDK 前进行此设置
@@ -49,11 +46,6 @@ public class InnerDemoApplication extends MultiDexApplication {
       GDTAdSdk.init(context, Constants.APPID);
       GlobalSetting.setChannel(1);
       GlobalSetting.setEnableMediationTool(true);
-      Map<String, String> maps = new HashMap<>();
-      maps.put(GlobalSetting.BD_SDK_WRAPPER, BDAdManager.class.getName());
-      maps.put(GlobalSetting.TT_SDK_WRAPPER, TTAdManagerHolder.class.getName());
-      maps.put(GlobalSetting.KS_SDK_WRAPPER, KSSDKInitUtil.class.getName());
-      GlobalSetting.setPreloadAdapters(maps);
       String packageName = context.getPackageName();
       //Get all activity classes in the AndroidManifest.xml
       PackageInfo packageInfo = context.getPackageManager().getPackageInfo(

@@ -10,6 +10,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        buildConfigField("int", "ADAPTER_VERSION", project.ADAPTER_VERSION)
 
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +29,15 @@ android {
         jcenter()
         mavenCentral()
         google()
+        maven {
+            url 'https://artifact.bytedance.com/repository/pangle'
+        }
+        maven {
+            url 'https://android-sdk.is.com/'
+        }
+        maven {
+            url  "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+        }
         flatDir {
             dirs 'libs'
         }
@@ -35,9 +45,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.qq.e.union:union:4.482.1352'
+    implementation 'com.qq.e.union:union:4.510.1380'
 	compileOnly fileTree(dir: rootProject.file('aars'), include: ['*.aar'])
     compileOnly fileTree(dir: rootProject.file('libs'), include: ['android-query-full.0.26.7.jar'])
-    compileOnly "com.android.support:support-annotations:28.0.0"
-    compileOnly project(path:':mediationAdapters:Util')
+    compileOnly 'androidx.annotation:annotation:1.0.0'
 }

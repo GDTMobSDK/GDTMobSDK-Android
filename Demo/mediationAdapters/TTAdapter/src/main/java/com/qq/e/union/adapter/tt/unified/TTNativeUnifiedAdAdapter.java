@@ -1,7 +1,7 @@
 package com.qq.e.union.adapter.tt.unified;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
@@ -12,8 +12,8 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseNativeUnifiedAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
@@ -59,7 +59,7 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
   @Override
   public void loadData(int count) {
     mCount = count;
-    LoadAdUtil.load(this);
+    TTLoadAdUtil.load(this);
   }
 
   private void loadDataAfterInitSuccess(int count) {

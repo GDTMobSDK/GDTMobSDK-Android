@@ -16,6 +16,7 @@ import com.kwad.sdk.api.KsNativeAd;
 import com.kwad.sdk.api.model.AdSourceLogoType;
 import com.kwad.sdk.api.model.InteractionType;
 import com.kwad.sdk.api.model.MaterialType;
+import com.qq.e.ads.nativ.CustomizeVideo;
 import com.qq.e.ads.nativ.widget.ViewStatusListener;
 import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
@@ -204,6 +205,12 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
 
       }
     });
+  }
+
+  @Override
+  public void bindAdToCustomVideo(ViewGroup container, Context context, List<View> clickViews,
+                                  List<View> customClickViews) {
+    // 快手不支持
   }
 
   @Override
@@ -503,7 +510,7 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
 
   @Override
   public void sendWinNotification(int price) {
-    // 快手不支持
+    mKsNativeAd.setBidEcpm(price);
   }
 
   @Override
@@ -571,14 +578,6 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
     return 0; // 快手不支持
   }
 
-
-  @Override
-  public void preloadVideo(VideoPreloadListener listener) {
-    // 快手不支持
-  }
-
-
-
   @Override
   public void pauseAppDownload() {
 
@@ -603,6 +602,11 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
   @Override
   public String getButtonText() {
     return mKsNativeAd.getActionDescription();
+  }
+
+  @Override
+  public CustomizeVideo getCustomizeVideo() {
+    return null;
   }
 
   @Override

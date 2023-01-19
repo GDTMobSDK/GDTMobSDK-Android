@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -103,18 +103,14 @@ public class DemoListActivity extends AppCompatActivity {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
       DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_LOW_PRICE);
-    } else if (id == R.id.action_report_bidding_loss_time_out) {
-      boolean checked = item.isChecked();
-      item.setChecked(!checked);
-      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_TIME_OUT);
     } else if (id == R.id.action_report_bidding_loss_no_ad) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
       DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_NO_AD);
-    } else if (id == R.id.action_report_bidding_loss_ad_data_error) {
+    } else if (id == R.id.action_report_bidding_loss_not_competition) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);
-      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_AD_DATA_ERROR);
+      DemoBiddingC2SUtils.setReportBiddingWinLoss(DemoBiddingC2SUtils.REPORT_BIDDING_LOSS_NOT_COMPETITION);
     } else if (id == R.id.action_report_bidding_loss_other) {
       boolean checked = item.isChecked();
       item.setChecked(!checked);

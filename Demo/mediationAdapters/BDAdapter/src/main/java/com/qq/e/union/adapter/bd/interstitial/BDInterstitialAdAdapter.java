@@ -36,7 +36,7 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
   private ADListener unifiedInterstitialADListener;
   private Activity activity;
   private String posId; // 广告位id
-  private int ecpm = Constant.VALUE_NO_ECPM;
+  private volatile int ecpm = Constant.VALUE_NO_ECPM;
   private final Handler mainHandler;
 
   public BDInterstitialAdAdapter(Activity context, String appId, String posId, String ext) {
@@ -70,6 +70,11 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       @Override
       public void onADLoaded() {
         Log.d(TAG, "onADLoaded");
+        try {
+          ecpm = Integer.parseInt(interstitialAd.getECPMLevel());
+        } catch (Exception e) {
+          Log.d(TAG, "get ecpm error ", e);
+        }
         mainHandler.post(new Runnable() {
           @Override
           public void run() {
@@ -370,16 +375,38 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
     return null;
   }
 
+  @Override
+  public int getECPM() {
+    return ecpm;
+  }
+
+  @Override
+  public void sendLossNotification(int price, int reason, String adnId) {
+    super.sendLossNotification(price, reason, adnId);
+    if (interstitialAd != null) {
+      interstitialAd.biddingFail(String.valueOf(reason));
+    }
+    if (fullScreenVideoAd != null) {
+      fullScreenVideoAd.biddingFail(String.valueOf(reason));
+    }
+  }
+
+  @Override
+  public void sendWinNotification(int price) {
+    super.sendWinNotification(price);
+    if (interstitialAd != null) {
+      interstitialAd.biddingSuccess(String.valueOf(price));
+    }
+    if (fullScreenVideoAd != null) {
+      fullScreenVideoAd.biddingSuccess(String.valueOf(price));
+    }
+  }
+
   /******************************以下方法暂不支持*****************************/
 
   @Override
   public void close() {
     /* 百度不支持此接口 */
-  }
-
-  @Override
-  public int getECPM() {
-    return ecpm;
   }
 
   @Override

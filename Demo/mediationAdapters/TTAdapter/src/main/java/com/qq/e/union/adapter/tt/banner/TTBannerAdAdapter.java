@@ -15,8 +15,8 @@ import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.mediation.interfaces.BaseBannerAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 import com.qq.e.union.adapter.util.PxUtils;
@@ -58,7 +58,7 @@ public class TTBannerAdAdapter extends BaseBannerAd implements TTAdManagerHolder
 
   @Override
   public void loadAD() {
-    LoadAdUtil.load(this);
+    TTLoadAdUtil.load(this);
   }
 
   private void loadADAfterInitSuccess() {

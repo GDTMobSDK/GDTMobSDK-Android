@@ -1,7 +1,7 @@
 package com.qq.e.union.adapter.kuaishou.unified;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.kwad.sdk.api.KsAdSDK;
@@ -34,7 +34,7 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
 
   public KSNativeAdAdapter(Context context, String appId, String posId, String ext) {
     super(context, appId, posId, ext);
-    mPosId = Long.parseLong(posId);
+    mPosId = Long.parseLong(posId); // 视频测试PosId 4000000021L 图文测试PosId 90009004
     KSSDKInitUtil.init(context, appId);
   }
 
@@ -137,5 +137,12 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
     return new HashMap<>();
   }
 
-
+  @Override
+  public void sendWinNotification(int price) {
+    if (mKSNativeAdDataAdapters != null) {
+      for (KSNativeAdDataAdapter adapter : mKSNativeAdDataAdapters) {
+        adapter.sendWinNotification(price);
+      }
+    }
+  }
 }

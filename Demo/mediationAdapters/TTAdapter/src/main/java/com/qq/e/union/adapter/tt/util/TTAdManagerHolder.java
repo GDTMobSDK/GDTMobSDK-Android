@@ -25,6 +25,7 @@ public class TTAdManagerHolder {
 
   public enum InitStatus{
     UN_INIT,
+    INITIALIZING,
     INIT_SUCCESS,
     INIT_FAIL,
   }
@@ -39,8 +40,8 @@ public class TTAdManagerHolder {
       return;
     }
     synchronized (TTAdManagerHolder.class) {
-      if (!sInitStatus.equals(InitStatus.INIT_SUCCESS)) {
-
+      if (sInitStatus.equals(InitStatus.UN_INIT)) {
+          sInitStatus = InitStatus.INITIALIZING;
         // 穿山甲在3450版本对SDK的初始化方法进行了较大的改动，支持了同步初始化和异步初始化两种方式
         // 若您接入的是穿山甲Pro版本的SDK，则只能使用异步初始化的方式。同时混淆规则也要同步调整
 

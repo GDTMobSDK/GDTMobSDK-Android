@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -19,29 +18,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
 import com.qq.e.ads.nativ.NativeADMediaListener;
 import com.qq.e.ads.nativ.NativeADUnifiedListener;
 import com.qq.e.ads.nativ.NativeUnifiedAD;
-import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.ads.nativ.NativeUnifiedADAppMiitInfo;
-import com.qq.e.ads.nativ.VideoPreloadListener;
+import com.qq.e.ads.nativ.NativeUnifiedADData;
 import com.qq.e.ads.nativ.widget.NativeAdContainer;
 import com.qq.e.comm.constants.AdPatternType;
 import com.qq.e.comm.constants.AppDownloadStatus;
+import com.qq.e.comm.listeners.NegativeFeedbackListener;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
+import com.qq.e.union.demo.util.PxUtils;
 import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.annotation.Nullable;
 
 public class NativeADUnifiedSampleActivity extends BaseActivity implements NativeADUnifiedListener {
 
@@ -71,7 +71,6 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
 
   private boolean mPlayMute = true;
 
-  private boolean mPreloadVideo = false;
   private boolean mLoadingAd = false;
   private boolean mBindToCustomView;
   private FrameLayout mCustomContainer;
@@ -175,7 +174,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
    * 上报给优量汇服务端在开发者客户端竞价中优量汇的竞价结果，以便于优量汇服务端调整策略提供给开发者更合理的报价
    *
    * 优量汇竞价失败调用 sendLossNotification，并填入优量汇竞败原因（必填）、竞胜ADN ID（选填）、竞胜ADN报价（选填）
-   * 优量汇竞价胜出调用 sendWinNotification，并填入开发者期望扣费价格（单位分）
+   * 优量汇竞价胜出调用 sendWinNotification
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(NativeUnifiedADData adData) {
@@ -231,44 +230,15 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
       mAdData.destroy();
       mAdData = null;
     }
-    mPreloadVideo = preloadVideo;
     if(mAdManager != null) {
       mAdManager.loadData(AD_COUNT, DemoUtil.getLoadAdParams("native_unified"));
     }
   }
 
   private void initAd(final NativeUnifiedADData ad) {
-    if (ad.getAdPatternType() == AdPatternType.NATIVE_VIDEO) {
-      if(mPreloadVideo) {
-        // 如果是视频广告，可以调用preloadVideo预加载视频素材
-        ToastUtil.s("正在加载视频素材");
-        ad.preloadVideo(new VideoPreloadListener() {
-          @Override
-          public void onVideoCached() {
-            Log.d(TAG, "onVideoCached");
-            // 视频素材加载完成，此时展示广告不会有进度条。
-            if (mIsLoadAndShow) {
-              showAd(ad);
-              mIsLoadAndShow = false;
-            }
-          }
-
-          @Override
-          public void onVideoCacheFailed(int errorNo, String msg) {
-            Log.d(TAG, "onVideoCacheFailed : " + msg);
-          }
-        });
-      } else {
-        if (mIsLoadAndShow) {
-          showAd(ad);
-          mIsLoadAndShow = false;
-        }
-      }
-    } else {
-      if (mIsLoadAndShow) {
-        showAd(ad);
-        mIsLoadAndShow = false;
-      }
+    if (mIsLoadAndShow) {
+      showAd(ad);
+      mIsLoadAndShow = false;
     }
   }
 
@@ -404,6 +374,8 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
             Log.d(TAG, "onComplainSuccess ");
           }
         });
+
+      layoutWithOrientation();
     }
   private void bindMediaView(NativeUnifiedADData ad) {
     VideoOption videoOption = getVideoOption(getIntent());
@@ -595,10 +567,12 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
           Map<String, Object> extraInfo = ad.getExtraInfo();
           Object mp = extraInfo.get("mp");
           Object requestId = extraInfo.get("request_id");
+          Object token = extraInfo.get("token");
           Log.d(TAG,
               "eCPMLevel = " + ad.getECPMLevel() + "， ECPM: " + ad.getECPM()
                   + " ,videoDuration = " + ad.getVideoDuration()
                   + ", testExtraInfo:" + mp
+                  + ", token:" + token
                   + ", request_id:" + requestId);
           Log.e(TAG, "widget_info:" + extraInfo.get("widget_info"));
           break;
@@ -618,17 +592,34 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
 
   private void layoutWithOrientation() {
     mCustomContainer = findViewById(R.id.custom_container);
-    int height = Math.min(Resources.getSystem().getDisplayMetrics().widthPixels,
-        Resources.getSystem().getDisplayMetrics().heightPixels);
+    int min = Math.min(Resources.getSystem().getDisplayMetrics().widthPixels,
+        Resources.getSystem().getDisplayMetrics().heightPixels) - PxUtils.dpToPx(this, 20);
+    int portraitHeight = min;
+    int max = Math.max(Resources.getSystem().getDisplayMetrics().widthPixels,
+        Resources.getSystem().getDisplayMetrics().heightPixels) - PxUtils.dpToPx(this, 20);
+    int landscapeHeight = max;
+    if (mAdData != null) {
+      int pictureWidth = mAdData.getPictureWidth();
+      int pictureHeight = mAdData.getPictureHeight();
+      if (pictureHeight != 0 && pictureWidth != 0) {
+        portraitHeight = max * pictureHeight / pictureWidth;
+        landscapeHeight = min * pictureHeight / pictureWidth;
+      }
+    }
+    if (mCustomContainer == null) {
+      return;
+    }
+    int finalPortraitHeight = portraitHeight;
+    int finalLandscapeHeight = landscapeHeight;
     mCustomContainer.post(new Runnable() {
       @Override
       public void run() {
         Configuration configuration = getResources().getConfiguration();
         ViewGroup.LayoutParams layoutParams = mCustomContainer.getLayoutParams();
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          layoutParams.height = height;
+          layoutParams.height = finalPortraitHeight;
         } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-          layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+          layoutParams.height = finalLandscapeHeight;
         }
         mCustomContainer.setLayoutParams(layoutParams);
       }

@@ -51,17 +51,13 @@
                     android:orderInCategory="100"
                     android:title="上报竞败_LOW_PRICE" />
                 <item
-                    android:id="@+id/action_report_bidding_loss_time_out"
-                    android:orderInCategory="100"
-                    android:title="上报竞败_TIME_OUT" />
-                <item
                     android:id="@+id/action_report_bidding_loss_no_ad"
                     android:orderInCategory="100"
-                    android:title="上报竞败_NO_AD" />
+                    android:title="上报无回包_NO_AD" />
                 <item
-                    android:id="@+id/action_report_bidding_loss_ad_data_error"
+                    android:id="@+id/action_report_bidding_loss_not_competition"
                     android:orderInCategory="100"
-                    android:title="上报竞败_AD_DATA_ERROR" />
+                    android:title="上报有回包未参竞_NOT_COMPETITION" />
                 <item
                     android:id="@+id/action_report_bidding_loss_other"
                     android:orderInCategory="100"

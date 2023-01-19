@@ -1,10 +1,9 @@
 package com.qq.e.union.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 /**
  * 在消息流中接入原生模板广告的示例
@@ -43,7 +42,6 @@ public class NativeExpressRecyclerViewActivity extends BaseActivity implements
   public static final int ITEMS_COUNT = 30;
   public static final int AD_COUNT = 3;    // 加载广告的条数，取值范围为[1, 3]
   public static int FIRST_AD_POSITION = 1; // 第一条广告的位置
-  public static int ITEMS_PER_AD = 5;     // 每间隔10个条目插入一条广告
 
   private boolean mIsLoading = true;
 
@@ -112,6 +110,10 @@ public class NativeExpressRecyclerViewActivity extends BaseActivity implements
     return getIntent().getIntExtra(Constants.MAX_VIDEO_DURATION, 0);
   }
 
+  private int getItemsPerAd() {
+    return getIntent().getIntExtra(Constants.ITEMS_PER_AD, NativeExpressADActivity.DEFAULT_ITEMS_PER_AD);
+  }
+
   /**
    * 如果选择支持视频的模板样式，请使用{@link PositionId#NATIVE_EXPRESS_SUPPORT_VIDEO_POS_ID}
    */
@@ -158,7 +160,7 @@ public class NativeExpressRecyclerViewActivity extends BaseActivity implements
     }
 
     for (int i = 0; i < adList.size(); i++) {
-      int position = count + FIRST_AD_POSITION + ITEMS_PER_AD * i + i;
+      int position = count + FIRST_AD_POSITION + getItemsPerAd() * i + i;
       if (position < mNormalDataList.size()) {
         NativeExpressADView view = adList.get(i);
         if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {

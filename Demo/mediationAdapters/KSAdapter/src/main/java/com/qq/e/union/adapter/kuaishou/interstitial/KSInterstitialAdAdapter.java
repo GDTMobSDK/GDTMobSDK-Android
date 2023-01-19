@@ -2,7 +2,7 @@ package com.qq.e.union.adapter.kuaishou.interstitial;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.kwad.sdk.api.KsAdSDK;
@@ -376,7 +376,7 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
 
 
   @Override
-  public void setBidECPM(int price) {
+  public void sendWinNotification(int price) {
     if(mKsInterstitialAd != null){
       mKsInterstitialAd.setBidEcpm(price);
     }

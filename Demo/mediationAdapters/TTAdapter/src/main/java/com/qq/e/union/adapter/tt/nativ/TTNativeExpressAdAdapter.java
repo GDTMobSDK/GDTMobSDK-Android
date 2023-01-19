@@ -1,7 +1,7 @@
 package com.qq.e.union.adapter.tt.nativ;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
@@ -15,8 +15,8 @@ import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
 import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.mediation.interfaces.BaseNativeExpressAd;
-import com.qq.e.union.adapter.tt.util.LoadAdUtil;
 import com.qq.e.union.adapter.tt.util.TTAdManagerHolder;
+import com.qq.e.union.adapter.tt.util.TTLoadAdUtil;
 import com.qq.e.union.adapter.util.Constant;
 import com.qq.e.union.adapter.util.ErrorCode;
 
@@ -66,7 +66,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
   @Override
   public void loadAD(int count, LoadAdParams params) {
     mCount = count;
-    LoadAdUtil.load(this);
+    TTLoadAdUtil.load(this);
   }
 
   private void loadExpressAdAfterInitSuccess(int count) {
@@ -112,6 +112,7 @@ public class TTNativeExpressAdAdapter extends BaseNativeExpressAd implements TTA
     if (ads == null || ads.size() == 0) {
       mListener.onADEvent(new ADEvent(AdEventType.NO_AD, new Object[]{ErrorCode.NO_AD_FILL},
           ErrorCode.DEFAULT_ERROR_CODE, ErrorCode.DEFAULT_ERROR_MESSAGE));
+      return;
     }
 
     mTTNativeExpressAdDataAdapters = new ArrayList<>();

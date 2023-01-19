@@ -1,7 +1,7 @@
 package com.qq.e.union.demo;
 
-import com.qq.e.comm.pi.IBidding;
 import com.qq.e.comm.constants.BiddingLossReason;
+import com.qq.e.comm.pi.IBidding;
 
 import java.util.HashMap;
 
@@ -11,11 +11,10 @@ public class DemoBiddingC2SUtils {
 
   public static final int REPORT_BIDDING_DISABLE = -1;
   public static final int REPORT_BIDDING_WIN = 0;
-  public static final int REPORT_BIDDING_LOSS_LOW_PRICE = BiddingLossReason.LOW_PRICE;
-  public static final int REPORT_BIDDING_LOSS_TIME_OUT = BiddingLossReason.TIME_OUT;
-  public static final int REPORT_BIDDING_LOSS_NO_AD = BiddingLossReason.NO_AD;
-  public static final int REPORT_BIDDING_LOSS_AD_DATA_ERROR = BiddingLossReason.AD_DATA_ERROR;
-  public static final int REPORT_BIDDING_LOSS_OTHER = BiddingLossReason.OTHER;
+  public static final int REPORT_BIDDING_LOSS_LOW_PRICE = BiddingLossReason.LOW_PRICE; // 有广告回包，竞败
+  public static final int REPORT_BIDDING_LOSS_NO_AD = BiddingLossReason.NO_AD; // 无广告回包
+  public static final int REPORT_BIDDING_LOSS_NOT_COMPETITION = BiddingLossReason.NOT_COMPETITION; // 有广告回包但未参竞价
+  public static final int REPORT_BIDDING_LOSS_OTHER = BiddingLossReason.OTHER; // 其他
 
   public static void setReportBiddingWinLoss(int reportBiddingWinLoss) {
     DemoBiddingC2SUtils.reportBiddingWinLoss = reportBiddingWinLoss;
@@ -30,9 +29,8 @@ public class DemoBiddingC2SUtils {
         ad.sendWinNotification(hashMap);
         break;
       case REPORT_BIDDING_LOSS_LOW_PRICE:
-      case REPORT_BIDDING_LOSS_TIME_OUT:
       case REPORT_BIDDING_LOSS_NO_AD:
-      case REPORT_BIDDING_LOSS_AD_DATA_ERROR:
+      case REPORT_BIDDING_LOSS_NOT_COMPETITION:
       case REPORT_BIDDING_LOSS_OTHER: {
         HashMap<String, Object> hashMapLoss = new HashMap<>();
         hashMapLoss.put(IBidding.WIN_PRICE, 300);

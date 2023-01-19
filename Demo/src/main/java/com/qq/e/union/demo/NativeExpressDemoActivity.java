@@ -319,7 +319,7 @@ public class NativeExpressDemoActivity extends BaseActivity implements View.OnCl
    * 上报给优量汇服务端在开发者客户端竞价中优量汇的竞价结果，以便于优量汇服务端调整策略提供给开发者更合理的报价
    *
    * 优量汇竞价失败调用 sendLossNotification，并填入优量汇竞败原因（必填）、竞胜ADN ID（选填）、竞胜ADN报价（选填）
-   * 优量汇竞价胜出调用 sendWinNotification，并填入开发者期望扣费价格（单位分）
+   * 优量汇竞价胜出调用 sendWinNotification
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(NativeExpressADView adData) {

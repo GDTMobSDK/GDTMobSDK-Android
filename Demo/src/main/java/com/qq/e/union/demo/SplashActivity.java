@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import com.qq.e.union.demo.util.ToastUtil;
 import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -178,14 +180,18 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     if (!(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
       lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
     }
-
+    List<String> permissions = getPermissionsInManifest();
     // 检查读写存储权限开始
     // 快手SDK所需相关权限，存储权限，此处配置作用于流量分配功能，关于流量分配，详情请咨询运营;如果您的APP不需要快手SDK的流量分配功能，则无需申请SD卡权限
-    if (!(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED )){
-      lackedPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+    if (!(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
+      if(permissions != null && permissions.size() > 0 && permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE)){
+        lackedPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+      }
     }
-    if (!(checkSelfPermission( Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
-      lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    if (!(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
+      if(permissions != null && permissions.size() > 0 && permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+        lackedPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+      }
     }
     if (!(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
       lackedPermission.add(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -200,6 +206,17 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
       lackedPermission.toArray(requestPermissions);
       requestPermissions(requestPermissions, 1024);
     }
+  }
+
+  private List<String> getPermissionsInManifest() {
+    String[] requestedPermissions = null;
+    try {
+      PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_PERMISSIONS);
+      requestedPermissions = packageInfo.requestedPermissions;
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+    }
+    return Arrays.asList(requestedPermissions);
   }
 
   private boolean hasAllPermissionsGranted(int[] grantResults) {
@@ -329,7 +346,7 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
    * 上报给优量汇服务端在开发者客户端竞价中优量汇的竞价结果，以便于优量汇服务端调整策略提供给开发者更合理的报价
    *
    * 优量汇竞价失败调用 sendLossNotification，并填入优量汇竞败原因（必填）、竞胜ADN ID（选填）、竞胜ADN报价（选填）
-   * 优量汇竞价胜出调用 sendWinNotification，并填入开发者期望扣费价格（单位分）
+   * 优量汇竞价胜出调用 sendWinNotification
    * 请开发者如实上报相关参数，以保证优量汇服务端能根据相关参数调整策略，使开发者收益最大化
    */
   private void reportBiddingResult(SplashAD splashAD) {
