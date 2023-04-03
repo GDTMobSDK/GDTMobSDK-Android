@@ -37,7 +37,6 @@ public class SplashADActivity extends BaseActivity implements View.OnClickListen
   };
 
   private EditText mPosIdEdt;
-  private String mS2sBiddingToken;
   private ViewGroup mZoomOutView;
   private CheckBox mPreloadSupportZoomOut;
   private CheckBox mSupportZoomOut;
@@ -114,7 +113,7 @@ public class SplashADActivity extends BaseActivity implements View.OnClickListen
     return mIsFullScreen.isChecked();
   }
 
-  private String getPosID() {
+  protected String getPosId() {
     String posId = ((EditText) findViewById(R.id.posId)).getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.SPLASH_POS_ID : posId;
   }
@@ -133,7 +132,7 @@ public class SplashADActivity extends BaseActivity implements View.OnClickListen
     switch (v.getId()) {
       case R.id.splashADPreloadButton:
         //如果需要预加载支持开屏V+的广告这里adListener参数需要是SplashADZoomOutListener的实例
-        SplashAD splashAD = new SplashAD(this, getPosID(), isPreloadSupportZoomOut() ?
+        SplashAD splashAD = new SplashAD(this, getPosId(), isPreloadSupportZoomOut() ?
             new PreloadSplashZoomOutListener() : null);
         LoadAdParams params = new LoadAdParams();
         params.setLoginAppId("testAppId");
@@ -159,7 +158,7 @@ public class SplashADActivity extends BaseActivity implements View.OnClickListen
 
   protected Intent getSplashActivityIntent(Class<?> cls) {
     Intent intent = new Intent(SplashADActivity.this, cls);
-    intent.putExtra("pos_id", getPosID());
+    intent.putExtra("pos_id", getPosId());
     intent.putExtra("need_logo", needLogo());
     intent.putExtra("need_start_demo_list", false);
     boolean isSupportZoomOut = mSupportZoomOut.isChecked();
@@ -180,9 +179,6 @@ public class SplashADActivity extends BaseActivity implements View.OnClickListen
     return intent;
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2sBiddingToken = token);
-  }
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

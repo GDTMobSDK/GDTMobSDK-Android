@@ -41,7 +41,6 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
 
   private Spinner spinner;
   private PosIdArrayAdapter arrayAdapter;
-  private String mS2SBiddingToken;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,8 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
     mBindToCustomVideoCheckBox = findViewById(R.id.btn_bind_to_custom_video);
   }
 
-  private String getPosID() {
+
+  protected String getPosId() {
     String posId = ((EditText) findViewById(R.id.posId)).getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.NATIVE_UNIFIED_POS_ID : posId;
   }
@@ -152,16 +152,13 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
     startActivity(getIntent(NativeADUnifiedFullScreenFeedActivity.class));
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2SBiddingToken = token);
-  }
 
   private Intent getIntent(Class cls){
     Intent intent = new Intent();
     intent.setClass(this, cls);
-    intent.putExtra(Constants.POS_ID, getPosID());
-    Log.d(TAG, "getIntent: BiddingToken: " + mS2SBiddingToken);
-    intent.putExtra(Constants.TOKEN, mS2SBiddingToken);
+    intent.putExtra(Constants.POS_ID, getPosId());
+    Log.d(TAG, "getIntent: BiddingToken: " + mS2sBiddingToken);
+    intent.putExtra(Constants.TOKEN, mS2sBiddingToken);
     intent.putExtra(Constants.MIN_VIDEO_DURATION, getMinVideoDuration());
     intent.putExtra(Constants.MAX_VIDEO_DURATION, getMaxVideoDuration());
     intent.putExtra(Constants.NONE_OPTION, mNoneOption);

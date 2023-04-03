@@ -90,7 +90,7 @@ public class NativeExpressDemoActivity extends BaseActivity implements View.OnCl
     }
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

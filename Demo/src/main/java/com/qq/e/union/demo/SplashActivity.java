@@ -149,7 +149,7 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     }
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     String posId = getIntent().getStringExtra("pos_id");
     return TextUtils.isEmpty(posId) ? PositionId.SPLASH_POS_ID : posId;
   }

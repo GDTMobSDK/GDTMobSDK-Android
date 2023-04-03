@@ -37,7 +37,6 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   private static final String TAG = UnifiedInterstitialFullScreenADActivity.class.getSimpleName();
   private UnifiedInterstitialAD iad;
   private String currentPosId;
-  private String s2sBiddingToken;
 
   private EditText posIdEdt;
   private CheckBox btnMute;
@@ -112,10 +111,10 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
 
   private UnifiedInterstitialAD getIAD() {
     String posId = getPosId();
-    Log.d(TAG, "getIAD: BiddingToken " + s2sBiddingToken);
-    if (!posId.equals(currentPosId) || iad == null || !TextUtils.isEmpty(s2sBiddingToken)) {
-      if (!TextUtils.isEmpty(s2sBiddingToken)) {
-        iad = new UnifiedInterstitialAD(this, posId, this, null, s2sBiddingToken);
+    Log.d(TAG, "getIAD: BiddingToken " + mS2sBiddingToken);
+    if (!posId.equals(currentPosId) || iad == null || !TextUtils.isEmpty(mS2sBiddingToken)) {
+      if (!TextUtils.isEmpty(mS2sBiddingToken)) {
+        iad = new UnifiedInterstitialAD(this, posId, this, null, mS2sBiddingToken);
       } else {
         iad = new UnifiedInterstitialAD(this, posId, this);
       }
@@ -137,13 +136,10 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   }
 
   @NonNull
-  private String getPosId() {
+  protected String getPosId() {
     return posIdEdt.getText().toString();
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> s2sBiddingToken = token);
-  }
 
   @Override
   public void onADReceive() {

@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -57,7 +58,8 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
 
 
   // 与广告有关的变量，用来显示广告素材的UI
-  private NativeUnifiedAD mAdManager;
+  protected LinearLayout mRoot;
+  protected NativeUnifiedAD mAdManager;
   private MediaView mMediaView;
   private ImageView mImagePoster;
   private NativeAdContainer mContainer;
@@ -75,7 +77,6 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
   private boolean mBindToCustomView;
   private FrameLayout mCustomContainer;
   private boolean mLoadSuccess;
-  private boolean mIsLoadAndShow;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,13 +105,14 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
   }
 
   private void initView() {
+    mRoot  = findViewById(R.id.root);
     mMediaView = findViewById(R.id.gdt_media_view);
     mAppStatusButton = findViewById(R.id.app_download_button);
     mImagePoster = findViewById(R.id.img_poster);
     mDownloadButton = findViewById(R.id.btn_download);
     mCTAButton = findViewById(R.id.btn_cta);
     mContainer = findViewById(R.id.native_ad_container);
-    mAQuery = new AQuery(findViewById(R.id.root));
+    mAQuery = new AQuery(mRoot);
 
     mButtonsContainer = findViewById(R.id.video_btns_container);
     mPlayButton = findViewById(R.id.btn_play);
@@ -120,7 +122,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
     mCustomContainer = findViewById(R.id.custom_container);
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 
@@ -220,7 +222,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
     }
   }
 
-  private void loadAd(boolean preloadVideo) {
+  protected void loadAd(boolean preloadVideo) {
     if(mLoadingAd) {
       return;
     }
@@ -403,7 +405,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
 
       @Override
       public void onVideoStart() {
-        Log.d(TAG, "onVideoStart");
+        Log.d(TAG, "onVideoStart:" + ad.getVideoCurrentPosition());
       }
 
       @Override

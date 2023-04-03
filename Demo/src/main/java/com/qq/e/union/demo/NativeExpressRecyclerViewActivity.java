@@ -94,7 +94,7 @@ public class NativeExpressRecyclerViewActivity extends BaseActivity implements
     initNativeExpressAD();
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

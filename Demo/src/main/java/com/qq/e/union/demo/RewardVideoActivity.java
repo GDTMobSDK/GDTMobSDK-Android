@@ -41,7 +41,6 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
   private EditText mPosIdEdt;
   private String mCurrentPosId;
   private boolean mCurrentVolumeOn;
-  private String mS2SBiddingToken;
 
   private Spinner mSpinner;
   private PosIdArrayAdapter mArrayAdapter;
@@ -110,11 +109,11 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
     String editPosId = getPosId();
     boolean volumeOn = ((CheckBox) findViewById(R.id.volume_on_checkbox)).isChecked();
     RewardVideoAD rvad;
-    Log.d(TAG, "getRewardVideoAD: BiddingToken " + mS2SBiddingToken);
+    Log.d(TAG, "getRewardVideoAD: BiddingToken " + mS2sBiddingToken);
     if (mRewardVideoAD == null || !editPosId.equals(mCurrentPosId) || volumeOn != mCurrentVolumeOn
-        || !TextUtils.isEmpty(mS2SBiddingToken)) {
-      if (!TextUtils.isEmpty(mS2SBiddingToken)) {
-        rvad = new RewardVideoAD(this, editPosId, this, volumeOn, mS2SBiddingToken);
+        || !TextUtils.isEmpty(mS2sBiddingToken)) {
+      if (!TextUtils.isEmpty(mS2sBiddingToken)) {
+        rvad = new RewardVideoAD(this, editPosId, this, volumeOn, mS2sBiddingToken);
       } else {
         rvad = new RewardVideoAD(this, editPosId, this, volumeOn);
       }
@@ -139,13 +138,10 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
   }
 
   @NonNull
-  private String getPosId() {
+  protected String getPosId() {
     return mPosIdEdt.getText().toString();
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> mS2SBiddingToken = token);
-  }
 
   /**
    * 广告加载成功，可在此回调后进行广告展示

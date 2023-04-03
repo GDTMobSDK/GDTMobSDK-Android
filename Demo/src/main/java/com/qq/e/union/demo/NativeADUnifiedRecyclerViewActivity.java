@@ -105,7 +105,7 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
     mAdManager.loadData(AD_COUNT);
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

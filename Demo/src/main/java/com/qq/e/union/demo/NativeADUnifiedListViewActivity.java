@@ -90,7 +90,7 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
     mAdManager.loadData(AD_COUNT);
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

@@ -144,7 +144,7 @@
         <EditText
             android:id="@+id/etCustomScale"
             android:hint="默认宽/高=6.4"
-            android:inputType="number"
+            android:inputType="numberSigned|numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

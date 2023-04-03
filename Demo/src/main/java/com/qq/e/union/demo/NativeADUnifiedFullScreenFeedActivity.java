@@ -87,7 +87,7 @@ public class NativeADUnifiedFullScreenFeedActivity extends BaseActivity implemen
     mAdManager.loadData(AD_COUNT);
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

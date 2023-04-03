@@ -70,7 +70,7 @@ public class NativeADUnifiedFullScreenActivity extends BaseActivity implements N
     mAQuery = new AQuery(findViewById(R.id.native_ad_container));
   }
 
-  private String getPosId() {
+  protected String getPosId() {
     return getIntent().getStringExtra(Constants.POS_ID);
   }
 

@@ -36,7 +36,6 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
 
   private Spinner spinner;
   private PosIdArrayAdapter arrayAdapter;
-  private String mS2SBiddingToken;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
   /**
    * 如果选择支持视频的模板样式，请使用{@link PositionId#NATIVE_EXPRESS_SUPPORT_VIDEO_POS_ID}
    */
-  private String getPosID() {
+  protected String getPosId() {
     String posId = ((EditText) findViewById(R.id.posId)).getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.NATIVE_EXPRESS_POS_ID : posId;
   }
@@ -73,9 +72,6 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
     return TextUtils.isEmpty(itemsPerAd) ? DEFAULT_ITEMS_PER_AD : Integer.parseInt(itemsPerAd);
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2SBiddingToken = token);
-  }
 
   private int getMinVideoDuration() {
     if (((CheckBox) findViewById(R.id.cbMinVideoDuration)).isChecked()) {
@@ -126,9 +122,9 @@ public class NativeExpressADActivity extends BaseActivity implements CompoundBut
   }
 
   private void putExtraToIntent(Intent intent){
-    intent.putExtra(Constants.POS_ID, getPosID());
-    Log.d(TAG, "BiddingToken: " + mS2SBiddingToken);
-    intent.putExtra(Constants.TOKEN, mS2SBiddingToken);
+    intent.putExtra(Constants.POS_ID, getPosId());
+    Log.d(TAG, "BiddingToken: " + mS2sBiddingToken);
+    intent.putExtra(Constants.TOKEN, mS2sBiddingToken);
     intent.putExtra(Constants.MIN_VIDEO_DURATION, getMinVideoDuration());
     intent.putExtra(Constants.MAX_VIDEO_DURATION, getMaxVideoDuration());
     if(btnNoOption.isChecked()){

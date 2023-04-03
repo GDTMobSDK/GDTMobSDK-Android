@@ -35,7 +35,6 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
   ViewGroup mBannerContainer;
   UnifiedBannerView mBannerView;
   String mCurrentPosId;
-  String mS2SBiddingToken;
   private boolean mLoadSuccess;
   private PosIdArrayAdapter mArrayAdapter;
   private EditText mPosIdEdit;
@@ -78,14 +77,14 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
   }
 
   protected UnifiedBannerView getBanner() {
-    String editPosId = getPosID();
-    if (mBannerView == null || !editPosId.equals(mCurrentPosId) || !TextUtils.isEmpty(mS2SBiddingToken)) {
+    String editPosId = getPosId();
+    if (mBannerView == null || !editPosId.equals(mCurrentPosId) || !TextUtils.isEmpty(mS2sBiddingToken)) {
       if(this.mBannerView != null){
         mBannerView.destroy();
       }
-      Log.d(TAG, "getBanner: BiddingToken " + mS2SBiddingToken);
-      if (!TextUtils.isEmpty(mS2SBiddingToken)) {
-        mBannerView = new UnifiedBannerView(this, editPosId, this, null, mS2SBiddingToken);
+      Log.d(TAG, "getBanner: BiddingToken " + mS2sBiddingToken);
+      if (!TextUtils.isEmpty(mS2sBiddingToken)) {
+        mBannerView = new UnifiedBannerView(this, editPosId, this, null, mS2sBiddingToken);
       } else {
         mBannerView = new UnifiedBannerView(this, editPosId, this);
       }
@@ -160,9 +159,6 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
     }
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosID(), token -> mS2SBiddingToken = token);
-  }
 
   private void doRefreshBanner() {
     DemoUtil.hideSoftInput(this);
@@ -177,7 +173,7 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
     }
   }
 
-  private String getPosID() {
+  protected String getPosId() {
     String posId = mPosIdEdit.getText().toString();
     return TextUtils.isEmpty(posId) ? PositionId.BANNER_POS_ID : posId;
   }

@@ -35,7 +35,6 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
   private static final String TAG = UnifiedInterstitialADActivity.class.getSimpleName();
   private UnifiedInterstitialAD iad;
   private String currentPosId;
-  private String s2sBiddingToken;
 
   private CheckBox btnNoOption;
   private CheckBox btnMute;
@@ -148,10 +147,10 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
     }
     isRenderFail = false;
     String posId = getPosId();
-    Log.d(TAG, "getIAD: BiddingToken " + s2sBiddingToken);
-    if (!posId.equals(currentPosId) || iad == null || !TextUtils.isEmpty(s2sBiddingToken)) {
-      if (!TextUtils.isEmpty(s2sBiddingToken)) {
-        iad = new UnifiedInterstitialAD(this, posId, this, null, s2sBiddingToken);
+    Log.d(TAG, "getIAD: BiddingToken " + mS2sBiddingToken);
+    if (!posId.equals(currentPosId) || iad == null || !TextUtils.isEmpty(mS2sBiddingToken)) {
+      if (!TextUtils.isEmpty(mS2sBiddingToken)) {
+        iad = new UnifiedInterstitialAD(this, posId, this, null, mS2sBiddingToken);
       } else {
         iad = new UnifiedInterstitialAD(this, posId, this);
       }
@@ -169,13 +168,10 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
   }
 
   @NonNull
-  private String getPosId() {
+  protected String getPosId() {
     return posIdEdt.getText().toString();
   }
 
-  public void requestS2SBiddingToken(View view) {
-    S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> s2sBiddingToken = token);
-  }
 
   private void close() {
     if (iad != null) {

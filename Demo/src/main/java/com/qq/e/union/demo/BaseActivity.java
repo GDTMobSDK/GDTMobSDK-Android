@@ -3,17 +3,19 @@ package com.qq.e.union.demo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.fragment.app.FragmentActivity;
 
 public class BaseActivity extends FragmentActivity {
 
-  private static final String AUTO_LOAD_AND_SHOW = "autoLoadAndShow";
+  public static final String AUTO_LOAD_AND_SHOW = "autoLoadAndShow";
 
   protected boolean mIsLoadSuccess;
   protected boolean mIsLoadAndShow;
   protected String mBackupPosId;
+  protected String mS2sBiddingToken;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,14 @@ public class BaseActivity extends FragmentActivity {
   }
 
   protected void loadAd() {
+  }
+
+  public void requestS2SBiddingToken(View view) {
+    BuildConfig.S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> mS2sBiddingToken = token);
+  }
+
+  protected String getPosId(){
+    return "";
   }
 
   @Override
