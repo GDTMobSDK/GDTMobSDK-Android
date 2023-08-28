@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">优量汇联盟SDKDemo</string>
+    <string name="app_name">优量汇SDK</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">slogan</string>
     <string name="action_muid">设备标识</string>
@@ -77,8 +77,6 @@
     <string name="nativeExpressRewardVideo" />
     <string name="express_interstitial_full_screen" />
     <string name="express_interstitial_half_screen" />
-    <string name="dataDetect" />
-    <string name="HopeService" />
     <string name="OverseaTest" />
 
 

@@ -31,7 +31,6 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
   private CheckBox mControlCheckBox;
   private CheckBox mDetailPageMutedCheckBox;
   private CheckBox mBindToCustomViewCheckBox;
-  private CheckBox mBindToCustomVideoCheckBox;
 
   private static final String TAG = NativeADUnifiedActivity.class.getSimpleName();
 
@@ -81,7 +80,6 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
     mControlCheckBox = findViewById(R.id.btn_control);
     mDetailPageMutedCheckBox = findViewById(R.id.btn_detail_mute);
     mBindToCustomViewCheckBox = findViewById(R.id.btn_bind_to_custom_view);
-    mBindToCustomVideoCheckBox = findViewById(R.id.btn_bind_to_custom_video);
   }
 
 
@@ -140,10 +138,6 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
     startActivity(getIntent(NativeADUnifiedPreMovieActivity.class));
   }
 
-  public void onCustomVideoClick(View view){
-    startActivity(getIntent(NativeADUnifiedCustomVideoActivity.class));
-  }
-
   public void onFullScreenClick(View view) {
     startActivity(getIntent(NativeADUnifiedFullScreenActivity.class));
   }
@@ -170,7 +164,6 @@ public class NativeADUnifiedActivity extends BaseActivity implements AdapterView
     intent.putExtra(Constants.ENABLE_USER_CONTROL, mControlCheckBox.isChecked());
     intent.putExtra(Constants.DETAIL_PAGE_MUTED, mDetailPageMutedCheckBox.isChecked());
     intent.putExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIEW, mBindToCustomViewCheckBox.isChecked());
-    intent.putExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIDEO, mBindToCustomVideoCheckBox.isChecked());
     return intent;
   }
 

@@ -22,12 +22,12 @@
         <!-- 注意：如需要这个Logo区域，建议开发者使用自己的Logo资源，而不是联盟的Logo资源@drawable/gdt_splash_logo，资源规格可参照@drawable/gdt_splash_logo -->
         <ImageView
             android:id="@+id/app_logo"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/splash_app_logo_width"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/gdtslogan"
-            android:src="@drawable/gdt_splash_logo" />
+            android:src="@drawable/gdt_logo" />
 
         <!-- 2.预设开屏图片区域： -->
         <!-- 开发者可以把自家App设计开屏图片摆放在这里，本示例中放置了一张静态图片。!-->
@@ -38,8 +38,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/app_logo"
-            android:scaleType="fitXY"
-            android:src="@drawable/splash_holder" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/gdt_splash_holder" />
+
+
+        <ImageView
+            android:id="@+id/splash_holder_text"
+            android:layout_marginTop="@dimen/splash_holder_text_top"
+            android:layout_width="@dimen/splash_holder_text_width"
+            android:layout_height="@dimen/splash_holder_text_height"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/gdt_splash_text" />
+
 
         <!-- 3.开屏广告容器区域：-->
         <!-- 注意：该区域高度不得小于400dp。在本示例中没有写死splash_container的高度值，是因为第1部分的app_logo区域是一个高度很小的图片。 -->

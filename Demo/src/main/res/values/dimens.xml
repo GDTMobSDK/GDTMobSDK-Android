@@ -9,5 +9,9 @@
     <dimen name="splash_desc_txt">16sp</dimen>
     <dimen name="mediation_tool_layer">20sp</dimen>
     <dimen name="mediation_tool_network">16sp</dimen>
+    <dimen name="splash_holder_text_width">278dp</dimen>
+    <dimen name="splash_holder_text_height">123dp</dimen>
+    <dimen name="splash_holder_text_top">130dp</dimen>
+    <dimen name="splash_app_logo_width">140dp</dimen>
 
 </resources>

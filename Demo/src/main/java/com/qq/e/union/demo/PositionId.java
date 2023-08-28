@@ -16,7 +16,7 @@ public class PositionId {
   public static final String NATIVE_EXPRESS_POS_ID_PICTURE_VIDEO = "8040197282727229"; // 7030020348049331
 
   //如果选择支持视频的模板样式，请使用NativeExpressSupportVideoPosID测试广告位拉取
-  public static final String NATIVE_UNIFIED_POS_ID = "6040749702835933"; // 6040749702835933
+  public static final String NATIVE_UNIFIED_POS_ID = "9091145780212745"; // 6040749702835933
   public static final String NATIVE_UNIFIED_POS_ID_ONLY_HORIZONTAL = "7050291272634146";
   public static final String NATIVE_UNIFIED_POS_ID_ONLY_VERTICAL = "2060699242425877";
   public static final String NATIVE_UNIFIED_PICTURE_VIDEO_POS_ID = "9020995282824131";

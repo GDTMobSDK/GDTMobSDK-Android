@@ -2,6 +2,7 @@ package com.qq.e.union.demo;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,9 +44,11 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   private Spinner spinner;
   private PosIdArrayAdapter arrayAdapter;
   private boolean mLoadSuccess;
+  private Handler mHandler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    mHandler = new Handler();
     setContentView(R.layout.activity_unified_interstitial_fullscreen_video_ad);
     spinner = findViewById(R.id.id_spinner);
     arrayAdapter = new PosIdArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.unified_interstitial_video));
@@ -98,6 +101,17 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
       default:
         break;
     }
+  }
+
+  public void closeAd(View view) {
+    mHandler.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (iad != null) {
+          iad.close();
+        }
+      }
+    }, 8000);
   }
 
   private void setVideoOption() {
@@ -321,5 +335,12 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   @Override
   public void onNothingSelected(AdapterView<?> parent) {
 
+  }
+
+  @Override
+  public void onDestroy(){
+    super.onDestroy();
+    mHandler.removeCallbacksAndMessages(null);
+    mHandler = null;
   }
 }

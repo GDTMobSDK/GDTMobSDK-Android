@@ -223,14 +223,6 @@
             android:text="点击按钮直接下载或进入落地页"
             android:textSize="14sp" />
 
-        <CheckBox
-            android:id="@+id/btn_bind_to_custom_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="绑定自定义播放器"
-            android:textSize="14sp" />
-
         <Button
             android:id="@+id/SimpleDemoButton"
             android:layout_width="match_parent"
@@ -273,12 +265,6 @@
             android:layout_height="wrap_content"
             android:onClick="onFullScreenFeedClick"
             android:text="沉浸式视频流示例(类似微视)" />
-        <Button
-            android:id="@+id/custom_video_demo_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onCustomVideoClick"
-            android:text="自定义视频接入示例"/>
 
         <Button
             android:id="@+id/request_token"

@@ -15,21 +15,17 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.qq.e.ads.dfa.GDTAppDialogClickListener;
-import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.comm.DownloadService;
 import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
-import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.union.adapter.test.activity.MediationTestActivity;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.ViewUtils;
 import com.qq.e.union.tools.ToolsActivity;
 import com.qq.e.union.tools.view.MockFloatWindowManager;
 
@@ -50,7 +46,6 @@ public class DemoListActivity extends AppCompatActivity {
    * pair.second: intent action
    */
   private static Map<String, Pair<String, String>> launcherMap = new HashMap<>();
-  private View zoomOutView;
 
   protected Class mediationTargetActivity = MediationTestActivity.class;
 
@@ -62,10 +57,6 @@ public class DemoListActivity extends AppCompatActivity {
     // 如果targetSDKVersion >= 23，建议动态申请权限。
     if (Build.VERSION.SDK_INT >= 23) {
       checkAndRequestPermission();
-    }
-    zoomOutView = addZoomOut();
-    if(zoomOutView != null){
-      overridePendingTransition(0,0);
     }
   }
 
@@ -227,31 +218,8 @@ public class DemoListActivity extends AppCompatActivity {
     }
   }
 
-  private View addZoomOut() {
-    Log.d(TAG, "zoomOut addFloatView");
-    final SplashZoomOutManager zoomOutManager = SplashZoomOutManager.getInstance();
-    SplashAD zoomAd = zoomOutManager.getSplashAD();
-    return zoomOutManager.startZoomOut((ViewGroup) getWindow().getDecorView(),
-        findViewById(android.R.id.content), new SplashZoomOutManager.AnimationCallBack() {
-
-      @Override
-      public void animationStart(int animationTime) {
-
-      }
-
-      @Override
-      public void animationEnd() {
-        zoomAd.zoomOutAnimationFinish();
-      }
-    });
-  }
-
   @Override
   public void startActivity(Intent intent) {
-    if (zoomOutView != null) {
-      ViewUtils.removeFromParent(zoomOutView);
-      zoomOutView = null;
-    }
     super.startActivity(intent);
   }
 

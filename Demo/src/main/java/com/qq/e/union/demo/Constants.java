@@ -16,7 +16,6 @@ public class Constants {
   public static final String DETAIL_PAGE_MUTED = "detail_page_muted";
   //按钮绑定给customview，点击后直接下载或进入落地页，与视频区域点击逻辑分开
   public static final String BUTTON_BIND_TO_CUSTOM_VIEW = "button_bind_to_custom_view";
-  public static final String BUTTON_BIND_TO_CUSTOM_VIDEO = "button_bind_to_custom_video";
   public static final String NONE_OPTION = "none_option";
   public static final String LOAD_AD_COUNT = "load_ad_count";
   public static final String ITEMS_PER_AD = "items_per_ad";

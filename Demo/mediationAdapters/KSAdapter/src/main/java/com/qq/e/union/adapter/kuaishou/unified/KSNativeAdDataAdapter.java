@@ -504,6 +504,12 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
       public String getVersionName() {
         return mKsNativeAd.getAppVersion();
       }
+
+      @Override
+      public String getDescriptionUrl() {
+        // 快手暂不支持
+        return "";
+      }
     };
     return info;
   }

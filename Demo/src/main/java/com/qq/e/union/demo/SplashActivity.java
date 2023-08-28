@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,42 +23,30 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
-import com.qq.e.ads.splash.SplashADZoomOutListener;
-import com.qq.e.comm.listeners.ADRewardListener;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
-import com.qq.e.union.demo.util.SplashZoomOutManager;
 import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 这是demo工程的入口Activity，在这里会首次调用优量汇的SDK。
- *
  * 在调用SDK之前，如果您的App的targetSDKVersion >= 23，那么建议动态申请相关权限。
- *
- * 这里为了示例开屏V+广告使用了SplashADZoomOutListener，如不需要使用开屏V+广告可以继续使用之前的SplashADListener
  */
-public class SplashActivity extends BaseActivity implements SplashADZoomOutListener,
-        ADRewardListener, View.OnClickListener {
+public class SplashActivity extends BaseActivity implements SplashADListener,
+    View.OnClickListener {
 
   private static final String TAG = "SplashActivity";
 
   private SplashAD splashAD;
   private ViewGroup container;
-  private ViewGroup zoomOutView;
-  private ImageView splashHolder;
 
   public boolean canJump = false;
   private boolean needStartDemoList = true;
@@ -86,9 +73,6 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
   private long fetchSplashADTime = 0;
   private Handler handler = new Handler(Looper.getMainLooper());
 
-  private boolean isZoomOut = false;
-  private boolean isSupportZoomOut = true;
-  private boolean isZoomOutInAnother = false;
   // 是否适配全面屏，默认是适配全面屏，即使用顶部状态栏和底部导航栏
   private boolean isNotchAdaptation = true;
   private boolean mLoadSuccess;
@@ -105,18 +89,14 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     }
 
     setContentView(R.layout.activity_splash);
-    container = (ViewGroup) this.findViewById(R.id.splash_container);
+    container = this.findViewById(R.id.splash_container);
     Intent intent = getIntent();
-
-    splashHolder = (ImageView) findViewById(R.id.splash_holder);
 
     boolean needLogo = false;
     try {
       needLogo = intent.getBooleanExtra("need_logo", true);
       needStartDemoList = intent.getBooleanExtra("need_start_demo_list", true);
       loadAdOnly = intent.getBooleanExtra("load_ad_only", false);
-      isSupportZoomOut = intent.getBooleanExtra("support_zoom_out", false);
-      isZoomOutInAnother = intent.getBooleanExtra("zoom_out_in_another", false);
       isFullScreen = intent.getBooleanExtra("is_full_screen", false);
       fetchDelay = (Integer) intent.getSerializableExtra("fetch_delay");
     } catch (Exception e) {
@@ -286,13 +266,7 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     if (isFullScreen) {
       splashAD.setDeveloperLogo(getIntent().getIntExtra("developer_logo", 0));
     }
-    ServerSideVerificationOptions options = new ServerSideVerificationOptions.Builder()
-        .setCustomData("APP's custom data") // 设置插屏全屏视频服务端验证的自定义信息
-        .setUserId("APP's user id for server verify") // 设置服务端验证的用户信息
-        .build();
-    splashAD.setServerSideVerificationOptions(options);
     splashAD.setLoadAdParams(DemoUtil.getLoadAdParams("splash"));
-    splashAD.setRewardListener(this);
     return splashAD;
   }
 
@@ -359,9 +333,6 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
   @Override
   public void onADDismissed() {
     Log.i("AD_DEMO", "SplashADDismissed");
-    if (zoomOutView != null) {
-      ViewUtils.removeFromParent(zoomOutView);
-    }
     next();
   }
 
@@ -403,12 +374,6 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
     }, shouldDelayMills);
   }
 
-  @Override
-  public void onReward(Map<String, Object> map) {
-    // TRANS_ID 获取服务端验证的唯一 ID
-    Log.i("AD_DEMO", "onReward " + map.get(ServerSideVerificationOptions.TRANS_ID));
-  }
-
   /**
    * 设置一个变量来控制当前开屏页面是否可以跳转，当开屏广告为普链类广告时，点击会打开一个广告落地页，此时开发者还不能打开自己的App主页。当从广告落地页返回以后，
    * 才可以跳转到开发者自己的App主页；当开屏广告是App类广告时只会下载App。
@@ -420,18 +385,6 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
           this.startActivity(new Intent(this, BuildConfig.demolist));
         } catch (Exception e) {
         }
-      }
-      if (isZoomOut && isZoomOutInAnother) {
-        //防止移除view后显示底图导致屏幕闪烁
-        Bitmap b = splashAD.getZoomOutBitmap();
-        if (b != null) {
-          splashHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
-          splashHolder.setImageBitmap(b);
-        }
-        SplashZoomOutManager zoomOutManager = SplashZoomOutManager.getInstance();
-        zoomOutManager.setSplashInfo(splashAD, container.getChildAt(0),
-                getWindow().getDecorView());
-        this.setResult(RESULT_OK);
       }
       this.finish();
     } else {
@@ -509,42 +462,6 @@ public class SplashActivity extends BaseActivity implements SplashADZoomOutListe
         break;
       default:
     }
-  }
-
-  @Override
-  public void onZoomOut() {
-    isZoomOut = true;
-    Log.d("AD_DEMO", "onZoomOut");
-    if (isZoomOutInAnother) {
-      next();
-    } else {
-      SplashZoomOutManager splashZoomOutManager = SplashZoomOutManager.getInstance();
-      ViewGroup content = findViewById(android.R.id.content);
-      zoomOutView = splashZoomOutManager.startZoomOut(container.getChildAt(0), content, content,
-              new SplashZoomOutManager.AnimationCallBack() {
-                @Override
-                public void animationStart(int animationTime) {
-                  Log.d("AD_DEMO", "animationStart:" + animationTime);
-                }
-
-                @Override
-                public void animationEnd() {
-                  Log.d("AD_DEMO", "animationEnd");
-                  splashAD.zoomOutAnimationFinish();
-                }
-              });
-      findViewById(R.id.splash_main).setVisibility(View.GONE);
-    }
-  }
-
-  @Override
-  public void onZoomOutPlayFinish() {
-    Log.d("AD_DEMO", "onZoomOutPlayFinish");
-  }
-
-  @Override
-  public boolean isSupportZoomOut() {
-    return isSupportZoomOut;
   }
 
   private void hideSystemUI() {

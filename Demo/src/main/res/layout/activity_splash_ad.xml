@@ -43,51 +43,11 @@
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_marginTop="10dp"
-        android:text="开屏广告位是否显示logo"
+        android:text="开屏非全屏（展示底部LOGO）"
         android:textSize="18dp"
         android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/checkBoxPreloadView"
-        android:layout_marginTop="10dp"
-        android:text="开屏广告位是否显示自定义预加载按钮"
-        android:textSize="18dp"
-        android:checked="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/checkBoxPreloadSupportZoomOut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:checked="false"
-        android:text="预加载支持开屏V+(广告位支持)"
-        android:textSize="18dp" />
-
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <CheckBox
-            android:textSize="18dp"
-            android:id="@+id/checkSupportZoomOut"
-            android:text="开屏V+"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <CheckBox
-            android:textSize="18dp"
-            android:id="@+id/checkZoomOutInAnother"
-            android:text="V+小窗跨Activity"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
 
     <LinearLayout
         android:gravity="center_vertical"

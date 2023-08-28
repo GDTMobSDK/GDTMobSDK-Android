@@ -116,8 +116,6 @@
         <item>竖图(默认)</item>
         <item>竖图+拼接竖图(1280*720)</item>
         <item>仅视频</item>
-        <item>支持开屏V+的广告位</item>
-        <item>奖励式开屏</item>
         <item>聚合广告位组id</item>
     </array>
 
@@ -125,8 +123,6 @@
         <item>9093517612222759</item>
         <item>6083113602838470</item>
         <item>4013112622631808</item>
-        <item>7023116672537906</item>
-        <item>4093547747789997</item>
         <item>101363</item>
     </string-array>
 

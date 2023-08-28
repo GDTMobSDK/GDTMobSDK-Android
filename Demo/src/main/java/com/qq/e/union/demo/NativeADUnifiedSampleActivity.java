@@ -80,7 +80,6 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_native_unified_ad_simple);
     initView();
 
@@ -102,6 +101,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
     // 下面设置项为海外流量使用，国内暂不支持
     mAdManager.setVastClassName("com.qq.e.union.demo.adapter.vast.unified.ImaNativeDataAdapter");
     layoutWithOrientation();
+    super.onCreate(savedInstanceState);
   }
 
   private void initView() {
@@ -162,6 +162,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
             ", permissionsUrl='" + miitInfo.getPermissionsUrl() + '\'' +
             ", privacyAgreement='" + miitInfo.getPrivacyAgreement() + '\'' +
             ", versionName='" + miitInfo.getVersionName() + '\'' +
+            ", descriptionUrl='" + miitInfo.getDescriptionUrl() + '\'' +
             '}';
       } else {
         miitStr = "miit info is null";
@@ -220,6 +221,12 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
       mCustomContainer.addView(mMediaView, 0);
       bindMediaView(mAdData);
     }
+  }
+
+  @Override
+  protected void loadAd() {
+    super.loadAd();
+    loadAd(false);
   }
 
   protected void loadAd(boolean preloadVideo) {

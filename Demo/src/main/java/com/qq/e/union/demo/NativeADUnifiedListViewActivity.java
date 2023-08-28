@@ -2,9 +2,6 @@ package com.qq.e.union.demo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,11 +17,9 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.androidquery.AQuery;
 import com.qq.e.ads.cfg.VideoOption;
-import com.qq.e.ads.nativ.CustomizeVideo;
 import com.qq.e.ads.nativ.MediaView;
 import com.qq.e.ads.nativ.NativeADEventListener;
 import com.qq.e.ads.nativ.NativeADMediaListener;
@@ -66,7 +61,6 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
 
   private WeakHashMap<NativeUnifiedADData, Boolean> mMuteMap = new WeakHashMap<>();
   private boolean mBindToCustomView;
-  private boolean mBindToCustomVideo;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +73,6 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
       mPlayMute = getIntent().getBooleanExtra(Constants.PLAY_MUTE,true);
     }
     mBindToCustomView = getIntent().getBooleanExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIEW, false);
-    mBindToCustomVideo = getIntent().getBooleanExtra(Constants.BUTTON_BIND_TO_CUSTOM_VIDEO, false);
 
     mAdManager = new NativeUnifiedAD(this, getPosId(), this);
     mAdManager.setMinVideoDuration(getMinVideoDuration());
@@ -309,11 +302,9 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
           imageViews.add(holder.threeImageContainer.findViewById(R.id.img_2));
           imageViews.add(holder.threeImageContainer.findViewById(R.id.img_3));
         }
-        if (!isCustomizeVideo(ad)) {
-          //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
-          ad.bindAdToView(NativeADUnifiedListViewActivity.this, holder.container, null,
-              clickableViews, customClickableViews);
-        }
+        //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
+        ad.bindAdToView(NativeADUnifiedListViewActivity.this, holder.container, null,
+            clickableViews, customClickableViews);
 
         if (!imageViews.isEmpty()) {
           ad.bindImageViews(imageViews, 0);
@@ -379,120 +370,62 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
         holder.btnsContainer.setVisibility(View.VISIBLE);
         VideoOption videoOption =
             NativeADUnifiedSampleActivity.getVideoOption(getIntent());
-        if (isCustomizeVideo(ad)) {
-          CustomizeVideo customizeVideo = ad.getCustomizeVideo();
-          VideoView videoView;
-          View view = holder.mediaView.getChildAt(0);
-          if (view instanceof VideoView) {
-            videoView = (VideoView) view;
-          } else {
-            videoView = new VideoView(holder.mediaView.getContext());
-            int height = 200;
-            int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-            int pictureWidth = ad.getPictureWidth();
-            int pictureHeight = ad.getPictureHeight();
-            if (pictureHeight != 0 && pictureWidth != 0) {
-              height = widthPixels * pictureHeight / pictureWidth;
-            }
-            holder.mediaView.addView(videoView, ViewGroup.LayoutParams.MATCH_PARENT, height);
-          }
-          Uri uri = Uri.parse(customizeVideo.getVideoUrl());
-          videoView.setVideoURI(uri);
-          videoView.start();
-          videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-              customizeVideo.reportVideoCompleted();
-            }
-          });
-          videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-              customizeVideo.reportVideoError(videoView.getCurrentPosition(), what, extra);
-              return false;
-            }
-          });
-          videoView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-              Log.d(TAG, "videoView onViewAttachedToWindow: onViewAttachedToWindow");
-              videoView.start();
-            }
+        ad.bindMediaView(holder.mediaView, videoOption, new NativeADMediaListener() {
+              @Override
+              public void onVideoInit() {
+                Log.d(TAG, "onVideoInit: ");
+              }
 
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-              Log.d(TAG, "videoView onViewDetachedFromWindow: onViewAttachedToWindow");
-              videoView.pause();
-            }
-          });
-          List<View> clickableViews = new ArrayList<>();
-          List<View> customClickableViews = new ArrayList<>();
-          clickableViews.add(videoView);
-          if (mBindToCustomView) {
-            customClickableViews.add(holder.download);
-          } else {
-            clickableViews.add(holder.download);
-          }
-          ad.bindAdToCustomVideo(holder.container,NativeADUnifiedListViewActivity.this,
-              clickableViews, customClickableViews);
-        } else {
-          ad.bindMediaView(holder.mediaView, videoOption, new NativeADMediaListener() {
-            @Override
-            public void onVideoInit() {
-              Log.d(TAG, "onVideoInit: ");
-            }
+              @Override
+              public void onVideoLoading() {
+                Log.d(TAG, "onVideoLoading: ");
+              }
 
-            @Override
-            public void onVideoLoading() {
-              Log.d(TAG, "onVideoLoading: ");
-            }
+              @Override
+              public void onVideoReady() {
+                Log.d(TAG, "onVideoReady");
+              }
 
-            @Override
-            public void onVideoReady() {
-              Log.d(TAG, "onVideoReady");
-            }
+              @Override
+              public void onVideoLoaded(int videoDuration) {
+                Log.d(TAG, "onVideoLoaded: ");
+              }
 
-            @Override
-            public void onVideoLoaded(int videoDuration) {
-              Log.d(TAG, "onVideoLoaded: ");
-            }
+              @Override
+              public void onVideoStart() {
+                Log.d(TAG, "onVideoStart");
+              }
 
-            @Override
-            public void onVideoStart() {
-              Log.d(TAG, "onVideoStart");
-            }
+              @Override
+              public void onVideoPause() {
+                Log.d(TAG, "onVideoPause: ");
+              }
 
-            @Override
-            public void onVideoPause() {
-              Log.d(TAG, "onVideoPause: ");
-            }
+              @Override
+              public void onVideoResume() {
+                Log.d(TAG, "onVideoResume: ");
+              }
 
-            @Override
-            public void onVideoResume() {
-              Log.d(TAG, "onVideoResume: ");
-            }
+              @Override
+              public void onVideoCompleted() {
+                Log.d(TAG, "onVideoCompleted: ");
+              }
 
-            @Override
-            public void onVideoCompleted() {
-              Log.d(TAG, "onVideoCompleted: ");
-            }
+              @Override
+              public void onVideoError(AdError error) {
+                Log.d(TAG, "onVideoError: ");
+              }
 
-            @Override
-            public void onVideoError(AdError error) {
-              Log.d(TAG, "onVideoError: ");
-            }
+              @Override
+              public void onVideoStop() {
+                Log.d(TAG, "onVideoStop");
+              }
 
-            @Override
-            public void onVideoStop() {
-              Log.d(TAG, "onVideoStop");
-            }
-
-            @Override
-            public void onVideoClicked() {
-              Log.d(TAG, "onVideoClicked");
-            }
-          });
-        }
+              @Override
+              public void onVideoClicked() {
+                Log.d(TAG, "onVideoClicked");
+              }
+            });
 
         View.OnClickListener listener = new View.OnClickListener(){
           @Override
@@ -537,10 +470,6 @@ public class NativeADUnifiedListViewActivity extends BaseActivity implements Nat
       }
     }
 
-  }
-
-  private boolean isCustomizeVideo(NativeUnifiedADData customizeVideo) {
-    return mBindToCustomVideo && customizeVideo.getCustomizeVideo() != null;
   }
 
   static class ViewHolder {

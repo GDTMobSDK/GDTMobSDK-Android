@@ -29,6 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="展示插屏全屏广告" />
+
+    <Button
+        android:onClick="closeAd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="8秒后自动关闭插屏全屏广告" />
+
     <Button
         android:id="@+id/request_token"
         android:layout_width="match_parent"
