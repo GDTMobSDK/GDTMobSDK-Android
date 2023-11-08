@@ -201,6 +201,9 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
         mListener.onADEvent(new ADEvent(AdEventType.AD_RENDER_SUCCESS,
             new Object[]{BDNativeExpressAdDataAdapter.this}));
         post(() -> {
+          if (mExpressResponse == null) {
+            return;
+          }
           /**
            * ===【 注意 】===
            * 1. 展示前需要绑定当前activity，否则负反馈弹框无法弹出（负反馈无响应）

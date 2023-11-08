@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.qq.e.union:union:4.540.1410'
+    implementation 'com.qq.e.union:union:4.542.1412'
 	compileOnly fileTree(dir: rootProject.file('aars'), include: ['ks*.aar'])
 	compileOnly project(path:':mediationAdapters:Util')
     compileOnly fileTree(dir: rootProject.file('libs'), include: ['android-query-full.0.26.7.jar'])

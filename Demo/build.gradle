@@ -67,7 +67,7 @@ dependencies {
 //    implementation project(path:':mediationAdapters:BDAdapter')
 //    implementation project(path:':mediationAdapters:KSAdapter')
 //    implementation project(path:':mediationAdapters:Util')
-    implementation 'com.qq.e.union:union:4.540.1410'
+    implementation 'com.qq.e.union:union:4.542.1412'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation "com.google.android.material:material:1.0.0"
