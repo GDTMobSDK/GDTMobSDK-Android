@@ -74,12 +74,7 @@ public class RewardVideoActivity extends BaseActivity implements RewardVideoADLi
   public void onClick(View view) {
     switch (view.getId()) {
       case R.id.change_orientation_button:
-        int currentOrientation = getResources().getConfiguration().orientation;
-        if (currentOrientation == ORIENTATION_PORTRAIT) {
-          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else if (currentOrientation == ORIENTATION_LANDSCAPE) {
-          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        changeScreenOrientation();
         break;
       case R.id.load_ad_button:
         loadAd();

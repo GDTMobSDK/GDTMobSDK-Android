@@ -14,6 +14,12 @@
     tools:context="com.qq.e.union.demo.DemoListActivity">
 
     <Button
+        android:id="@+id/change_orientation_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="横竖屏切换" />
+
+    <Button
         android:id="@+id/loadIADFullScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

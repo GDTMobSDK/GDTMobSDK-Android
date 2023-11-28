@@ -157,9 +157,10 @@ public class SplashActivity extends BaseActivity implements SplashADListener,
   @TargetApi(Build.VERSION_CODES.M)
   private void checkAndRequestPermission() {
     List<String> lackedPermission = new ArrayList<String>();
-    if (!(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
-      lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
-    }
+    //TODO 先注释掉，方便测试关闭READ_PHONE_STATE进行兼容性测试验证
+//    if (!(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
+//      lackedPermission.add(Manifest.permission.READ_PHONE_STATE);
+//    }
     List<String> permissions = getPermissionsInManifest();
     // 检查读写存储权限开始
     // 快手SDK所需相关权限，存储权限，此处配置作用于流量分配功能，关于流量分配，详情请咨询运营;如果您的APP不需要快手SDK的流量分配功能，则无需申请SD卡权限

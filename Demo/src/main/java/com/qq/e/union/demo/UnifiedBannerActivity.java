@@ -23,7 +23,6 @@ import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.PxUtils;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
 
@@ -38,15 +37,15 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
   private boolean mLoadSuccess;
   private PosIdArrayAdapter mArrayAdapter;
   private EditText mPosIdEdit;
-  private CheckBox cbCustomWidth;
-  private EditText etCustomWidth;
+  private CheckBox cbCustomHeight;
+  private EditText etCustomHeight;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_unified_banner);
-    cbCustomWidth = findViewById(R.id.cbCustomWidth);
-    etCustomWidth = findViewById(R.id.etCustomWidth);
+    cbCustomHeight = findViewById(R.id.cbCustomHeight);
+    etCustomHeight = findViewById(R.id.etCustomHeight);
     mBannerContainer = (ViewGroup) this.findViewById(R.id.bannerContainer);
     mPosIdEdit = findViewById(R.id.posId);
     mPosIdEdit.setText(PositionId.UNIFIED_BANNER_POS_ID);
@@ -117,7 +116,8 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
   }
 
   /**
-   * banner2.0规定banner宽高比应该为6.4:1 , 开发者可自行设置符合规定宽高比的具体宽度和高度值
+   * banner2.0期望banner宽高比应该为6.4:1 , 为了保障广告样式效果，请遵循以下要求：
+   * 宽高比 不小于3.125:1，高度不小于48dp,  开发者可自行设置符合规定宽高比的具体宽度和高度值
    *
    * @return
    */
@@ -130,10 +130,10 @@ public class UnifiedBannerActivity extends BaseActivity implements OnClickListen
       } catch (Exception e) {
       }
     }
-    String customWidth;
-    if (cbCustomWidth.isChecked() && !TextUtils.isEmpty(customWidth = etCustomWidth.getText().toString())) {
-      int width = PxUtils.dpToPx(this, Integer.parseInt(customWidth));
-      return new FrameLayout.LayoutParams(width, Math.round(width / scale), Gravity.CENTER_HORIZONTAL);
+    String customHeight;
+    if (cbCustomHeight.isChecked() && !TextUtils.isEmpty(customHeight = etCustomHeight.getText().toString())) {
+      int height = PxUtils.dpToPx(this, Integer.parseInt(customHeight));
+      return new FrameLayout.LayoutParams(Math.round(height * scale), height, Gravity.CENTER_HORIZONTAL);
     }
     Point screenSize = new Point();
     getWindowManager().getDefaultDisplay().getSize(screenSize);

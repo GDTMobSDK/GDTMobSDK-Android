@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.qq.e.union:union:4.542.1412'
+    implementation 'com.qq.e.union:union:4.551.1421'
 	compileOnly fileTree(dir: rootProject.file('aars'), include: ['*.aar'])
     compileOnly fileTree(dir: rootProject.file('libs'), include: ['android-query-full.0.26.7.jar'])
     compileOnly 'androidx.annotation:annotation:1.0.0'

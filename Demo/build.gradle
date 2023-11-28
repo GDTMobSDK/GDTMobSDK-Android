@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId 'com.qq.e.union.demo'
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName '1.0'
@@ -67,7 +67,7 @@ dependencies {
 //    implementation project(path:':mediationAdapters:BDAdapter')
 //    implementation project(path:':mediationAdapters:KSAdapter')
 //    implementation project(path:':mediationAdapters:Util')
-    implementation 'com.qq.e.union:union:4.542.1412'
+    implementation 'com.qq.e.union:union:4.551.1421'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation "com.google.android.material:material:1.0.0"

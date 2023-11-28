@@ -1,6 +1,8 @@
 package com.qq.e.union.adapter.tt.util;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -41,47 +43,61 @@ public class TTAdManagerHolder {
     }
     synchronized (TTAdManagerHolder.class) {
       if (sInitStatus.equals(InitStatus.UN_INIT)) {
-          sInitStatus = InitStatus.INITIALIZING;
-        // 穿山甲在3450版本对SDK的初始化方法进行了较大的改动，支持了同步初始化和异步初始化两种方式
-        // 若您接入的是穿山甲Pro版本的SDK，则只能使用异步初始化的方式。同时混淆规则也要同步调整
-
-        // 异步初始化
-        TTAdSdk.init(context, buildConfig(context, appId), new TTAdSdk.InitCallback() {
-          /**
-           * 初始化成功回调
-           * 注意：开发者需要在success回调之后再去请求广告
-           */
-          @Override
-          public void success() {
-            sInitStatus = InitStatus.INIT_SUCCESS;
-            Log.d(TAG, "init success");
-            // 初始化之后申请下权限，开发者如果不想申请可以将此处删除
-            // TTAdSdk.getAdManager().requestPermissionIfNecessary(context);
-            for (InitCallBack initCallBack: sCallBackList) {
-              initCallBack.onInitSuccess();
+        sInitStatus = InitStatus.INITIALIZING;
+        if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
+          new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+              initAndStart(context, appId);
             }
-            sCallBackList.clear();
-          }
-
-          /**
-           * @param code 初始化失败回调错误码
-           * @param msg 初始化失败回调信息
-           */
-          @Override
-          public void fail(int code, String msg) {
-            sInitStatus = InitStatus.INIT_FAIL;
-            Log.d(TAG, "init fail, code = " + code + "s = " + msg);
-            for (InitCallBack initCallBack: sCallBackList) {
-              initCallBack.onInitFail();
-            }
-            sCallBackList.clear();
-          }
-        });
-
+          });
+        } else {
+          initAndStart(context, appId);
+        }
         // 清理 7 天以上部分文件内容
         // DeleteLruApkUtils.deleteApkFile(context);
       }
     }
+  }
+
+  private static void initAndStart(Context context,String appId){
+    /**
+     *  * V>=56XX
+     * 穿山甲SDK初始化API：该API必须在主线程中调用，穿山甲会将初始化操作放在子线程执行。
+     * TTAdSdk.init仅进行初始化，不会获取个人信息, 如果要展示广告，需要再调用TTAdSdk.start方法
+     */
+    TTAdSdk.init(context, buildConfig(context, appId));
+
+    /**
+     * 穿山甲sdk启动入口，该API必须在主线程中调用，启动操作会在子线程执行，推荐使用该API执行穿山甲启动操作
+     */
+    TTAdSdk.start(new TTAdSdk.Callback() {
+      /**
+       * start成功回调
+       * 注意：开发者需要在success回调之后再去请求广告
+       */
+      @Override
+      public void success() {
+        sInitStatus = InitStatus.INIT_SUCCESS;
+        Log.d(TAG, "start success");
+        // 初始化之后申请下权限，开发者如果不想申请可以将此处删除
+        // TTAdSdk.getAdManager().requestPermissionIfNecessary(context);
+        for (InitCallBack initCallBack: sCallBackList) {
+          initCallBack.onInitSuccess();
+        }
+        sCallBackList.clear();
+      }
+
+      @Override
+      public void fail(int code, String msg) {
+        sInitStatus = InitStatus.INIT_FAIL;
+        Log.d(TAG, "start fail, code = " + code + "s = " + msg);
+        for (InitCallBack initCallBack: sCallBackList) {
+          initCallBack.onInitFail();
+        }
+        sCallBackList.clear();
+      }
+    });
   }
 
   private static TTAdConfig buildConfig(Context context, String appId) {
@@ -94,8 +110,6 @@ public class TTAdManagerHolder {
         .titleBarTheme(TTAdConstant.TITLE_BAR_THEME_DARK)
         // 是否允许sdk展示通知栏提示
         .allowShowNotify(true)
-        // 是否在锁屏场景支持展示广告落地页
-        .allowShowPageWhenScreenLock(true)
         // 测试阶段打开，可以通过日志排查问题，上线时去除该调用
         .debug(true)
         // 允许直接下载的网络状态集合

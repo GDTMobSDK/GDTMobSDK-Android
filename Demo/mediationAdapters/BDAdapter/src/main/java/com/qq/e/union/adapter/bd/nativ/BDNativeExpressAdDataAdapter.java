@@ -154,6 +154,11 @@ public class BDNativeExpressAdDataAdapter extends NativeExpressADView implements
       public void adDownloadWindowClose() {
         Log.i(TAG, "adDownloadWindowClose");
       }
+
+      @Override
+      public void onADFunctionClick() {
+        Log.i(TAG, "onADFunctionClick");
+      }
     });
   }
 

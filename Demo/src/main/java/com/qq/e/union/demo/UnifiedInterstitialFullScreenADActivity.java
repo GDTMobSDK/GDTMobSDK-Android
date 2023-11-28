@@ -61,6 +61,7 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
     posIdEdt = findViewById(R.id.posId);
     posIdEdt.setText(PositionId.UNIFIED_VIDEO_PICTURE_ID_LARGE);
 
+    this.findViewById(R.id.change_orientation_button).setOnClickListener(this);
     this.findViewById(R.id.loadIADFullScreen).setOnClickListener(this);
     this.findViewById(R.id.showIADFullScreen).setOnClickListener(this);
     this.findViewById(R.id.loadAndShowAd).setOnClickListener(this);
@@ -83,6 +84,9 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
+      case R.id.change_orientation_button:
+        changeScreenOrientation();
+        break;
       case R.id.loadIADFullScreen:
         loadAd();
         break;

@@ -1,6 +1,10 @@
 package com.qq.e.union.demo;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
@@ -51,6 +55,15 @@ public class BaseActivity extends FragmentActivity {
     super.onConfigurationChanged(newConfig);
     if (mIsLoadAndShow) {
       loadAd();
+    }
+  }
+
+  protected void changeScreenOrientation() {
+    int currentOrientation = getResources().getConfiguration().orientation;
+    if (currentOrientation == ORIENTATION_PORTRAIT) {
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    } else if (currentOrientation == ORIENTATION_LANDSCAPE) {
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
   }
 

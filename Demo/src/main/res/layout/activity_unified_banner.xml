@@ -110,16 +110,16 @@
         android:orientation="horizontal">
 
         <CheckBox
-            android:id="@+id/cbCustomWidth"
+            android:id="@+id/cbCustomHeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:textSize="18dp"
-            android:text="自定义宽(默认屏幕宽):" />
+            android:text="自定义高:" />
 
         <EditText
-            android:id="@+id/etCustomWidth"
-            android:hint="容器宽，单位 dp"
+            android:id="@+id/etCustomHeight"
+            android:hint="最小48dp"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -143,7 +143,7 @@
 
         <EditText
             android:id="@+id/etCustomScale"
-            android:hint="默认宽/高=6.4"
+            android:hint="默认6.4, 最小3.125"
             android:inputType="numberSigned|numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
