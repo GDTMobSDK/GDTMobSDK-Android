@@ -14,8 +14,6 @@ import com.qq.e.comm.managers.GDTAdSdk;
 import com.qq.e.comm.managers.setting.GlobalSetting;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import java.util.Map;
-
 import androidx.multidex.MultiDexApplication;
 
 public class InnerDemoApplication extends MultiDexApplication {
@@ -42,8 +40,21 @@ public class InnerDemoApplication extends MultiDexApplication {
       CrashReport.initCrashReport(this, Constants.BuglyAppID, true);
       // 建议在初始化 SDK 前进行此设置
       GlobalSetting.setEnableCollectAppInstallStatus(true);
-      // 通过调用此方法初始化 SDK。如果需要在多个进程拉取广告，每个进程都需要初始化 SDK。
-      GDTAdSdk.init(context, Constants.APPID);
+      // 开发者请注意，4.560.1430版本后GDTAdSdk.init接口已废弃，请尽快迁移至GDTAdSdk.initWithoutStart、GDTAdSdk.start
+      // GDTAdSdk.init(context, Constants.APPID);
+      GDTAdSdk.initWithoutStart(context, Constants.APPID); // 调用此接口进行初始化，该接口不会采集用户信息
+      // 调用initWithoutStart后请尽快调用start，否则可能影响广告填充，造成收入下降
+      GDTAdSdk.start(new GDTAdSdk.OnStartListener() {
+        @Override
+        public void onStartSuccess() {
+          // 推荐开发者在onStartSuccess回调后开始拉广告
+        }
+
+        @Override
+        public void onStartFailed(Exception e) {
+          Log.e("gdt onStartFailed:", e.toString());
+        }
+      });
       GlobalSetting.setChannel(1);
       GlobalSetting.setEnableMediationTool(true);
       String packageName = context.getPackageName();

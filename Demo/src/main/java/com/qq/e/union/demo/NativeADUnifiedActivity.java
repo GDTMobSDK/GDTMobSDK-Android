@@ -13,7 +13,6 @@ import android.widget.Spinner;
 
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MAX;
 import static com.qq.e.union.demo.Constants.VIDEO_DURATION_SETTING_MIN;

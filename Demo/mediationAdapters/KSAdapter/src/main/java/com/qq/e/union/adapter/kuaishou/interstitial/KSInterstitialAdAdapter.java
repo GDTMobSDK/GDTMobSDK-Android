@@ -12,7 +12,6 @@ import com.kwad.sdk.api.KsLoadManager;
 import com.kwad.sdk.api.KsScene;
 import com.kwad.sdk.api.KsVideoPlayConfig;
 import com.kwad.sdk.api.model.MaterialType;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -54,11 +53,6 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
   }
 
   @Override
-  public void showAsPopupWindow() {
-    show();
-  }
-
-  @Override
   public void close() {/* 快手不支持此接口 */}
 
   @Override
@@ -97,11 +91,6 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
             }
           }
         });
-  }
-
-  @Override
-  public void showAsPopupWindow(Activity act) {
-    show(act);
   }
 
   @Override
@@ -177,9 +166,6 @@ public class KSInterstitialAdAdapter extends BaseInterstitialAd {
       Log.d(TAG, "暂无可用插屏广告，请等待缓存加载或者重新刷新");
     }
   }
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) {/* 快手不支持此接口 */}
 
   @Override
   public void destory() {/* 快手不支持此接口 */}

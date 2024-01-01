@@ -32,7 +32,7 @@ android {
         versionName '1.0'
         multiDexEnabled true
         buildConfigField "Class", "demolist", "DemoListActivity.class"
-        buildConfigField "com.qq.e.union.demo.view.S2SBiddingDemoUtils", "S2SBiddingDemoUtils", "new com.qq.e.union.demo.view.S2SBiddingDemoUtils()"
+        buildConfigField "com.qq.e.union.demo.util.DemoRequestUtils", "DemoRequestUtils", "new com.qq.e.union.demo.util.DemoRequestUtils()"
     }
 
     buildTypes {
@@ -67,7 +67,7 @@ dependencies {
 //    implementation project(path:':mediationAdapters:BDAdapter')
 //    implementation project(path:':mediationAdapters:KSAdapter')
 //    implementation project(path:':mediationAdapters:Util')
-    implementation 'com.qq.e.union:union:4.551.1421'
+    implementation 'com.qq.e.union:union:4.561.1431'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation "com.google.android.material:material:1.0.0"

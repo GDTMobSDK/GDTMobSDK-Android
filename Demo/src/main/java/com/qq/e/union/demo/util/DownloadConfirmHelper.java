@@ -35,7 +35,8 @@ public class DownloadConfirmHelper {
   private static final String PRIVACY_AGREEMENT_KEY = "privacyAgreement";//隐私政策（URL）这个url需要使用外部浏览器或者webview展示
   private static final String UPDATE_TIME_KEY = "apkPublishTime";//版本更新时间
   private static final String APK_FILE_SIZE_KEY = "fileSize";//apk文件大小，bytes
-  private static final String DESCRIPTION_URL_KEY = "descriptionUrl";//apk文件大小，bytes
+  private static final String DESCRIPTION_URL_KEY = "descriptionUrl";//功能介绍
+  private static final String ICP_NUMBER_KEY = "icpNumber";//icp备案号
 
   private static boolean USE_RAW_PERMISSIONS = false;
   private static JSONObject PERMISSIONS_MAP_JSON;
@@ -50,6 +51,7 @@ public class DownloadConfirmHelper {
     public long apkPublishTime;
     public long fileSize;
     public String descriptionUrl;
+    public String icpNumber;
   }
 
   public static final DownloadConfirmListener DOWNLOAD_CONFIRM_LISTENER =
@@ -129,6 +131,7 @@ public class DownloadConfirmHelper {
         result.apkPublishTime = publicTime > 946688401000L ? publicTime : publicTime * 1000;
         result.fileSize = dataJson.optLong(APK_FILE_SIZE_KEY);//单位是字节
         result.descriptionUrl = dataJson.optString(DESCRIPTION_URL_KEY);
+        result.icpNumber = dataJson.optString(ICP_NUMBER_KEY);
       }
     } catch (JSONException e) {
       e.printStackTrace();

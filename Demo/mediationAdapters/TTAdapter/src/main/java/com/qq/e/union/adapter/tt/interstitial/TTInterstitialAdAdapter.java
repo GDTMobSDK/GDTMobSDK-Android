@@ -17,7 +17,6 @@ import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFullScreenVideoAd;
 import com.bytedance.sdk.openadsdk.TTImage;
 import com.bytedance.sdk.openadsdk.TTNativeAd;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -176,16 +175,6 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
   }
 
   @Override
-  public void showAsPopupWindow() {
-    show();
-  }
-
-  @Override
-  public void showAsPopupWindow(Activity act) {
-    show(act);
-  }
-
-  @Override
   public void setAdListener(ADListener listener) {
     unifiedInterstitialADListener = listener;
   }
@@ -277,10 +266,6 @@ public class TTInterstitialAdAdapter extends BaseInterstitialAd implements TTAdM
   public int getAdPatternType() {
     return 0;
   }
-
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) {}
 
   @Override
   public int getVideoDuration() {

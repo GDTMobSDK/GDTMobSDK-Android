@@ -10,7 +10,6 @@ import android.util.Log;
 import com.baidu.mobads.sdk.api.BaiduNativeManager;
 import com.baidu.mobads.sdk.api.NativeResponse;
 import com.baidu.mobads.sdk.api.RequestParameters;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -227,10 +226,6 @@ public class BDNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements Bai
    * ======================================================================
    * 以下方法暂不支持
    */
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) {
-  }
 
   @Override
   public void setCategories(List<String> categories) {

@@ -21,7 +21,6 @@ import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
 
@@ -62,7 +61,6 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
     posIdEdt.setText(PositionId.UNIFIED_VIDEO_PICTURE_ID_LARGE);
     this.findViewById(R.id.loadIAD).setOnClickListener(this);
     this.findViewById(R.id.showIAD).setOnClickListener(this);
-    this.findViewById(R.id.showIADAsPPW).setOnClickListener(this);
     this.findViewById(R.id.closeIAD).setOnClickListener(this);
     this.findViewById(R.id.isAdValid).setOnClickListener(this);
     btnNoOption = findViewById(R.id.cb_none_video_option);
@@ -102,11 +100,6 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
       case R.id.showIAD:
         if (DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
           iad.show();
-        }
-        break;
-      case R.id.showIADAsPPW:
-        if (DemoUtil.isAdValid(mLoadSuccess, iad != null && iad.isValid(), true) && !isRenderFail) {
-          iad.showAsPopupWindow();
         }
         break;
       case R.id.closeIAD:
@@ -216,7 +209,7 @@ public class UnifiedInterstitialADActivity extends BaseActivity implements OnCli
 
   @Override
   public void onVideoCached() {
-    // 视频素材加载完成，在此时调用iad.show()或iad.showAsPopupWindow()视频广告不会有进度条。
+    // 视频素材加载完成，在此时调用iad.show()视频广告不会有进度条。
     Log.i(TAG, "onVideoCached");
   }
 

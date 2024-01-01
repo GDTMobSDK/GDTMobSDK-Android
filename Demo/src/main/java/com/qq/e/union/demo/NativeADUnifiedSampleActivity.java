@@ -163,6 +163,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
             ", privacyAgreement='" + miitInfo.getPrivacyAgreement() + '\'' +
             ", versionName='" + miitInfo.getVersionName() + '\'' +
             ", descriptionUrl='" + miitInfo.getDescriptionUrl() + '\'' +
+            ", icpNumber='" + miitInfo.getIcpNumber() + '\'' +
             '}';
       } else {
         miitStr = "miit info is null";
@@ -276,6 +277,7 @@ public class NativeADUnifiedSampleActivity extends BaseActivity implements Nativ
       imageViews.add(findViewById(R.id.img_2));
       imageViews.add(findViewById(R.id.img_3));
     }
+    clickableViews.add(findViewById(R.id.img_logo));
     //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效
     ad.bindAdToView(this, mContainer, null, clickableViews, customClickableViews);
     if (!imageViews.isEmpty()) {

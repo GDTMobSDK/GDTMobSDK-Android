@@ -8,7 +8,6 @@ import android.util.Log;
 import com.baidu.mobads.sdk.api.ExpressInterstitialAd;
 import com.baidu.mobads.sdk.api.ExpressInterstitialListener;
 import com.baidu.mobads.sdk.api.FullScreenVideoAd;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.ads.cfg.VideoOption;
 import com.qq.e.ads.rewardvideo.ServerSideVerificationOptions;
 import com.qq.e.comm.adevent.ADEvent;
@@ -47,16 +46,8 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
     mainHandler = new Handler(Looper.getMainLooper());
   }
 
-  // show() 有遮罩, showAsPopupWindow() 无遮罩，在这里，一样的调用是为了兼容 demo 中 有无遮罩样式的展示
   @Override
   public void show() {
-    if (interstitialAd != null) {
-      interstitialAd.show();
-    }
-  }
-
-  @Override
-  public void showAsPopupWindow() {
     if (interstitialAd != null) {
       interstitialAd.show();
     }
@@ -196,13 +187,6 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
       }
     });
     interstitialAd.load();
-  }
-
-  @Override
-  public void showAsPopupWindow(Activity act) {
-    if (interstitialAd != null && interstitialAd.isReady()) {
-      interstitialAd.show(act);
-    }
   }
 
   @Override
@@ -406,11 +390,6 @@ public class BDInterstitialAdAdapter extends BaseInterstitialAd {
 
   @Override
   public void close() {
-    /* 百度不支持此接口 */
-  }
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) {
     /* 百度不支持此接口 */
   }
 

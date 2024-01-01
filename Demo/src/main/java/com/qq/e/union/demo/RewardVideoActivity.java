@@ -1,6 +1,5 @@
 package com.qq.e.union.demo;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
@@ -19,13 +18,9 @@ import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
 import java.util.Map;
-
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 /**
  * 激励视频广告基本接入示例，演示了基本的激励视频广告功能（1.初始化激励视频广告;2.加载激励视频广告;3.展示激励视频广告）。

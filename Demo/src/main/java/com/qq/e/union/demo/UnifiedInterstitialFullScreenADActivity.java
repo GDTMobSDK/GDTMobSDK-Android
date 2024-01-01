@@ -23,7 +23,6 @@ import com.qq.e.comm.util.AdError;
 import com.qq.e.union.demo.adapter.PosIdArrayAdapter;
 import com.qq.e.union.demo.util.DownloadConfirmHelper;
 import com.qq.e.union.demo.util.ToastUtil;
-import com.qq.e.union.demo.view.S2SBiddingDemoUtils;
 
 import java.util.Locale;
 import java.util.Map;
@@ -198,7 +197,7 @@ public class UnifiedInterstitialFullScreenADActivity extends BaseActivity implem
 
   @Override
   public void onVideoCached() {
-    // 视频素材加载完成，在此时调用iad.show()或iad.showAsPopupWindow()视频广告不会有进度条。
+    // 视频素材加载完成，在此时调用iad.show()视频广告不会有进度条。
     Log.i(TAG, "onVideoCached");
   }
 

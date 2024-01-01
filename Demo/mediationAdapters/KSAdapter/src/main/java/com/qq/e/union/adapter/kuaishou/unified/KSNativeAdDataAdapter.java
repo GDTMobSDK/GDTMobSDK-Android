@@ -510,6 +510,12 @@ public class KSNativeAdDataAdapter implements NativeUnifiedADData, ADEventListen
         // 快手暂不支持
         return "";
       }
+
+      @Override
+      public String getIcpNumber() {
+        // 快手暂不支持
+        return "";
+      }
     };
     return info;
   }

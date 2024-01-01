@@ -8,7 +8,6 @@ import com.kwad.sdk.api.KsAdSDK;
 import com.kwad.sdk.api.KsLoadManager;
 import com.kwad.sdk.api.KsNativeAd;
 import com.kwad.sdk.api.KsScene;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -36,11 +35,6 @@ public class KSNativeAdAdapter extends BaseNativeUnifiedAd {
     super(context, appId, posId, ext);
     mPosId = Long.parseLong(posId); // 视频测试PosId 4000000021L 图文测试PosId 90009004
     KSSDKInitUtil.init(context, appId);
-  }
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) {
-
   }
 
   @Override

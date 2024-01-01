@@ -43,7 +43,7 @@ public class BaseActivity extends FragmentActivity {
   }
 
   public void requestS2SBiddingToken(View view) {
-    BuildConfig.S2SBiddingDemoUtils.requestBiddingToken(getPosId(), token -> mS2sBiddingToken = token);
+    BuildConfig.DemoRequestUtils.requestBiddingToken(getPosId(), token -> mS2sBiddingToken = token);
   }
 
   protected String getPosId(){

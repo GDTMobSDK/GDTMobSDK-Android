@@ -7,7 +7,6 @@ import android.util.Log;
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTFeedAd;
-import com.qq.e.ads.cfg.DownAPPConfirmPolicy;
 import com.qq.e.comm.adevent.ADEvent;
 import com.qq.e.comm.adevent.ADListener;
 import com.qq.e.comm.adevent.AdEventType;
@@ -218,10 +217,6 @@ public class TTNativeUnifiedAdAdapter extends BaseNativeUnifiedAd implements TTA
    * ======================================================================
    * 以下方法暂不支持
    */
-
-  @Override
-  public void setDownAPPConfirmPolicy(DownAPPConfirmPolicy policy) { }
-
 
   @Override
   public void setCategories(List<String> categories) { }

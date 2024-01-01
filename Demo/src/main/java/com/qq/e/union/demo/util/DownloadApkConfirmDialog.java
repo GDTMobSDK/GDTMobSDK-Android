@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.qq.e.comm.compliance.DownloadConfirmCallBack;
+import com.qq.e.union.demo.BuildConfig;
 import com.qq.e.union.demo.R;
 
 import java.text.DecimalFormat;
@@ -111,64 +112,77 @@ public class DownloadApkConfirmDialog extends Dialog implements View.OnClickList
       reloadButton.setEnabled(false);
       return;
     }
-    new NetworkRequestAsyncTask() {
+
+    BuildConfig.DemoRequestUtils.requestAppInfo(url, new DemoRequestUtils.RequestCallBack() {
       @Override
-      protected void onPostExecute(String str) {
-        loadingBar.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
-        contentHolder.setVisibility(View.VISIBLE);
-
-        DownloadConfirmHelper.ApkInfo apkInfo = DownloadConfirmHelper.getAppInfoFromJson(str);
-        if (apkInfo == null) {
-          loadingBar.setVisibility(View.GONE);
-          reloadButton.setVisibility(View.VISIBLE);
-          contentHolder.setVisibility(View.GONE);
-          return;
-        }
-
-
-        textView.append("icon链接:\n");
-        textView.append(apkInfo.iconUrl);
-
-        textView.append("\n应用名:\n");
-        textView.append("\t" + apkInfo.appName);
-
-        textView.append("\n应用版本:\n");
-        textView.append("\t" + apkInfo.versionName);
-
-        textView.append("\n开发者:\n");
-        textView.append("\t" + apkInfo.authorName);
-
-        textView.append("\n应用大小:\n");
-        textView.append("\t" + readableFileSize(apkInfo.fileSize));
-
-        textView.append("\n更新时间:\n");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        textView.append("\t" + sdf.format(new Date(apkInfo.apkPublishTime)));
-
-        textView.append("\n隐私条款链接:\n");
-        textView.append(apkInfo.privacyAgreementUrl);
-
-        textView.append("\n功能介绍链接:\n");
-        textView.append(apkInfo.descriptionUrl);
-
-        textView.append("\n权限信息:\n");
-        if (apkInfo.permissions != null && apkInfo.permissions.size() > 0) {
-          for (String i : apkInfo.permissions) {
-            textView.append("\t" + i + "\n");
-          }
-        }
-        Linkify.TransformFilter filter = new Linkify.TransformFilter() {
-          public final String transformUrl(final Matcher match, String url) {
-            return match.group();
-          }
-        };
-        Linkify.addLinks(textView, Patterns.WEB_URL, null, null, filter);
-        loadingBar.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
-        contentHolder.setVisibility(View.VISIBLE);
+      public void onSuccess(String result) {
+        MainHandler.post(() -> showResult(result));
       }
-    }.execute(url);
+    });
+
+  }
+
+  private void showResult(String result) {
+    loadingBar.setVisibility(View.GONE);
+    reloadButton.setVisibility(View.GONE);
+    contentHolder.setVisibility(View.VISIBLE);
+
+    DownloadConfirmHelper.ApkInfo apkInfo = DownloadConfirmHelper.getAppInfoFromJson(result);
+    if (apkInfo == null) {
+      loadingBar.setVisibility(View.GONE);
+      reloadButton.setVisibility(View.VISIBLE);
+      contentHolder.setVisibility(View.GONE);
+      return;
+    }
+
+
+    textView.append("icon链接:\n");
+    textView.append(apkInfo.iconUrl);
+
+    textView.append("\n应用名:\n");
+    textView.append("\t" + apkInfo.appName);
+
+    textView.append("\n应用版本:\n");
+    textView.append("\t" + apkInfo.versionName);
+
+    textView.append("\n开发者:\n");
+    textView.append("\t" + apkInfo.authorName);
+
+    textView.append("\n应用大小:\n");
+    textView.append("\t" + readableFileSize(apkInfo.fileSize));
+
+    textView.append("\n更新时间:\n");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    textView.append("\t" + sdf.format(new Date(apkInfo.apkPublishTime)));
+
+    textView.append("\n隐私条款链接:\n");
+    textView.append(apkInfo.privacyAgreementUrl);
+
+    textView.append("\n功能介绍链接:\n");
+    textView.append(apkInfo.descriptionUrl);
+
+    String icpNumber = apkInfo.icpNumber;
+    if (TextUtils.isEmpty(icpNumber)) {
+      icpNumber = "未备案";
+    }
+    textView.append("\n备案号:\n");
+    textView.append("\t" + icpNumber);
+
+    textView.append("\n权限信息:\n");
+    if (apkInfo.permissions != null && apkInfo.permissions.size() > 0) {
+      for (String i : apkInfo.permissions) {
+        textView.append("\t" + i + "\n");
+      }
+    }
+    Linkify.TransformFilter filter = new Linkify.TransformFilter() {
+      public final String transformUrl(final Matcher match, String url) {
+        return match.group();
+      }
+    };
+    Linkify.addLinks(textView, Patterns.WEB_URL, null, null, filter);
+    loadingBar.setVisibility(View.GONE);
+    reloadButton.setVisibility(View.GONE);
+    contentHolder.setVisibility(View.VISIBLE);
   }
 
   @Override

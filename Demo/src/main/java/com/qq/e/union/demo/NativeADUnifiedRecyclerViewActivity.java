@@ -291,6 +291,7 @@ public class NativeADUnifiedRecyclerViewActivity extends BaseActivity
         imageViews.add(holder.container.findViewById(R.id.img_2));
         imageViews.add(holder.container.findViewById(R.id.img_3));
       }
+      clickableViews.add(holder.logo);
       //作为customClickableViews传入，点击不进入详情页，直接下载或进入落地页，图文、视频广告均生效，
       ad.bindAdToView(NativeADUnifiedRecyclerViewActivity.this, holder.container, null,
           clickableViews, customClickableViews);
