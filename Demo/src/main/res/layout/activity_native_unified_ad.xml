@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context="com.qq.e.union.demo.NativeADUnifiedActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="广告位id："
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/posId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="" />
+        </LinearLayout>
+
+        <Spinner
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/id_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonContainer"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbMinVideoDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视频最小时长(闭区间): "
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/etMinVideoDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonContainer"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cbMaxVideoDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视频最大时长(闭区间): "
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/etMaxVideoDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="16dp"
+            android:text="VideoOption配置，只对预览页有效"
+            android:textColor="#f00"
+            android:textSize="16sp" />
+
+        <CheckBox
+            android:id="@+id/cb_none_video_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="不配置VideoOption，使用默认值"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视频播放网络条件："
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/spinner_network"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/play_video_network" />
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:visibility="gone">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="18dp"-->
+        <!--android:text="视频播放是否静音："/>-->
+
+        <!--<Spinner-->
+        <!--android:id="@+id/spinner_mute"-->
+        <!--android:entries="@array/play_video_mute"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+        <!--</LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/btn_mute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="静音自动播放"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/btn_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="显示封面图"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/btn_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="显示进度条"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/btn_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="点击广告跳详情页"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/btn_control"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="点击视频可暂停/续播"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:text="以上VideoOption配置，只对预览页有效"
+            android:textColor="#f00"
+            android:textSize="16sp" />
+
+        <CheckBox
+            android:id="@+id/btn_detail_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="视频详情页静音"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/btn_bind_to_custom_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="点击按钮直接下载或进入落地页"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/SimpleDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:onClick="onNormalViewClicked"
+            android:text="简单接入示例" />
+
+        <Button
+            android:id="@+id/recyclerDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onRecyclerViewClicked"
+            android:text="消息流(RecyclerView)接入示例" />
+
+        <Button
+            android:id="@+id/listDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onListViewClick"
+            android:text="消息流(ListView)接入示例" />
+
+        <Button
+            android:id="@+id/preMovieDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onPreMovieClick"
+            android:text="前贴片广告接入示例"/>
+
+        <Button
+            android:id="@+id/FullScreenDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onFullScreenClick"
+            android:text="视频信息流接入示例" />
+
+        <Button
+            android:id="@+id/FullScreenFeedDemoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onFullScreenFeedClick"
+            android:text="沉浸式视频流示例(类似微视)" />
+
+        <Button
+            android:id="@+id/request_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="requestS2SBiddingToken"
+            android:text="获取 S2S token" />
+
+    </LinearLayout>
+
+</ScrollView>

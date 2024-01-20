@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.ConstraintLayout">
+
+    <View
+        android:id="@+id/ad_info_background"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:background="@drawable/background_bottom_immersive_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/img_logo_card"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="50dp"
+        app:cardBackgroundColor="#00ffffff"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/ad_info_background"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/img_logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintBottom_toTopOf="@id/ad_info_background"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/img_logo_download"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="38dp"
+        android:background="@drawable/background_circle_blue"
+        android:padding="4dp"
+        android:src="@drawable/icon_download_gray"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/img_logo_card"
+        app:layout_constraintStart_toStartOf="@id/img_logo_card"
+        app:layout_constraintTop_toTopOf="@id/img_logo_card" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="4dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/text_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="腾讯优量汇" />
+
+    <TextView
+        android:id="@+id/text_desc"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="36dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="14sp"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="腾讯广告是国内领先的营销平台,汇聚腾讯公司全量的应用场景。" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btn_download"
+        android:layout_width="255dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="36dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:cardBackgroundColor="#00ffffff"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/ad_info_background"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:cardBackgroundColor="#3185FC"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/btn_download_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/icon_download_gray"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_download"
+        app:layout_constraintEnd_toEndOf="@id/btn_download"
+        app:layout_constraintStart_toStartOf="@id/btn_download"
+        app:layout_constraintTop_toTopOf="@id/btn_download"
+        tools:text="立即下载"
+        tools:visibility="visible" />
+
+</merge>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="unified_interstitial">
+        <item>图文+视频，大/小规格</item>
+        <item>图文+视频，小规格</item>
+        <item>视频，大规格(竖版视频)</item>
+        <item>视频，小规格 (横版视频)</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="unified_interstitial_value">
+        <item>2091645780016154</item>
+        <item>9021340750299543</item>
+        <item>7011249988911812</item>
+        <item>6001646908910578</item>
+        <item>101362</item>
+    </string-array>
+
+    <array name="unified_interstitial_video">
+        <item>竖版视频(支持奖励)</item>
+        <item>图文广告</item>
+        <item>竖版视频</item>
+        <item>横版视频</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="unified_interstitial_video_value">
+        <item>7022203877744399</item>
+        <item>3002037099789704</item>
+        <item>9051949928507973</item>
+        <item>5081642918611034</item>
+        <item>101361</item>
+    </string-array>
+
+    <array name="native_express_video_ad">
+        <item>图文+视频-上图下文(默认)</item>
+        <item>图文-上文下图</item>
+        <item>图文-双图双文</item>
+        <item>图文-左图右文</item>
+        <item>图文-左文右图</item>
+        <item>图文-三小图</item>
+        <item>图文-文字浮层-上文下图</item>
+        <item>图文-文字浮层-上图下文</item>
+        <item>图文-文字浮层-单图单文</item>
+        <item>图文-纯图1280*720</item>
+        <item>图文-纯图1080x1920或800x1200</item>
+        <item>视频-上文下图</item>
+        <item>视频-双图双文</item>
+        <item>视频-纯图1280*720</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="native_express_video_ad_value">
+        <item>4011142740008715</item>
+        <item>9091640760608738</item>
+        <item>7031347770209831</item>
+        <item>4031243780901876</item>
+        <item>9051849730102878</item>
+        <item>9051841700105960</item>
+        <item>5071045770093455</item>
+        <item>4091544780408943</item>
+        <item>5031941700603954</item>
+        <item>2061746720808804</item>
+        <item>6061147790901995</item>
+        <item>5001144790200890</item>
+        <item>1071447710703842</item>
+        <item>2071446720902845</item>
+        <item>101365</item>
+    </string-array>
+
+    <string-array name="unified_banner">
+        <item>横幅1</item>
+        <item>横幅2</item>
+        <item>聚合广告位组id</item>
+    </string-array>
+
+    <string-array name="unified_banner_value">
+        <item>4080052898050840</item>
+        <item>9001603994849786</item>
+        <item>101364</item>
+    </string-array>
+
+    <array name="native_ad_unified_ad">
+        <item>图文视频-1280 * 720 (默认)</item>
+        <item>只出横版视频</item>
+        <item>只出竖版视频</item>
+        <item>图文视频-三小图 或 (1280 * 720)</item>
+        <item>图文-1080 * 1920 或 800 * 1200</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="native_ad_unified_ad_value">
+        <item>9091145780212745</item>
+        <item>7031044750013706</item>
+        <item>1021241710113708</item>
+        <item>8051843730219893</item>
+        <item>7031143770818824</item>
+        <item>101360</item>
+    </string-array>
+
+    <array name="reward_video">
+        <item>激励视频</item>
+        <item>激励视频(不支持横屏广告)</item>
+        <item>激励浏览</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="reward_video_value">
+        <item>9011264358826997</item>
+        <item>5082873307844506</item>
+        <item>2051345750415462</item>
+        <item>101359</item>
+    </string-array>
+
+    <array name="splash_ad">
+        <item>竖图(默认)</item>
+        <item>竖图+拼接竖图(1280*720)</item>
+        <item>仅视频</item>
+        <item>聚合广告位组id</item>
+    </array>
+
+    <string-array name="splash_ad_value">
+        <item>9093517612222759</item>
+        <item>6083113602838470</item>
+        <item>4013112622631808</item>
+        <item>101363</item>
+    </string-array>
+
+    <!-- demo 引用字段 -->
+    <string-array name="play_video_network">
+        <item>仅Wi-Fi自动播放</item>
+        <item>始终自动播放</item>
+        <item>从不自动播放</item>
+    </string-array>
+
+    <string-array name="play_video_mute">
+        <item>静音</item>
+        <item>非静音</item>
+    </string-array>
+</resources>

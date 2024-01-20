@@ -1,0 +1,8 @@
+<resources>
+
+    <dimen name="splash_holder_text_width">593dp</dimen>
+    <dimen name="splash_holder_text_height">262dp</dimen>
+    <dimen name="splash_holder_text_top">208dp</dimen>
+    <dimen name="splash_app_logo_width">200dp</dimen>
+
+</resources>
