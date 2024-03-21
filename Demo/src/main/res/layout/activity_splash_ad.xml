@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <LinearLayout
+        android:id="@+id/posIdContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonContainer"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"
+            android:text="开屏广告位id："/>
+
+        <EditText
+            android:id="@+id/posId"
+            android:text=""
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <Spinner
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/id_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_marginTop="10dp"
+        android:text="开屏非全屏（展示底部LOGO）"
+        android:textSize="18dp"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/isFullScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="开屏全屏"
+            android:textSize="18dp" />
+        <Spinner
+            android:layout_marginLeft="10dp"
+            android:id="@+id/devLogo"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/fetchDelay"
+        android:hint="加载超时时间，默认 3000 毫秒"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/splashADPreloadButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="预加载开屏广告" />
+
+    <Button
+        android:id="@+id/splashADDemoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="拉取并显示开屏广告" />
+
+    <Button
+        android:id="@+id/splashFetchAdOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="拉取与显示分离" />
+
+    <Button
+        android:id="@+id/request_token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="requestS2SBiddingToken"
+        android:text="获取 S2S token" />
+
+</LinearLayout>
+</ScrollView>

@@ -1,0 +1,85 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.qq.e.union.demo.MainActivity" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+    <item
+        android:id="@+id/action_mediation_tool"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/title_activity_test_mediation"/>
+    <item
+        android:id="@+id/action_download_confirm"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:checkable="true"
+        android:title="自定义下载弹窗"/>
+    <item
+        android:id="@+id/action_enter_app_download_list_page"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="进入应用下载列表"/>
+    <item
+        android:id="@+id/action_check_app"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="检查未安装未激活应用"/>
+    <item
+        android:id="@+id/action_report_bidding"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="上报优量汇竞价结果">
+        <menu>
+            <group
+                android:id="@+id/action_report_bidding_group"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/action_report_bidding_disable"
+                    android:orderInCategory="100"
+                    android:title="不上报" />
+                <item
+                    android:id="@+id/action_report_bidding_win"
+                    android:orderInCategory="100"
+                    android:title="上报竞胜" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_low_price"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_LOW_PRICE" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_no_ad"
+                    android:orderInCategory="100"
+                    android:title="上报无回包_NO_AD" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_not_competition"
+                    android:orderInCategory="100"
+                    android:title="上报有回包未参竞_NOT_COMPETITION" />
+                <item
+                    android:id="@+id/action_report_bidding_loss_other"
+                    android:orderInCategory="100"
+                    android:title="上报竞败_OTHER" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_record_bid_ecpm"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:checkable="true"
+        android:title="是否设置曝光扣费"/>
+    <item
+        android:id="@+id/action_ad_tools_window"
+        android:checkable="true"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="广告助手" />
+    <item
+        android:id="@+id/action_ad_tools"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="广告助手（非悬浮窗）" />
+</menu>

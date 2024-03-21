@@ -1,0 +1,85 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.2'
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    google()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId 'com.qq.e.union.demo'
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 1
+        versionName '1.0'
+        multiDexEnabled true
+        buildConfigField "Class", "demolist", "DemoListActivity.class"
+        buildConfigField "com.qq.e.union.demo.util.DemoRequestUtils", "DemoRequestUtils", "new com.qq.e.union.demo.util.DemoRequestUtils()"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'androidsupportmultidexversion.txt'
+    }
+}
+
+dependencies {
+    implementation fileTree('libs/android-query-full.0.26.7.jar')
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    // 若采用源码依赖方式则解除下面的注释与setting.gradle文件内注释,同时删除libs目录下的聚合aar(以"mediation-"为前缀的四个aar)
+//    implementation project(path:':mediationAdapters:TTAdapter')
+//    implementation project(path:':mediationAdapters:BDAdapter')
+//    implementation project(path:':mediationAdapters:KSAdapter')
+//    implementation project(path:':mediationAdapters:Util')
+    implementation 'com.qq.e.union:union:4.570.1440'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation "com.google.android.material:material:1.0.0"
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    implementation fileTree(dir: 'aars', include: ['*.aar'])
+    // 广告助手，接入详见：https://doc.weixin.qq.com/doc/w3_AI8ARgaEACc6NnpZ1i0T4ey9BsUuD?scode=AJEAIQdfAAoPvOyDr2AI8ARgaEACc
+    implementation 'com.qq.e.union:tools:+'
+}
