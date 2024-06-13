@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="banner"/>
+    <item type="id" name="interstitial" />
+    <item type="id" name="nativeSelf" />
+    <item type="id" name="nativeSelfMp" />
+    <item type="id" name="nativeVideo" />
+    <item type="id" name="nativeExpress" />
+    <item type="id" name="rewardVideo" />
+    <item type="id" name="ngrewardVideo" />
+    <item type="id" name="splash" />
+    <item type="id" name="content" />
+</resources>
