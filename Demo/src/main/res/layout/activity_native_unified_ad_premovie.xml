@@ -1,0 +1,172 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.qq.e.union.demo.NativeADUnifiedPreMovieActivity">
+
+    <TextView
+        android:id="@+id/fake_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:background="#222"
+        android:textColor="#fff"
+        android:textSize="36sp"
+        android:text="假装是个播放器"/>
+
+    <com.qq.e.ads.nativ.widget.NativeAdContainer
+        android:id="@+id/native_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff">
+
+            <RelativeLayout
+                android:id="@+id/ad_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 原生广告的小图 -->
+                <ImageView
+                    android:id="@+id/img_logo"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+                <!-- 原生广告的点击按钮 -->
+                <Button
+                    android:id="@+id/btn_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/img_logo"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:minWidth="60dp"
+                    android:padding="4dp"
+                    android:background="#80000000"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <!-- 原生广告的标题 -->
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/img_logo"
+                    android:layout_marginLeft="6dp"
+                    android:layout_toLeftOf="@id/btn_download"
+                    android:layout_toRightOf="@id/img_logo"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="#e0000000" />
+
+                <!-- 原生广告的描述 -->
+                <TextView
+                    android:id="@+id/text_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/img_logo"
+                    android:layout_below="@id/text_title"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_toLeftOf="@id/btn_download"
+                    android:layout_toRightOf="@id/img_logo"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="#a0000000" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/custom_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <!-- 原生广告的视频组件 -->
+                <com.qq.e.ads.nativ.MediaView
+                    android:id="@+id/gdt_media_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="148dp"
+                    android:background="#000"/>
+
+                <!-- 原生广告的大图 -->
+                <ImageView
+                    android:id="@+id/img_poster"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY" />
+
+                <!-- 原生三小图 -->
+                <LinearLayout
+                    android:id="@+id/native_3img_ad_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/img_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/img_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/img_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </com.qq.e.ads.nativ.widget.NativeAdContainer>
+
+    <ImageButton
+        android:id="@+id/close_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/gdt_ic_express_close"
+        android:layout_alignTop="@id/fake_video_view"
+        android:layout_alignRight="@id/fake_video_view"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/load_ad_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fake_video_view"
+        android:layout_margin="36dp"
+        android:text="加载广告"/>
+    
+</RelativeLayout>

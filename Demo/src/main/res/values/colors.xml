@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#1C1C1C</color>
+    <color name="colorTransparentWhite">#4fffffff</color>
+    <color name="colorTransparentBlack">#6f000000</color>
+
+    <color name="ijk_transparent_dark">#77000000</color>
+
+    <color name="xad_color_orange">#fff6a100</color>
+    <color name="xad_color_transparent_black">#88000000</color>
+    <color name="xad_color_transparent_yellow">#88fed96f</color>
+    <color name="xad_color_yellow">#ffffdb70</color>
+    <color name="xad_color_navy_blue">#ff242632</color>
+    <color name="xad_color_gray">#ffc1c1c1</color>
+    <color name="xad_color_border_yellow">#ffffcf83</color>
+
+    <color name="mediation_tool_layer">#7093DB</color>
+    <color name="mediation_tool_network">#6B238E</color>
+
+</resources>
